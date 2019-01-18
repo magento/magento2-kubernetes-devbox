@@ -8,14 +8,14 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
-service:
-  type: NodePort
-  port: 80
-  nodePort: 30102
+#service:
+#  type: NodePort
+#  port: 80
+#  nodePort: 30102
 
 persistence:
   nfs:
-    enabled: true
+    enabled: false
 
 monolith:
   volumeHostPath: /Users/user/Projects/magento2-kubernetes-for-developers
@@ -25,9 +25,8 @@ checkout:
   volumeHostPath: /Users/user/Projects/magento2-kubernetes-for-developers
   service:
     type: NodePort
-    ports:
-      nodePort: 30102
-      port: 80
+    nodePort: 30102
+    port: 80
   deployment:
     nginxImage: nginx:1.9
     codeImage: shiftedreality/magento-kubernetes-components-php
@@ -52,6 +51,13 @@ affinity: {}
 
 global:
   chekout:
+    enabled: true
+    service:
+      type: NodePort
+      nodePort: 30102
+      port: 80
     mysqlHost: checkout-mysql
+    db:
+      enabled: true
     volumeHostPath: /Users/user/Projects/magento2-kubernetes-for-developers
 
