@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
+## TODO: Fix
 set -e
 
 vagrant_dir=$PWD
 
-source "${vagrant_dir}/scripts/output_functions.sh"
+source "${vagrant_dir}/scripts/functions.sh"
 resetNestingLevel
 current_script_name=`basename "$0"`
 initLogFile ${current_script_name}
@@ -20,7 +21,7 @@ if [[ ! -f "${config_path}" ]]; then
     cp "${config_path}.dist" "${config_path}"
 fi
 
-magento_ce_dir="${vagrant_dir}/magento2ce"
+magento_ce_dir="${vagrant_dir}/magento"
 magento_ce_sample_data_dir="${magento_ce_dir}/magento2ce-sample-data"
 magento_ee_dir="${magento_ce_dir}/magento2ee"
 magento_ee_sample_data_dir="${magento_ce_dir}/magento2ee-sample-data"
@@ -145,26 +146,6 @@ function composerCreateProject()
 
 bash "${vagrant_dir}/scripts/host/check_requirements.sh"
 
-status "Installing missing vagrant plugins"
-vagrant_plugin_list="$(vagrant plugin list)"
-if ! echo ${vagrant_plugin_list} | grep -q 'vagrant-hostmanager' ; then
-    vagrant plugin install vagrant-hostmanager
-fi
-if ! echo ${vagrant_plugin_list} | grep -q 'vagrant-vbguest' ; then
-    vagrant plugin install vagrant-vbguest
-fi
-if ! echo ${vagrant_plugin_list} | grep -q 'vagrant-host-shell' ; then
-    vagrant plugin install vagrant-host-shell
-fi
-
-status "Generating random IP address, and host name to prevent collisions (if no custom values specified)"
-random_ip="$(( ( RANDOM % 240 )  + 12 ))"
-forwarded_ssh_port="$(( random_ip + 3000 ))"
-sed -i.back "s|ip_address: \"192.168.10.2\"|ip_address: \"192.168.10.${random_ip}\"|g" "${config_path}"
-sed -i.back "s|host_name: \"magento2.vagrant2\"|host_name: \"magento2.vagrant${random_ip}\"|g" "${config_path}"
-sed -i.back "s|forwarded_ssh_port: 3000|forwarded_ssh_port: ${forwarded_ssh_port}|g" "${config_path}"
-rm -f "${config_path}.back"
-
 # Clean up the project before initialization if "-f" option was specified. Remove codebase if "-fc" is used.
 force_project_cleaning=0
 force_codebase_cleaning=0
@@ -179,7 +160,28 @@ while getopts 'fcp' flag; do
 done
 if [[ ${force_project_cleaning} -eq 1 ]]; then
     status "Cleaning up the project before initialization since '-f' option was used"
-    vagrant destroy -f 2> >(logError) > >(log)
+
+    if [[ $(isMinikubeRunning) -eq 1 ]]; then
+        minikube stop 2> >(logError) | {
+          while IFS= read -r line
+          do
+            filterVagrantOutput "${line}"
+            lastline="${line}"
+          done
+          filterVagrantOutput "${lastline}"
+        }
+    fi
+    if [[ $(isMinikubeStopped) -eq 1 ]]; then
+        minikube delete 2> >(logError) | {
+          while IFS= read -r line
+          do
+            filterVagrantOutput "${line}"
+            lastline="${line}"
+          done
+          filterVagrantOutput "${lastline}"
+        }
+    fi
+
     mv "${vagrant_dir}/etc/guest/.gitignore" "${vagrant_dir}/etc/.gitignore.back"
     rm -rf "${vagrant_dir}/.vagrant" "${vagrant_dir}/etc/guest"
     mkdir "${vagrant_dir}/etc/guest"
@@ -202,16 +204,19 @@ if [[ ! -d ${magento_ce_dir} ]]; then
     fi
 fi
 
-if [[ "${checkout_source_from}" == "git" ]]; then
-    status "Installing Magento dependencies via Composer"
-    cd "${magento_ce_dir}"
-    bash "${vagrant_dir}/scripts/host/composer.sh" install
-fi
-
-status "Initializing vagrant box"
+status "Initializing dev box"
 cd "${vagrant_dir}"
 
-vagrant up --provider virtualbox 2> >(logError) | {
+if [[ $(isMinikubeInitialized) -eq 1 ]]; then
+    warning "The project has already been initialized.
+    To re-initialize the project add the '-f' flag (using just '-f' will not affect Magento codebase or PHP Storm settings).
+    To delete Magento codebase and initialize it from scratch based on etc/config.yaml add '-c' flag.
+    To reconfigure PHP Storm add '-p' flag."
+    exit 0
+fi
+
+status "Starting minikube"
+minikube start --cpus=2 --memory=4096 2> >(logError) | {
   while IFS= read -r line
   do
     filterVagrantOutput "${line}"
@@ -219,6 +224,17 @@ vagrant up --provider virtualbox 2> >(logError) | {
   done
   filterVagrantOutput "${lastline}"
 }
+status "Configuring kubernetes cluster on the minikube"
+# TODO: Optimize. Helm tiller must be initialized and started before environment configuration can begin
+helm init && sleep 10
+# TODO: change k-rebuild-environment to comply with formatting requirements
+bash "${vagrant_dir}/k-rebuild-environment"
+
+minikube_ip="$(minikube service magento2-monolith --url | grep -oE '[0-9][^:]+' | head -1)"
+status "Saving minikube IP to etc/config.yaml (${minikube_ip})"
+sed -i.back "s|ip_address: \".*\"|ip_address: \"${minikube_ip}\"|g" "${config_path}"
+sed -i.back "s|host_name: \".*\"|host_name: \"${minikube_ip}\"|g" "${config_path}"
+rm -f "${config_path}.back"
 
 bash "${vagrant_dir}/scripts/host/check_mounted_directories.sh"
 

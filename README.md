@@ -378,3 +378,15 @@ Note: See [Working with npm](https://www.npmjs.com/package/n#working-with-npm) i
     mv ~/.vagrant.d/boxes/{name of your paliarush/ubuntu image}/metadata_url2 ~/.vagrant.d/boxes/{name of your paliarush/ubuntu image}/metadata_url
     ``` 
     
+# Kubernetes
+
+Install helm: 
+`brew install kubernetes-helm` - see [installation guide](https://docs.helm.sh/using_helm/#installing-helm)
+
+Install helm client with `helm init`
+
+To get Helm support in PhpStorm make sure to get v2018.3+
+
+## Manual steps (workarounds)
+1. `sudo chmod a+w .` needed to allow write permissions over NFS since users are different on the guest and host
+2. `chmod a+x magento/bin/magento`

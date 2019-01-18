@@ -2,12 +2,12 @@
 
 cd "$(dirname "${BASH_SOURCE[0]}")/../.." && vagrant_dir=$PWD
 
-source "${vagrant_dir}/scripts/output_functions.sh"
+source "${vagrant_dir}/scripts/functions.sh"
 
 status "Switching to Magento EE"
 incrementNestingLevel
 
-magento_ce_dir="${vagrant_dir}/magento2ce"
+magento_ce_dir="${vagrant_dir}/magento"
 magento_ee_dir="${magento_ce_dir}/magento2ee"
 host_os="$(bash "${vagrant_dir}/scripts/host/get_host_os.sh")"
 php_executable="$(bash "${vagrant_dir}/scripts/host/get_path_to_php.sh")"

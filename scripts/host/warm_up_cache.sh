@@ -2,9 +2,9 @@
 
 cd "$(dirname "${BASH_SOURCE[0]}")/../.." && vagrant_dir=$PWD
 
-source "${vagrant_dir}/scripts/output_functions.sh"
+source "${vagrant_dir}/scripts/functions.sh"
 
 cd "${vagrant_dir}"
-vagrant ssh -c "bash /vagrant/scripts/guest/warm_up_cache" 2> >(logError)
+executeInMagento2Container "${vagrant_dir}/scripts/guest/warm_up_cache" 2> >(logError)
 # Explicit exit is necessary to bypass incorrect output from vagrant in case of errors
 exit 0

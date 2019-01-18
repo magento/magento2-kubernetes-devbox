@@ -59,7 +59,7 @@ function log() {
         else
             log_file="${default_log}"
         fi
-        echo "${input}" | sed "s/\[[[:digit:]]\{1,\}m//g" >> "${log_file}"
+        echo "${input}" | sed "s/\[[[:digit:]]\{1,\}m//g" >> "${log_file}" 2> /dev/null
     fi
 }
 
@@ -114,6 +114,7 @@ function incrementNestingLevel()
 {
     if [[ ! -f "${nesting_level_file}" ]]; then
         echo 1 > "${nesting_level_file}"
+        chmod a+w "${nesting_level_file}"
     else
         nesting_level="$(cat "${nesting_level_file}")"
         nesting_level="$((${nesting_level}+1))"
@@ -148,6 +149,8 @@ function initLogFile()
     fi
     echo "log/${log_file}.log" > "${log_file_path}"
     rm -f "${vagrant_dir}/log/${log_file}.log"
+    touch "${vagrant_dir}/log/${log_file}.log"
+    chmod a+w "${vagrant_dir}/log/${log_file}.log"
 }
 
 function getIndentationByNesting()
@@ -182,4 +185,47 @@ function getStyleByNesting()
 function bash()
 {
     $(which bash) "$@" 2> >(logError)
+}
+
+# TODO: Move kubectl related functions to the host-only scripts
+function getMagento2PodId()
+{
+    # TODO: Calculate based on current helm release
+    echo "$(kubectl get pods | grep -ohE 'magento2-monolith-[a-z0-9\-]+')"
+}
+
+function getRedisMasterPodId()
+{
+    echo "$(kubectl get pods | grep -ohE 'magento2-redis-master-[a-z0-9\-]+')"
+}
+
+function getMysqlPodId()
+{
+    echo "$(kubectl get pods | grep -ohE 'magento2-mysql-[a-z0-9\-]+')"
+}
+
+function executeInMagento2Container()
+{
+    magento2_pod_id="$(getMagento2PodId)"
+    kubectl exec "${magento2_pod_id}" --container monolith "$@" 2> >(logError)
+}
+
+function isMinikubeRunning() {
+    minikube_status="$(minikube status | grep minikube: 2> >(log))"
+    if [[ ${minikube_status} == "minikube: Running" ]]; then
+        echo 1
+    fi
+}
+
+function isMinikubeStopped() {
+    minikube_status="$(minikube status | grep minikube: 2> >(log))"
+    if [[ ${minikube_status} == "minikube: Stopped" ]]; then
+        echo 1
+    fi
+}
+
+function isMinikubeInitialized() {
+    if [[ $(isMinikubeRunning) -eq 1 || $(isMinikubeStopped) -eq 1 ]]; then
+        echo 1
+    fi
 }

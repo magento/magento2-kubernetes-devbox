@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-vagrant_dir="/vagrant"
+vagrant_dir="${VAGRANT_ROOT}"
 
-source "${vagrant_dir}/scripts/output_functions.sh"
+source "${vagrant_dir}/scripts/functions.sh"
 
 if [[ ${SKIP_CACHE_CLEAN} -eq 1 ]] ; then
     exit 0
@@ -60,11 +60,12 @@ if [[ -d "${MAGENTO_ROOT}/dev" ]]; then
     fi
 fi
 
+status "Flushing redis storage"
+redis-cli -h magento2-redis-master flushall 2> >(logError) > >(log)
+
 if [[ -f "${MAGENTO_ROOT}/app/etc/env.php" ]]; then
 
-    bash configure_debugging
-
-    bash configure_cache_backend
+    bash "${VAGRANT_ROOT}/scripts/guest/configure_debugging"
 
     status "Flushing cache using 'bin/magento cache:flush'"
     php "${MAGENTO_ROOT}/bin/magento" cache:flush 2> >(logError) > >(log)

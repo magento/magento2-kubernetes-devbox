@@ -4,12 +4,12 @@ set -e
 
 cd "$(dirname "${BASH_SOURCE[0]}")/../.." && vagrant_dir=$PWD
 
-source "${vagrant_dir}/scripts/output_functions.sh"
+source "${vagrant_dir}/scripts/functions.sh"
 
 status "Switching to Magento CE"
 incrementNestingLevel
 
-magento_ce_dir="${vagrant_dir}/magento2ce"
+magento_ce_dir="${vagrant_dir}/magento"
 magento_ee_dir="${magento_ce_dir}/magento2ee"
 host_os="$(bash "${vagrant_dir}/scripts/host/get_host_os.sh")"
 php_executable="$(bash "${vagrant_dir}/scripts/host/get_path_to_php.sh")"
@@ -43,7 +43,7 @@ if [[ "${checkout_source_from}" == "git" ]]; then
         status "Unlinking EE repository"
         ${php_executable} -f ${magento_ee_dir}/dev/tools/build-ee.php -- --command=unlink --ee-source="${magento_ee_dir}" --ce-source="${magento_ce_dir}" --exclude=true 2> >(logError) > >(log)
 
-       # TODO: Remove after some time. For now this is left for backward compatibility
+        # TODO: Remove after some time. For now this is left for backward compatibility
         cd ${magento_ce_dir}
         git checkout composer.json
         git checkout composer.lock
