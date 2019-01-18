@@ -20,7 +20,7 @@ xdebugService:
 
 persistence:
   nfs:
-    enabled: false
+    enabled: true
 
 monolith:
   name: magento2

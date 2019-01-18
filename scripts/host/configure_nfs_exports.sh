@@ -21,7 +21,7 @@ if [[ -z "$(grep "${nfs_exports_record}" /etc/exports)" ]]; then
     sudo nfsd restart
     # TODO: Implement NFS exports clean up on project removal to prevent NFS mounting errors
 else
-    status "NFS exports are properly configured and do not need to be updated"
+    warning "NFS exports are properly configured and do not need to be updated"
 fi
 
 info "$(regular)See details in $(bold)${vagrant_dir}/log/${current_script_name}.log$(regular). For debug output set $(bold)debug:vagrant_project$(regular) to $(bold)1$(regular) in $(bold)etc/config.yaml$(regular)"
