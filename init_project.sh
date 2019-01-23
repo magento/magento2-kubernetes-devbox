@@ -216,17 +216,20 @@ if [[ $(isMinikubeInitialized) -eq 1 ]]; then
 fi
 
 status "Starting minikube"
-minikube start --cpus=2 --memory=4096 2> >(logError) | {
-  while IFS= read -r line
-  do
-    filterVagrantOutput "${line}"
-    lastline="${line}"
-  done
-  filterVagrantOutput "${lastline}"
-}
+minikube start --cpus=2 --memory=4096
+# hanged in some cases todo
+#minikube start --cpus=2 --memory=4096 2> >(logError) | {
+#  while IFS= read -r line
+#  do
+#    filterVagrantOutput "${line}"
+#    lastline="${line}"
+#  done
+#  filterVagrantOutput "${lastline}"
+#}
 status "Configuring kubernetes cluster on the minikube"
 # TODO: Optimize. Helm tiller must be initialized and started before environment configuration can begin
 helm init && sleep 10
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
 # TODO: change k-rebuild-environment to comply with formatting requirements
 bash "${vagrant_dir}/k-rebuild-environment"
 

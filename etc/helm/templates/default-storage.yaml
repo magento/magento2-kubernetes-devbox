@@ -1,0 +1,15 @@
+{{- if .Values.persistence.nfs.enabled }}
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  namespace: default
+  name: default-storage
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+  labels:
+    kubernetes.io/cluster-service: "true"
+provisioner: kubernetes.io/nfs
+parameters:
+  path: {{.Values.global.monolith.volumeHostPath}}
+  server: 192.168.99.1
+{{- end }}
