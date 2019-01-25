@@ -67,6 +67,9 @@ affinity: {}
 mysql:
   fullname: magento-mysql
   mysqlRootPassword: "123123q"
+  service:
+    type: NodePort
+    nodePort: 30306
 
 redis:
   usePassword: false

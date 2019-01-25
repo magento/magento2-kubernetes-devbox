@@ -111,12 +111,6 @@ fi
 # TODO: Confibure varnish
 #bash "${vagrant_dir}/scripts/guest/configure_varnish" -f
 
-# TODO: Enable cron
-#status "Enabling Magento cron jobs"
-#echo "* * * * * php ${MAGENTO_ROOT}/bin/magento cron:run &
-#* * * * * php ${MAGENTO_ROOT}/update/cron.php &
-#* * * * * php ${MAGENTO_ROOT}/bin/magento setup:cron:run &" | crontab -u vagrant -
-
 # TODO: Remove
 #if [[ ${is_windows_host} == 1 ]] || [[ ${use_nfs} == 0 ]]; then
 #    status "Changing ownership of "${MAGENTO_ROOT}" to vagrant:vagrant"

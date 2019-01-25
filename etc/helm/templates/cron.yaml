@@ -1,0 +1,136 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: magento-cron
+spec:
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: {{ .Chart.Name }}-cron
+              image: magento2-monolith:dev
+              args:
+                - /usr/local/bin/php
+                - -f
+                - {{.Values.global.monolith.volumeHostPath}}/magento/bin/magento
+                - cron:run
+              volumeMounts:
+                - name: code
+                  mountPath: {{.Values.global.monolith.volumeHostPath}}
+              env:
+                - name: VAGRANT_ROOT
+                  value: {{.Values.global.monolith.volumeHostPath}}
+                - name: COMPOSER_HOME
+                  value: {{.Values.global.monolith.volumeHostPath}}/.composer
+                - name: MAGENTO_ROOT
+                  value: {{.Values.global.monolith.volumeHostPath}}/magento
+                - name: MAGENTO_ROOT_HOST
+                  value: {{.Values.global.monolith.volumeHostPath}}/magento
+                - name: VAGRANT_ROOT_HOST
+                  value: {{.Values.global.monolith.volumeHostPath}}
+                - name: IS_WINDOWS_HOST
+                  value: "0"
+          volumes:
+            - name: code
+            {{- if .Values.persistence.nfs.enabled }}
+              persistentVolumeClaim:
+                claimName: {{ include "magento.fullname" . }}-claim
+            {{- else }}
+              hostPath:
+                path: {{.Values.global.monolith.volumeHostPath}}
+            {{- end }}
+          restartPolicy: OnFailure
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: magento-updater-cron
+spec:
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: {{ .Chart.Name }}-cron
+              image: magento2-monolith:dev
+              args:
+                - /usr/local/bin/php
+                - -f
+                - {{.Values.global.monolith.volumeHostPath}}/magento/update/cron.php
+              volumeMounts:
+                - name: code
+                  mountPath: {{.Values.global.monolith.volumeHostPath}}
+              env:
+                - name: VAGRANT_ROOT
+                  value: {{.Values.global.monolith.volumeHostPath}}
+                - name: COMPOSER_HOME
+                  value: {{.Values.global.monolith.volumeHostPath}}/.composer
+                - name: MAGENTO_ROOT
+                  value: {{.Values.global.monolith.volumeHostPath}}/magento
+                - name: MAGENTO_ROOT_HOST
+                  value: {{.Values.global.monolith.volumeHostPath}}/magento
+                - name: VAGRANT_ROOT_HOST
+                  value: {{.Values.global.monolith.volumeHostPath}}
+                - name: IS_WINDOWS_HOST
+                  value: "0"
+          volumes:
+            - name: code
+            {{- if .Values.persistence.nfs.enabled }}
+              persistentVolumeClaim:
+                claimName: {{ include "magento.fullname" . }}-claim
+            {{- else }}
+              hostPath:
+                path: {{.Values.global.monolith.volumeHostPath}}
+            {{- end }}
+          restartPolicy: OnFailure
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: magento-setup-cron
+spec:
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: {{ .Chart.Name }}-cron
+              image: magento2-monolith:dev
+              args:
+                - /usr/local/bin/php
+                - -f
+                - {{.Values.global.monolith.volumeHostPath}}/magento/bin/magento
+                - setup:cron:run
+              volumeMounts:
+                - name: code
+                  mountPath: {{.Values.global.monolith.volumeHostPath}}
+              env:
+                - name: VAGRANT_ROOT
+                  value: {{.Values.global.monolith.volumeHostPath}}
+                - name: COMPOSER_HOME
+                  value: {{.Values.global.monolith.volumeHostPath}}/.composer
+                - name: MAGENTO_ROOT
+                  value: {{.Values.global.monolith.volumeHostPath}}/magento
+                - name: MAGENTO_ROOT_HOST
+                  value: {{.Values.global.monolith.volumeHostPath}}/magento
+                - name: VAGRANT_ROOT_HOST
+                  value: {{.Values.global.monolith.volumeHostPath}}
+                - name: IS_WINDOWS_HOST
+                  value: "0"
+          volumes:
+            - name: code
+            {{- if .Values.persistence.nfs.enabled }}
+              persistentVolumeClaim:
+                claimName: {{ include "magento.fullname" . }}-claim
+            {{- else }}
+              hostPath:
+                path: {{.Values.global.monolith.volumeHostPath}}
+            {{- end }}
+          restartPolicy: OnFailure

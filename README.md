@@ -63,7 +63,7 @@ If you never used Kubernetes before, read the [Kubernetes Docs](https://kubernet
 
 The software listed below should be available in [PATH](https://en.wikipedia.org/wiki/PATH_\(variable\)) (except for PHP Storm).
 
-- [Minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)
+- [Minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/). After installing Minikube run `minikube addons enable ingress`
 - [Helm](https://docs.helm.sh/using_helm/#installing-helm)
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) - Ensure that SSH keys are generated and associated with your Github account. See [how to check](https://help.github.com/articles/testing-your-ssh-connection/) and [how to configure](https://help.github.com/articles/generating-ssh-keys/), if not configured.<br />
@@ -141,7 +141,9 @@ Upon a successful installation, you'll see the location and URL of the newly-ins
   - Can be retrieved from environment variable: `echo ${MAGENTO_ROOT}`
   <!--  - ![](docs/images/windows-icon.png) On Windows hosts: `/var/www/magento`-->
   - ![](docs/images/linux-icon.png)![](docs/images/osx-icon.png) On Mac and \*nix hosts: the same as on host
-- MySQL DB host: `localhost` (not accessible remotely)
+- MySQL DB host: 
+  - inside the container: `localhost`
+  - remotely: `<ip-from-config-yaml>`
 - MySQL DB name: `magento`, `magento_integration_tests`
 - MySQL DB user/password: `root:123123q`
 

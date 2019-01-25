@@ -14,8 +14,9 @@ cd "${vagrant_dir}/scripts" && eval $(minikube docker-env) && docker build -t ma
 
 # TODO: Delete does not work when no releases created yet
 cd "${vagrant_dir}/etc/helm"
-helm list -q | xargs helm delete
-set +e && helm del --purge magento2 2>/dev/null && set -e
+set +e
+helm list -q | xargs helm delete --purge
+set -e
 
 # TODO: Need to make sure all resources have been successfully deleted before the attempt of recreating them
 sleep 7
