@@ -161,26 +161,32 @@ done
 if [[ ${force_project_cleaning} -eq 1 ]]; then
     status "Cleaning up the project before initialization since '-f' option was used"
 
-    if [[ $(isMinikubeRunning) -eq 1 ]]; then
-        minikube stop 2> >(logError) | {
-          while IFS= read -r line
-          do
-            filterVagrantOutput "${line}"
-            lastline="${line}"
-          done
-          filterVagrantOutput "${lastline}"
-        }
-    fi
-    if [[ $(isMinikubeStopped) -eq 1 ]]; then
-        minikube delete 2> >(logError) | {
-          while IFS= read -r line
-          do
-            filterVagrantOutput "${line}"
-            lastline="${line}"
-          done
-          filterVagrantOutput "${lastline}"
-        }
-    fi
+# TODO: Remove if not needed in the future
+#    if [[ $(isMinikubeInitialized) -eq 1 ]]; then
+#        bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh"
+#    fi
+
+
+#    if [[ $(isMinikubeRunning) -eq 1 ]]; then
+#        minikube stop 2> >(logError) | {
+#          while IFS= read -r line
+#          do
+#            filterVagrantOutput "${line}"
+#            lastline="${line}"
+#          done
+#          filterVagrantOutput "${lastline}"
+#        }
+#    fi
+#    if [[ $(isMinikubeStopped) -eq 1 ]]; then
+#        minikube delete 2> >(logError) | {
+#          while IFS= read -r line
+#          do
+#            filterVagrantOutput "${line}"
+#            lastline="${line}"
+#          done
+#          filterVagrantOutput "${lastline}"
+#        }
+#    fi
 
     mv "${vagrant_dir}/etc/guest/.gitignore" "${vagrant_dir}/etc/.gitignore.back"
     rm -rf "${vagrant_dir}/.vagrant" "${vagrant_dir}/etc/guest"
@@ -207,31 +213,32 @@ fi
 status "Initializing dev box"
 cd "${vagrant_dir}"
 
-if [[ $(isMinikubeInitialized) -eq 1 ]]; then
-    warning "The project has already been initialized.
-    To re-initialize the project add the '-f' flag (using just '-f' will not affect Magento codebase or PHP Storm settings).
-    To delete Magento codebase and initialize it from scratch based on etc/config.yaml add '-c' flag.
-    To reconfigure PHP Storm add '-p' flag."
-    exit 0
-fi
+#if [[ $(isMinikubeInitialized) -eq 1 ]]; then
+#    warning "The project has already been initialized.
+#    To re-initialize the project add the '-f' flag (using just '-f' will not affect Magento codebase or PHP Storm settings).
+#    To delete Magento codebase and initialize it from scratch based on etc/config.yaml add '-c' flag.
+#    To reconfigure PHP Storm add '-p' flag."
+#    exit 0
+#fi
 
-status "Starting minikube"
-minikube start --cpus=2 --memory=4096
-# hanged in some cases todo
-#minikube start --cpus=2 --memory=4096 2> >(logError) | {
-#  while IFS= read -r line
-#  do
-#    filterVagrantOutput "${line}"
-#    lastline="${line}"
-#  done
-#  filterVagrantOutput "${lastline}"
-#}
+if [[ $(isMinikubeRunning) -eq 0 ]]; then
+    status "Starting minikube"
+    minikube start --cpus=2 --memory=4096
+    # hanged in some cases todo
+#    minikube start --cpus=2 --memory=4096 2> >(logError) | {
+#      while IFS= read -r line
+#      do
+#        filterVagrantOutput "${line}"
+#        lastline="${line}"
+#      done
+#      filterVagrantOutput "${lastline}"
+#    }
+fi
 status "Configuring kubernetes cluster on the minikube"
 # TODO: Optimize. Helm tiller must be initialized and started before environment configuration can begin
 helm init && sleep 10
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
 # TODO: change k-rebuild-environment to comply with formatting requirements
-bash "${vagrant_dir}/k-rebuild-environment"
+bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh"
 
 minikube_ip="$(minikube service magento2-monolith --url | grep -oE '[0-9][^:]+' | head -1)"
 status "Saving minikube IP to etc/config.yaml (${minikube_ip})"

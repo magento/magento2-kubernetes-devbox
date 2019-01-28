@@ -20,7 +20,7 @@ setupOptions[admin_password]="$(bash ${get_config_value} "magento_admin_password
 setupOptions[db_host]='magento2-mysql'
 setupOptions[db_name]='magento'
 setupOptions[db_user]='root'
-setupOptions[db_password]='1234'
+setupOptions[db_password]='123123q'
 setupOptions[base_url]="http://${magento_host_name}/"
 setupOptions[admin_lastname]='Admin'
 setupOptions[admin_firstname]='Admin'
@@ -110,12 +110,6 @@ fi
 
 # TODO: Confibure varnish
 #bash "${vagrant_dir}/scripts/guest/configure_varnish" -f
-
-# TODO: Enable cron
-#status "Enabling Magento cron jobs"
-#echo "* * * * * php ${MAGENTO_ROOT}/bin/magento cron:run &
-#* * * * * php ${MAGENTO_ROOT}/update/cron.php &
-#* * * * * php ${MAGENTO_ROOT}/bin/magento setup:cron:run &" | crontab -u vagrant -
 
 # TODO: Remove
 #if [[ ${is_windows_host} == 1 ]] || [[ ${use_nfs} == 0 ]]; then

@@ -224,6 +224,8 @@ function isMinikubeStopped() {
     fi
 }
 
+# TODO: Add suspended
+
 function isMinikubeInitialized() {
     if [[ $(isMinikubeRunning) -eq 1 || $(isMinikubeStopped) -eq 1 ]]; then
         echo 1
