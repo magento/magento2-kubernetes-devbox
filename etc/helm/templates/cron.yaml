@@ -37,7 +37,7 @@ spec:
             - name: code
             {{- if .Values.persistence.nfs.enabled }}
               persistentVolumeClaim:
-                claimName: {{ include "magento.fullname" . }}-claim
+                claimName: monolith-volume-claim
             {{- else }}
               hostPath:
                 path: {{.Values.global.monolith.volumeHostPath}}
