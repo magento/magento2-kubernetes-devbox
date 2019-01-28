@@ -223,14 +223,16 @@ cd "${vagrant_dir}"
 
 if [[ $(isMinikubeRunning) -eq 0 ]]; then
     status "Starting minikube"
-    minikube start --cpus=2 --memory=4096 2> >(logError) | {
-      while IFS= read -r line
-      do
-        filterVagrantOutput "${line}"
-        lastline="${line}"
-      done
-      filterVagrantOutput "${lastline}"
-    }
+    minikube start --cpus=2 --memory=4096
+    # hanged in some cases todo
+#    minikube start --cpus=2 --memory=4096 2> >(logError) | {
+#      while IFS= read -r line
+#      do
+#        filterVagrantOutput "${line}"
+#        lastline="${line}"
+#      done
+#      filterVagrantOutput "${lastline}"
+#    }
 fi
 status "Configuring kubernetes cluster on the minikube"
 # TODO: Optimize. Helm tiller must be initialized and started before environment configuration can begin

@@ -2,10 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ include "magento.fullname" . }}-claim
-  namespace: default
+  name: monolith-volume-claim
 spec:
-  storageClassName: standard
+  storageClassName: default-storage
   accessModes:
   - ReadWriteMany
   resources:
