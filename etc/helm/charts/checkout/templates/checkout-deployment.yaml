@@ -41,7 +41,7 @@ spec:
           configMap:
             name: {{ template "checkout.fullname" . }}-nginx-config
         - name: {{ .Chart.Name }}-code
-        {{- if .Values.persistence.nfs.enabled }}
+        {{- if .Values.global.persistence.nfs.enabled }}
           persistentVolumeClaim:
             claimName: {{ include "checkout.fullname" . }}-claim
         {{- else }}

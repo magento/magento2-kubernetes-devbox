@@ -150,11 +150,13 @@ bash "${vagrant_dir}/scripts/host/check_requirements.sh"
 force_project_cleaning=0
 force_codebase_cleaning=0
 force_phpstorm_config_cleaning=0
-while getopts 'fcp' flag; do
+disable_nfs=0
+while getopts 'fcpd' flag; do
   case "${flag}" in
     f) force_project_cleaning=1 ;;
     c) force_codebase_cleaning=1 ;;
     p) force_phpstorm_config_cleaning=1 ;;
+    d) disable_nfs=1 ;;
     *) error "Unexpected option" && exit 1;;
   esac
 done
@@ -223,7 +225,8 @@ cd "${vagrant_dir}"
 
 if [[ $(isMinikubeRunning) -eq 0 ]]; then
     status "Starting minikube"
-    minikube start --cpus=2 --memory=4096
+    #echo "$(python -c 'import os,sys;print(os.path.realpath("."));')/ -alldirs -mapall="$(id -u)":"$(id -g)" $(minikube ip)" | sudo tee -a /etc/exports && sudo nfsd restart
+    #minikube start --cpus=2 --memory=4096
     # hanged in some cases todo
 #    minikube start --cpus=2 --memory=4096 2> >(logError) | {
 #      while IFS= read -r line
@@ -238,7 +241,12 @@ status "Configuring kubernetes cluster on the minikube"
 # TODO: Optimize. Helm tiller must be initialized and started before environment configuration can begin
 helm init && sleep 10
 # TODO: change k-rebuild-environment to comply with formatting requirements
-bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh"
+if [[ "${disable_nfs}" == 1 ]]; then
+    bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh" -d
+else
+    bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh"
+fi
+
 
 minikube_ip="$(minikube service magento2-monolith --url | grep -oE '[0-9][^:]+' | head -1)"
 status "Saving minikube IP to etc/config.yaml (${minikube_ip})"

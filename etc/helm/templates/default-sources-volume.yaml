@@ -1,15 +1,16 @@
-{{- if .Values.persistence.nfs.enabled }}
+{{- if .Values.global.persistence.nfs.enabled }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: monolith-volume
+  name: {{ include "magento.fullname" . }}-volume
 spec:
   capacity:
     storage: 2Gi
   accessModes:
   - ReadWriteMany
-  storageClassName: default-storage
+  storageClassName: standard
   persistentVolumeReclaimPolicy: Retain
-  hostPath:
+  nfs:
+    server: 192.168.99.1
     path: {{.Values.global.monolith.volumeHostPath}}
 {{- end }}

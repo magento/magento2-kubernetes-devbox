@@ -1,10 +1,10 @@
-{{- if .Values.persistence.nfs.enabled }}
+{{- if .Values.global.persistence.nfs.enabled }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: monolith-volume-claim
+  name: {{ include "magento.fullname" . }}-claim
 spec:
-  storageClassName: default-storage
+  storageClassName: standard
   accessModes:
   - ReadWriteMany
   resources:
