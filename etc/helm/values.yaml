@@ -18,10 +18,6 @@ xdebugService:
   port: 8002
   nodePort: 30302
 
-persistence:
-  nfs:
-    enabled: true
-
 monolith:
   name: magento2
   deployment:
@@ -45,6 +41,9 @@ global:
       port: 8001
     mysqlHost: magento-mysql
     volumeHostPath: /Users/user/Projects/magento2-kubernetes-for-developers
+  persistence:
+    nfs:
+      enabled: true
 
 checkout:
   enabled: false

@@ -13,10 +13,6 @@ fullnameOverride: ""
 #  port: 80
 #  nodePort: 30102
 
-persistence:
-  nfs:
-    enabled: false
-
 monolith:
   volumeHostPath: /Users/user/Projects/magento2-kubernetes-for-developers
 
@@ -50,6 +46,9 @@ tolerations: []
 affinity: {}
 
 global:
+  persistence:
+    nfs:
+      enabled: false
   chekout:
     enabled: true
     service:
