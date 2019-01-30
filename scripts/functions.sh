@@ -222,6 +222,9 @@ function isMinikubeStopped() {
     if [[ ${minikube_status} == "minikube: Stopped" ]]; then
         echo 1
     fi
+    if [[ ${minikube_status} == "minikube: Saved" ]]; then
+        echo 1
+    fi
 }
 
 # TODO: Add suspended
