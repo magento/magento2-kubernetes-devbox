@@ -117,15 +117,16 @@ fi
 #    sudo chown -R vagrant:vagrant ${MAGENTO_ROOT}
 #fi
 
-if [[ ${generate_basic_data} != 0 ]]; then
-    bash "${VAGRANT_ROOT}/scripts/guest/generate_basic_data"
-fi
 bash "${VAGRANT_ROOT}/scripts/guest/configure_search_engine"
 bash "${VAGRANT_ROOT}/scripts/guest/change_magento_config_for_functional_tests"
 bash "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'admin/security/session_lifetime' '86400'
 
 export SKIP_CACHE_CLEAN=0
 bash "${VAGRANT_ROOT}/scripts/guest/m-clear-cache"
+
+if [[ ${generate_basic_data} != 0 ]]; then
+    bash "${VAGRANT_ROOT}/scripts/guest/generate_basic_data"
+fi
 
 status "Checking if Magento frontend is accessible at '${setupOptions[base_url]}'"
 magento_home_page_content="$(curl -sL ${setupOptions[base_url]})"
