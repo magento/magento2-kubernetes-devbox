@@ -227,10 +227,41 @@ function isMinikubeStopped() {
     fi
 }
 
+function isMinikubeSaved() {
+    minikube_status="$(minikube status | grep minikube: 2> >(log))"
+    if [[ ${minikube_status} == "minikube: Saved" ]]; then
+        echo 1
+    fi
+}
+
 # TODO: Add suspended
 
 function isMinikubeInitialized() {
-    if [[ $(isMinikubeRunning) -eq 1 || $(isMinikubeStopped) -eq 1 ]]; then
+    if [[ $(isMinikubeRunning) -eq 1 || $(isMinikubeStopped) -eq 1 || $(isMinikubeSaved) -eq 1 ]]; then
         echo 1
     fi
+}
+
+function waitForKubernetesPodToRun()
+{
+    set +e
+
+    if [[ -n "${1}" ]]; then
+        pod_id="${1}"
+    else
+        error "Argument missing for 'waitForKubernetesPodToRun'"
+        set -e
+        exit 1
+    fi
+
+    COUNTER=0
+    pod_status=$(kubectl get pods --all-namespaces | grep -hE "${pod_id}-[a-z0-9\-]+" | grep -o 'Running')
+
+    while [[ $pod_status != 'Running' && $COUNTER -lt 240 ]] ; do
+        sleep 3
+        let COUNTER+=3
+        status "Waiting for pod (${pod_id}) to run"
+        pod_status=$(kubectl get pods --all-namespaces | grep -hE "${pod_id}-[a-z0-9\-]+" | grep -o 'Running')
+    done
+    set -e
 }

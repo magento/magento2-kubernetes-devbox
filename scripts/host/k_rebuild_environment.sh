@@ -35,12 +35,8 @@ cd "${vagrant_dir}/etc/helm" && helm install \
     --set global.checkout.volumeHostPath="${vagrant_dir}" .
 
 # TODO: Waiting for containers to initialize before proceeding
-sleep 7
-
-
-## Bypass Helm
-#cd "${vagrant_dir}" && python local_deploy.py --all --ingress \
-#    && kubectl patch deployment magento2-monolith -p \
-#  "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"date\":\"`date +'%s'`\"}}}}}"
+waitForKubernetesPodToRun 'magento2-monolith'
+waitForKubernetesPodToRun 'magento2-mysql'
+waitForKubernetesPodToRun 'magento2-redis-master'
 
 exit 0

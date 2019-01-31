@@ -227,6 +227,7 @@ if [[ $(isMinikubeRunning) -eq 0 ]]; then
     status "Starting minikube"
     #echo "$(python -c 'import os,sys;print(os.path.realpath("."));')/ -alldirs -mapall="$(id -u)":"$(id -g)" $(minikube ip)" | sudo tee -a /etc/exports && sudo nfsd restart
     minikube start --cpus=2 --memory=4096
+#    minikube start --cache-images --cpus=2 --memory=4096
     # hanged in some cases todo
 #    minikube start --cpus=2 --memory=4096 2> >(logError) | {
 #      while IFS= read -r line
@@ -239,14 +240,15 @@ if [[ $(isMinikubeRunning) -eq 0 ]]; then
 fi
 status "Configuring kubernetes cluster on the minikube"
 # TODO: Optimize. Helm tiller must be initialized and started before environment configuration can begin
-helm init && sleep 10
+helm init
+waitForKubernetesPodToRun 'tiller-deploy'
+
 # TODO: change k-rebuild-environment to comply with formatting requirements
 if [[ "${disable_nfs}" == 1 ]]; then
     bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh" -d
 else
     bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh"
 fi
-
 
 minikube_ip="$(minikube service magento2-monolith --url | grep -oE '[0-9][^:]+' | head -1)"
 status "Saving minikube IP to etc/config.yaml (${minikube_ip})"
