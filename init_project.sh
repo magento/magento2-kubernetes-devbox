@@ -230,6 +230,8 @@ if [[ $(isMinikubeRunning) -eq 0 ]]; then
     status "Starting minikube"
     #echo "$(python -c 'import os,sys;print(os.path.realpath("."));')/ -alldirs -mapall="$(id -u)":"$(id -g)" $(minikube ip)" | sudo tee -a /etc/exports && sudo nfsd restart
     minikube start --cpus=2 --memory=4096
+    minikube addons enable ingress
+    minikube addons enable heapster
 #    minikube start --cache-images --cpus=2 --memory=4096
     # hanged in some cases todo
 #    minikube start --cpus=2 --memory=4096 2> >(logError) | {
