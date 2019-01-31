@@ -119,6 +119,10 @@ The software listed below should be available in [PATH](https://en.wikipedia.org
     ```
     bash init_project.sh -e
     ```
+    If yiu have issues with nfs. To use filesystem mount instead of nfs use -d parameter to init_project.sh call.
+    ```
+    bash init_project.sh -d
+    ```
 
  1. Use the `magento2-devbox` directory as the project root in PHP Storm (not `magento2-devbox/magento`). This is important, because in this case PHP Storm will be configured automatically by [init_project.sh](init_project.sh).<!-- If NFS files sync is disabled in [config](etc/config.yaml.dist) and ![](docs/images/windows-icon.png)on Windows hosts [verify the deployment configuration in PHP Storm](docs/phpstorm-configuration-windows-hosts.md).-->
 
