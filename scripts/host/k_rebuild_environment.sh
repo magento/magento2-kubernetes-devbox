@@ -21,9 +21,11 @@ set -e
 # TODO: Need to make sure all resources have been successfully deleted before the attempt of recreating them
 sleep 7
 enable_nfs="true"
-while getopts 'd' flag; do
+enable_checkout="false"
+while getopts 'de' flag; do
   case "${flag}" in
     d) enable_nfs="false" ;;
+    e) enable_checkout="true" ;;
     *) error "Unexpected option" && exit 1;;
   esac
 done
@@ -32,6 +34,7 @@ cd "${vagrant_dir}/etc/helm" && helm install \
     --values values.yaml \
     --set global.monolith.volumeHostPath="${vagrant_dir}" \
     --set global.persistence.nfs.enabled="${enable_nfs}" \
+    --set global.checkout.enabled="${enable_checkout}" \
     --set global.checkout.volumeHostPath="${vagrant_dir}" .
 
 # TODO: Waiting for containers to initialize before proceeding

@@ -45,8 +45,6 @@ global:
     nfs:
       enabled: true
 
-checkout:
-  enabled: false
 resources: {}
   # Uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.

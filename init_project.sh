@@ -28,6 +28,7 @@ magento_ee_sample_data_dir="${magento_ce_dir}/magento2ee-sample-data"
 host_os="$(bash "${vagrant_dir}/scripts/host/get_host_os.sh")"
 use_nfs="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs")"
 repository_url_ce="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "repository_url_ce")"
+#repository_url_checkout="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "repository_url_checkout")"
 repository_url_ee="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "repository_url_ee")"
 composer_project_name="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "composer_project_name")"
 composer_project_url="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "composer_project_url")"
@@ -151,12 +152,14 @@ force_project_cleaning=0
 force_codebase_cleaning=0
 force_phpstorm_config_cleaning=0
 disable_nfs=0
-while getopts 'fcpd' flag; do
+enable_checkout=0
+while getopts 'fcpde' flag; do
   case "${flag}" in
     f) force_project_cleaning=1 ;;
     c) force_codebase_cleaning=1 ;;
     p) force_phpstorm_config_cleaning=1 ;;
     d) disable_nfs=1 ;;
+    e) enable_checkout=1 ;;
     *) error "Unexpected option" && exit 1;;
   esac
 done
@@ -245,9 +248,17 @@ waitForKubernetesPodToRun 'tiller-deploy'
 
 # TODO: change k-rebuild-environment to comply with formatting requirements
 if [[ "${disable_nfs}" == 1 ]]; then
-    bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh" -d
+    if [[ "${enable_checkout}" == 1 ]]; then
+        bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh" -d -e
+    else
+        bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh" -d
+    fi
 else
-    bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh"
+    if [[ "${enable_checkout}" == 1 ]]; then
+        bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh" -e
+    else
+        bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh"
+    fi
 fi
 
 minikube_ip="$(minikube service magento2-monolith --url | grep -oE '[0-9][^:]+' | head -1)"

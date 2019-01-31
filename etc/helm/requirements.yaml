@@ -6,7 +6,7 @@ dependencies:
 - name: redis
   repository: "@stable"
   version: "5.0"
-#- name: checkout
-#  repository: http://localhost:10191
-#  version: 0.1.0
-#  condition: global.checkout.enabled
+- name: checkout
+  repository: http://localhost:10191
+  version: 0.1.0
+  condition: global.checkout.enabled
