@@ -6,6 +6,9 @@ dependencies:
 - name: redis
   repository: "@stable"
   version: "5.0"
+- name: rabbitmq
+  repository: "@stable"
+  version: "3.6.3"
 - name: checkout
   repository: http://localhost:10191
   version: 0.1.0

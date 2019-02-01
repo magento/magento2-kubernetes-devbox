@@ -25,10 +25,10 @@ setupOptions[base_url]="http://${magento_host_name}/"
 setupOptions[admin_lastname]='Admin'
 setupOptions[admin_firstname]='Admin'
 setupOptions[admin_email]='admin@example.com'
-setupOptions[amqp_host]='localhost'
+setupOptions[amqp_host]='magento2-rabbitmq'
 setupOptions[amqp_port]='5672'
-setupOptions[amqp_user]='guest'
-setupOptions[amqp_password]='guest'
+setupOptions[amqp_user]='admin'
+setupOptions[amqp_password]='123123q'
 setupOptions[amqp_virtualhost]='/'
 
 #if [[ ${is_windows_host} == 1 ]] || [[ ${use_nfs} == 0 ]]; then
@@ -82,15 +82,16 @@ install_cmd="./bin/magento setup:install \
     --use-rewrites=1"
 
 # Configure Rabbit MQ
-# TODO: Enable Rabbit MQ
-#if [[ -d "${MAGENTO_ROOT}/app/code/Magento/MessageQueue" ]] || [[ -d "${MAGENTO_ROOT}/vendor/magento/module-message-queue" ]]; then
-#    install_cmd="${install_cmd} \
-#    --amqp-host=${setupOptions[amqp_host]} \
-#    --amqp-port=${setupOptions[amqp_port]} \
-#    --amqp-user=${setupOptions[amqp_user]} \
-#    --amqp-virtualhost=${setupOptions[amqp_virtualhost]} \
-#    --amqp-password=${setupOptions[amqp_password]}"
-#fi
+if [[ -d "${MAGENTO_ROOT}/app/code/Magento/MessageQueue" ]] || [[ -d "${MAGENTO_ROOT}/vendor/magento/module-message-queue" ]]; then
+    install_cmd="${install_cmd} \
+    --amqp-host=${setupOptions[amqp_host]} \
+    --amqp-port=${setupOptions[amqp_port]} \
+    --amqp-user=${setupOptions[amqp_user]} \
+    --amqp-virtualhost=${setupOptions[amqp_virtualhost]} \
+    --amqp-ssl=false \
+    --amqp-ssl-options=[] \
+    --amqp-password=${setupOptions[amqp_password]}"
+fi
 
 # TODO: Permission denied
 #sudo chmod +x bin/magento

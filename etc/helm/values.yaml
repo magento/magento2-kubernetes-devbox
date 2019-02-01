@@ -72,3 +72,9 @@ redis:
   usePassword: false
   master:
     disableCommands: []
+
+rabbitmq:
+  serviceType: NodePort
+  rabbitmq:
+    username: admin
+    password: 123123q

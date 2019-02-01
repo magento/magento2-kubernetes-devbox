@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "${BASH_SOURCE[0]}")" && vagrant_dir=$PWD
+
+source "${vagrant_dir}/scripts/functions.sh"
+
+rabbitmq_url="$(minikube service magento2-rabbitmq --url)"
+open ${rabbitmq_url}

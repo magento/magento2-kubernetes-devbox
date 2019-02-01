@@ -141,7 +141,7 @@ Upon a successful installation, you'll see the location and URL of the newly-ins
 - Access storefront at `http://<ip-from-config-yaml>`
 - Access admin panel at `http://<ip-from-config-yaml>/admin/`
 - Magento admin user/password: `admin/123123q`
-<!--- Rabbit MQ control panel: `http://<ip-from-config-yaml>:15672`, credentials `guest`/`guest`-->
+- Rabbit MQ control panel: run `bash k-open-rabbitmq`, credentials `admin`/`123123q`
 
 :information_source: Your admin URL, storefront URL, and admin user and password are located in `etc/config.yaml`.
 
