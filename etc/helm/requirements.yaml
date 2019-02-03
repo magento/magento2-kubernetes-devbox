@@ -10,6 +10,6 @@ dependencies:
   repository: "@stable"
   version: "3.6.3"
 - name: checkout
-  repository: http://localhost:10191
+  repository: file://./charts/
   version: 0.1.0
   condition: global.checkout.enabled
