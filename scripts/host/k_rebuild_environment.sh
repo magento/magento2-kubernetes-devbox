@@ -32,14 +32,15 @@ done
 cd "${vagrant_dir}/etc/helm" && helm install \
     --name magento2 \
     --values values.yaml \
+    --wait \
     --set global.monolith.volumeHostPath="${vagrant_dir}" \
     --set global.persistence.nfs.enabled="${enable_nfs}" \
     --set global.checkout.enabled="${enable_checkout}" \
     --set global.checkout.volumeHostPath="${vagrant_dir}" .
 
 # TODO: Waiting for containers to initialize before proceeding
-waitForKubernetesPodToRun 'magento2-monolith'
-waitForKubernetesPodToRun 'magento2-mysql'
-waitForKubernetesPodToRun 'magento2-redis-master'
+#waitForKubernetesPodToRun 'magento2-monolith'
+#waitForKubernetesPodToRun 'magento2-mysql'
+#waitForKubernetesPodToRun 'magento2-redis-master'
 
 exit 0

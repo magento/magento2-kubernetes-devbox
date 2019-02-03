@@ -245,8 +245,8 @@ if [[ $(isMinikubeRunning) -eq 0 ]]; then
 fi
 status "Configuring kubernetes cluster on the minikube"
 # TODO: Optimize. Helm tiller must be initialized and started before environment configuration can begin
-helm init
-waitForKubernetesPodToRun 'tiller-deploy'
+helm init --wait
+#waitForKubernetesPodToRun 'tiller-deploy'
 
 # TODO: change k-rebuild-environment to comply with formatting requirements
 if [[ "${disable_nfs}" == 1 ]]; then

@@ -1,0 +1,8 @@
+name: "init-magento"
+version: "0.1.0"
+usage: "Init magento project"
+description: |-
+  This plugin runs minikube, clone magento repo and initialize helm project.
+ignoreFlags: false
+useTunnel: false
+command: "$HELM_PLUGIN_DIR/init_project.sh"
