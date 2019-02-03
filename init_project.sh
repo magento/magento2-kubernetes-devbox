@@ -266,7 +266,12 @@ fi
 minikube_ip="$(minikube service magento2-monolith --url | grep -oE '[0-9][^:]+' | head -1)"
 status "Saving minikube IP to etc/config.yaml (${minikube_ip})"
 sed -i.back "s|ip_address: \".*\"|ip_address: \"${minikube_ip}\"|g" "${config_path}"
-sed -i.back "s|host_name: \".*\"|host_name: \"${minikube_ip}\"|g" "${config_path}"
+if [[ "${enable_checkout}" == 1 ]]; then
+    sed -i.back "s|host_name: \".*\"|host_name: \"${minikube_ip}/magento\"|g" "${config_path}"
+else
+    sed -i.back "s|host_name: \".*\"|host_name: \"${minikube_ip}\"|g" "${config_path}"
+fi
+
 rm -f "${config_path}.back"
 
 bash "${vagrant_dir}/scripts/host/check_mounted_directories.sh"
