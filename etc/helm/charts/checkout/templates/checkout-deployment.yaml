@@ -25,6 +25,19 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 80
+          env:
+            - name: VAGRANT_ROOT
+              value: {{.Values.global.checkout.volumeHostPath}}
+            - name: COMPOSER_HOME
+              value: {{.Values.global.checkout.volumeHostPath}}/.composer
+            - name: MAGENTO_ROOT
+              value: {{.Values.global.checkout.volumeHostPath}}/checkout
+            - name: MAGENTO_ROOT_HOST
+              value: {{.Values.global.checkout.volumeHostPath}}/checkout
+            - name: VAGRANT_ROOT_HOST
+              value: {{.Values.global.checkout.volumeHostPath}}
+            - name: IS_WINDOWS_HOST
+              value: "0"
           volumeMounts:
             - name: {{ .Chart.Name }}-code
               mountPath: {{.Values.global.checkout.volumeHostPath}}

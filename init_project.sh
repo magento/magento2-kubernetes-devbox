@@ -22,13 +22,14 @@ if [[ ! -f "${config_path}" ]]; then
 fi
 
 magento_ce_dir="${vagrant_dir}/magento"
+magento_checkout_dir="${vagrant_dir}/checkout"
 magento_ce_sample_data_dir="${magento_ce_dir}/magento2ce-sample-data"
 magento_ee_dir="${magento_ce_dir}/magento2ee"
 magento_ee_sample_data_dir="${magento_ce_dir}/magento2ee-sample-data"
 host_os="$(bash "${vagrant_dir}/scripts/host/get_host_os.sh")"
 use_nfs="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs")"
 repository_url_ce="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "repository_url_ce")"
-#repository_url_checkout="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "repository_url_checkout")"
+repository_url_checkout="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "repository_url_checkout")"
 repository_url_ee="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "repository_url_ee")"
 composer_project_name="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "composer_project_name")"
 composer_project_url="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "composer_project_url")"
@@ -36,6 +37,7 @@ checkout_source_from="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "check
 
 function checkoutSourceCodeFromGit()
 {
+    local checkout_enabled=${1}
     if [[ ! -d ${magento_ce_dir} ]]; then
         if [[ ${host_os} == "Windows" ]]; then
             status "Configuring git for Windows host"
@@ -45,6 +47,9 @@ function checkoutSourceCodeFromGit()
         fi
 
         initMagentoCeGit
+        if [[ ${checkout_enabled} -eq 1 ]]; then
+            initMagentoCheckoutGit
+        fi
         initMagentoCeSampleGit
 
         # By default EE repository is not specified and EE project is not checked out
@@ -62,6 +67,11 @@ function checkoutSourceCodeFromGit()
 function initMagentoCeGit()
 {
     initGitRepository ${repository_url_ce} "CE" "${magento_ce_dir}"
+}
+
+function initMagentoCheckoutGit()
+{
+    initGitRepository ${repository_url_checkout} "checkout" "${magento_checkout_dir}"
 }
 
 function initMagentoEeGit()
@@ -208,7 +218,7 @@ if [[ ! -d ${magento_ce_dir} ]]; then
     if [[ "${checkout_source_from}" == "composer" ]]; then
         composerCreateProject
     elif [[ "${checkout_source_from}" == "git" ]]; then
-        checkoutSourceCodeFromGit
+        checkoutSourceCodeFromGit ${enable_checkout}
     else
         error "Value specified for 'checkout_source_from' is invalid. Supported options: composer OR git"
         exit 1

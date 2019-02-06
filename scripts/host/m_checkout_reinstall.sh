@@ -15,6 +15,7 @@ cd "${vagrant_dir}"
 
 # TODO: parameterize container
 
-executeInMagento2CheckoutContainer "${vagrant_dir}/scripts/guest/m-reinstall" -p=30102 2> >(logError)
+executeInMagento2CheckoutContainer "${vagrant_dir}/scripts/guest/m-checkout-reinstall" 2> >(logError)
+# TODO: run config set for checkout
 # Explicit exit is necessary to bypass incorrect output from vagrant in case of errors
 exit 0

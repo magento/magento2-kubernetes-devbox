@@ -25,8 +25,8 @@ checkout:
     port: 80
   deployment:
     nginxImage: nginx:1.9
-    codeImage: shiftedreality/magento-kubernetes-components-php
-    imageTag: 7.1-fpm
+    codeImage: magento2-monolith
+    imageTag: dev
     imagePullPolicy: Always
 
 resources: {}

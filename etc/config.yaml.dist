@@ -16,6 +16,7 @@ repository_url:
   # [To apply changes: init_project.sh -fc]
   # git@github.com:magento/magento2ce.git OR custom one. Use '::' to specify a specific branch, e.g: git@github.com:magento/magento2.git::2.1
   ce: "git@github.com:magento/magento2.git"
+  checkout: "git@github.com:magento/magento2.git"
   # git@github.com:magento/magento2ee.git OR custom one
   ee: ""
   # can be replaced with custom repository. Use '::' to specify a specific branch, e.g: git@github.com:magento/magento2-sample-data.git::2.1-develop
