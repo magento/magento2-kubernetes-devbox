@@ -4,8 +4,28 @@ vagrant_dir="${VAGRANT_ROOT}"
 
 source "${vagrant_dir}/scripts/functions.sh"
 
+PORT=80
+for i in "$@"
+do
+case $i in
+    -p=*|--path=*)
+    PORT="${i#*=}"
+    shift # past argument=value
+    ;;
+    *)
+          # unknown option
+    ;;
+esac
+done
 get_config_value="${vagrant_dir}/scripts/get_config_value.sh"
 magento_host_name="$(bash ${get_config_value} "magento_host_name")"
+magento_db_name="magento"
+if [[ ${PORT} != 80 ]]; then
+    magento_host_name="${magento_host_name}:${PORT}"
+    magento_db_name="checkout"
+fi
+
+status ${magento_host_name}
 use_nfs="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs")"
 is_windows_host=${IS_WINDOWS_HOST}
 generate_basic_data="$(bash ${get_config_value} "magento_generate_basic_data")"
@@ -18,7 +38,7 @@ setupOptions[currency]="$(bash ${get_config_value} "magento_currency")"
 setupOptions[admin_user]="$(bash ${get_config_value} "magento_admin_user")"
 setupOptions[admin_password]="$(bash ${get_config_value} "magento_admin_password")"
 setupOptions[db_host]='magento2-mysql'
-setupOptions[db_name]='magento'
+setupOptions[db_name]="${magento_db_name}"
 setupOptions[db_user]='root'
 setupOptions[db_password]='123123q'
 setupOptions[base_url]="http://${magento_host_name}/"

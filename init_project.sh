@@ -267,7 +267,7 @@ minikube_ip="$(minikube service magento2-monolith --url | grep -oE '[0-9][^:]+' 
 status "Saving minikube IP to etc/config.yaml (${minikube_ip})"
 sed -i.back "s|ip_address: \".*\"|ip_address: \"${minikube_ip}\"|g" "${config_path}"
 if [[ "${enable_checkout}" == 1 ]]; then
-    sed -i.back "s|host_name: \".*\"|host_name: \"${minikube_ip}/magento\"|g" "${config_path}"
+    sed -i.back "s|host_name: \".*\"|host_name: \"${minikube_ip}\"|g" "${config_path}"
 else
     sed -i.back "s|host_name: \".*\"|host_name: \"${minikube_ip}\"|g" "${config_path}"
 fi
@@ -294,6 +294,9 @@ else
         bash "${vagrant_dir}/scripts/host/m_switch_to_ee.sh" -f 2> >(logError)
     else
         bash "${vagrant_dir}/scripts/host/m_switch_to_ce.sh" -f 2> >(logError)
+    fi
+    if [[ "${enable_checkout}" == 1 ]]; then
+        bash "${vagrant_dir}/scripts/host/m_switch_to_ce.sh" -p=checkout -f 2> >(logError)
     fi
 fi
 

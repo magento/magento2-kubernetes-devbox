@@ -19,20 +19,18 @@ data:
       fastcgi_read_timeout 30000s;
 
       upstream fastcgi_backend {
-        server 127.0.0.1:9001;
-      }
-
-      upstream fastcgi_backend_xdebug {
-        server 127.0.0.1:9002;
+        server 127.0.0.1:9000;
       }
 
       map $cookie_XDEBUG_SESSION $fastcgi_backend_name {
           "" "fastcgi_backend";
-          default "fastcgi_backend_xdebug";
+          default "fastcgi_backend";
       }
 
       server {
         listen 8001;
+        listen 30102;
+        listen 80;
 
         server_name _;
         set $MAGE_ROOT {{.Values.global.checkout.volumeHostPath}}/checkout;
