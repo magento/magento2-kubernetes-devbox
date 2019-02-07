@@ -303,8 +303,13 @@ Sometimes it is necessary to test upgrade flow. This can be easily done as follo
  - Use commands described in [Switch between CE and EE](#switch-between-ce-and-ee) section with `-u` flag
 
 ### Multiple Magento instances
+Edit etc/config.yaml.
+Change ce branch and add checkout repository and branch.
+Follow [Installation steps](#installation-steps), when running init-magento use -e argument
 
-Not available yet.
+```bash
+helm init-magento -e
+```
 <!--To install several Magento instances based on different code bases, just follow [Installation steps](#installation-steps) to initialize project in another directory on the host.
 Unique IP address, SSH port and domain name will be generated for each new instance if not specified manually in `etc/config.yaml`
 -->
