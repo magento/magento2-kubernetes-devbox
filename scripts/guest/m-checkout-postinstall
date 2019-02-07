@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+vagrant_dir="${VAGRANT_ROOT}"
+
+source "${vagrant_dir}/scripts/functions.sh"
+
+magento_host_name="$(bash ${get_config_value} "magento_host_name")"
+magento_host_name="http://${magento_host_name}:30102/"
+php "${MAGENTO_ROOT}/bin/magento" module:disable Magento_CustomerProxy Magento_CatalogProxy 2> >(logError)
+php "${MAGENTO_ROOT}/bin/magento" config:set service/host/address "${magento_host_name}" 2> >(logError)

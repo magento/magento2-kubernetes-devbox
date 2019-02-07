@@ -82,6 +82,7 @@ else
 fi
 
 bash "${vagrant_dir}/scripts/host/m_composer.sh" install 2> >(logError)
+bash "${vagrant_dir}/scripts/host/m_checkout_composer.sh" install 2> >(logError)
 
 if [[ ${host_os} == "Windows" ]] || [[ $(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs") == 0 ]]; then
     read -p "$(warning "[Action Required] Wait while Magento2 code is uploaded in PhpStorm and press any key to continue...")" -n1 -s

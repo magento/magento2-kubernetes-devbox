@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: magento2-monolith:dev
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 80
