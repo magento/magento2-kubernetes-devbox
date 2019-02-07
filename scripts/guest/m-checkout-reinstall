@@ -4,26 +4,11 @@ vagrant_dir="${VAGRANT_ROOT}"
 
 source "${vagrant_dir}/scripts/functions.sh"
 
-PORT=80
-for i in "$@"
-do
-case $i in
-    -p=*|--path=*)
-    PORT="${i#*=}"
-    shift # past argument=value
-    ;;
-    *)
-          # unknown option
-    ;;
-esac
-done
+PORT=30102
 get_config_value="${vagrant_dir}/scripts/get_config_value.sh"
 magento_host_name="$(bash ${get_config_value} "magento_host_name")"
-magento_db_name="magento"
-if [[ ${PORT} != 80 ]]; then
-    magento_host_name="${magento_host_name}:${PORT}"
-    magento_db_name="checkout"
-fi
+magento_host_name="${magento_host_name}:30102"
+magento_db_name="checkout"
 
 status ${magento_host_name}
 use_nfs="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs")"
@@ -102,28 +87,31 @@ install_cmd="./bin/magento setup:install \
     --use-rewrites=1"
 
 # Configure Rabbit MQ
-if [[ -d "${MAGENTO_ROOT}/app/code/Magento/MessageQueue" ]] || [[ -d "${MAGENTO_ROOT}/vendor/magento/module-message-queue" ]]; then
-    install_cmd="${install_cmd} \
-    --amqp-host=${setupOptions[amqp_host]} \
-    --amqp-port=${setupOptions[amqp_port]} \
-    --amqp-user=${setupOptions[amqp_user]} \
-    --amqp-virtualhost=${setupOptions[amqp_virtualhost]} \
-    --amqp-ssl=false \
-    --amqp-ssl-options=[] \
-    --amqp-password=${setupOptions[amqp_password]}"
-fi
+#if [[ -d "${MAGENTO_ROOT}/app/code/Magento/MessageQueue" ]] || [[ -d "${MAGENTO_ROOT}/vendor/magento/module-message-queue" ]]; then
+#    install_cmd="${install_cmd} \
+#    --amqp-host=${setupOptions[amqp_host]} \
+#    --amqp-port=${setupOptions[amqp_port]} \
+#    --amqp-user=${setupOptions[amqp_user]} \
+#    --amqp-virtualhost=${setupOptions[amqp_virtualhost]} \
+#    --amqp-ssl=false \
+#    --amqp-ssl-options=[] \
+#    --amqp-password=${setupOptions[amqp_password]}"
+#fi
 
 # TODO: Permission denied
 #sudo chmod +x bin/magento
 status "${install_cmd}"
 php ${install_cmd} 2> >(logError) > >(log)
+php "${MAGENTO_ROOT}/bin/magento" module:disable Magento_CheckoutProxy Magento_SalesProxy Magento_QuoteProxy 2> >(logError) > >(log)
+monolith_host_name="http://$(bash ${get_config_value}/ "magento_host_name")/"
+php "${MAGENTO_ROOT}/bin/magento" config:set service/host/address "${monolith_host_name}" 2> >(logError) > >(log)
+
 # Comment out the line above and uncomment the one below to debug Magento Setup script
 # php -d xdebug.remote_autostart=1 ${install_cmd} 2> >(logError) > >(log)
 
-status "Configuring Redis for session and as cache backend"
-php "${MAGENTO_ROOT}/bin/magento" setup:config:set --page-cache=redis --page-cache-redis-server=magento2-redis-master
-php "${MAGENTO_ROOT}/bin/magento" setup:config:set --cache-backend=redis --cache-backend-redis-server=magento2-redis-master
-php "${MAGENTO_ROOT}/bin/magento" setup:config:set --session-save=redis --session-save-redis-host=magento2-redis-master
+#status "Configuring Redis as cache backend"
+#php "${MAGENTO_ROOT}/bin/magento" setup:config:set --page-cache=redis --page-cache-redis-server=magento2-redis-master
+#php "${MAGENTO_ROOT}/bin/magento" setup:config:set --cache-backend=redis --cache-backend-redis-server=magento2-redis-master
 
 if [[ $? != 0 ]]; then
     error "Magento installation failed."
@@ -139,34 +127,13 @@ fi
 #    sudo chown -R vagrant:vagrant ${MAGENTO_ROOT}
 #fi
 
-bash "${VAGRANT_ROOT}/scripts/guest/configure_search_engine"
-bash "${VAGRANT_ROOT}/scripts/guest/change_magento_config_for_functional_tests"
-bash "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'admin/security/session_lifetime' '86400'
+#bash "${VAGRANT_ROOT}/scripts/guest/configure_search_engine"
+#bash "${VAGRANT_ROOT}/scripts/guest/change_magento_config_for_functional_tests"
+#bash "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'admin/security/session_lifetime' '86400'
 
 export SKIP_CACHE_CLEAN=0
 bash "${VAGRANT_ROOT}/scripts/guest/m-clear-cache"
 
 if [[ ${generate_basic_data} != 0 ]]; then
     bash "${VAGRANT_ROOT}/scripts/guest/generate_basic_data"
-fi
-
-status "Checking if Magento frontend is accessible at '${setupOptions[base_url]}'"
-magento_home_page_content="$(curl -sL ${setupOptions[base_url]})"
-pattern="All rights reserved."
-if [[ ${magento_home_page_content} =~ ${pattern} ]]; then
-
-    bash "${VAGRANT_ROOT}/scripts/guest/warm_up_cache"
-
-    status "Generating XSD references for PHP Storm in the background"
-    php "${MAGENTO_ROOT}/bin/magento" dev:urn-catalog:generate "${vagrant_dir}/.idea/misc.xml" && sed -i "s|${MAGENTO_ROOT}|${MAGENTO_ROOT_HOST}|g" "${vagrant_dir}/.idea/misc.xml" &
-
-    decrementNestingLevel
-    success "Magento reinstalled successfully"
-    info "$(regular)Magento application was deployed to $(bold)${MAGENTO_ROOT}$(regular) and installed successfully
-
-    Access storefront at $(bold)${setupOptions[base_url]}$(regular)
-    Access admin panel at $(bold)${setupOptions[base_url]}${setupOptions[admin_frontname]}/$(regular)"
-else
-    error "Magento frontend is not accessible at '${setupOptions[base_url]}' after installation. Please scan output above and logs for errors"
-    exit 1
 fi

@@ -32,6 +32,7 @@ data:
 
       server {
         listen 8001;
+        listen 30301;
 
         server_name _;
         set $MAGE_ROOT {{.Values.global.monolith.volumeHostPath}}/magento;

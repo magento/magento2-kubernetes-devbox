@@ -33,6 +33,8 @@ data:
 
       server {
         listen 8001;
+        listen 30102;
+        listen 80;
 
         server_name _;
         set $MAGE_ROOT {{.Values.global.checkout.volumeHostPath}}/checkout;

@@ -6,24 +6,36 @@ cd "$(dirname "${BASH_SOURCE[0]}")/../.." && vagrant_dir=$PWD
 
 source "${vagrant_dir}/scripts/functions.sh"
 
-status "Switching to Magento CE"
+force_switch=0
+upgrade_only=0
+CODEPATH="magento"
+for i in "$@"
+do
+case $i in
+    -p=*|--path=*)
+    CODEPATH="${i#*=}"
+    shift # past argument=value
+    ;;
+    -f) force_switch=1
+    shift
+    ;;
+    -u) upgrade_only=1
+    shift
+    ;;
+    *)
+          # unknown option
+    ;;
+esac
+done
+
+status "Switching ${CODEPATH} to Magento CE"
 incrementNestingLevel
 
-magento_ce_dir="${vagrant_dir}/magento"
+magento_ce_dir="${vagrant_dir}/${CODEPATH}"
 magento_ee_dir="${magento_ce_dir}/magento2ee"
 host_os="$(bash "${vagrant_dir}/scripts/host/get_host_os.sh")"
 php_executable="$(bash "${vagrant_dir}/scripts/host/get_path_to_php.sh")"
 checkout_source_from="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "checkout_source_from")"
-
-force_switch=0
-upgrade_only=0
-while getopts 'fu' flag; do
-  case "${flag}" in
-    f) force_switch=1 ;;
-    u) upgrade_only=1 ;;
-    *) error "Unexpected option" && decrementNestingLevel && exit 1;;
-  esac
-done
 
 if [[ "${checkout_source_from}" == "git" ]]; then
     # Current installation is Git-based
@@ -70,6 +82,7 @@ else
 fi
 
 bash "${vagrant_dir}/scripts/host/m_composer.sh" install 2> >(logError)
+bash "${vagrant_dir}/scripts/host/m_checkout_composer.sh" install 2> >(logError)
 
 if [[ ${host_os} == "Windows" ]] || [[ $(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs") == 0 ]]; then
     read -p "$(warning "[Action Required] Wait while Magento2 code is uploaded in PhpStorm and press any key to continue...")" -n1 -s
@@ -81,7 +94,11 @@ if [[ ${upgrade_only} -eq 1 ]]; then
     bash "${vagrant_dir}/m-bin-magento" "indexer:reindex" 2> >(logError)
     bash "${vagrant_dir}/m-clear-cache" 2> >(logError)
 else
-    bash "${vagrant_dir}/scripts/host/m_reinstall.sh" 2> >(logError)
+    if [[ ${CODEPATH} == "magento" ]]; then
+        bash "${vagrant_dir}/scripts/host/m_reinstall.sh" 2> >(logError)
+    else
+        bash "${vagrant_dir}/scripts/host/m_checkout_reinstall.sh" 2> >(logError)
+    fi
 fi
 
 decrementNestingLevel
