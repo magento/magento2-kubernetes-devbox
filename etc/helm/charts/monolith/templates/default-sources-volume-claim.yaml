@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ include "magento.fullname" . }}-claim
+  name: {{ include "monoloth.fullname" . }}-claim
 spec:
   storageClassName: standard
   accessModes:

@@ -1,7 +1,7 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ template "magento.fullname" . }}-nginx-config
+  name: {{ template "monoloth.fullname" . }}-nginx-config
 data:
   nginx.conf: |
     events {

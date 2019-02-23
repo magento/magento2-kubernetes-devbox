@@ -49,7 +49,7 @@ global:
   persistence:
     nfs:
       enabled: false
-  chekout:
+  cheсkout:
     enabled: true
     service:
       type: NodePort
