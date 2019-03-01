@@ -1,3 +1,4 @@
+test
 # Magento 2 Kubernetes DevBox
 
 [![Tests passing on OSX](docs/images/tests_badge.png)](https://github.com/paliarush/magento2-vagrant-for-developers-tests/tree/magento2-kubernetes-devbox-prototype)
