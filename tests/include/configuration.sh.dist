@@ -1,0 +1,14 @@
+#! /usr/bin/env bash
+
+# Path to local copy of devbox project has higher priority over repository
+original_dir="$(pwd)"
+
+cd "$(dirname "${BASH_SOURCE[0]}")/../.." && project_root_dir=$PWD
+vagrant_project_local_path="${project_root_dir}"
+
+vagrant_project_repository_url="git@github.com:paliarush/magento2-vagrant-for-developers.git"
+vagrant_project_branch="2.0"
+
+delete_test_project_on_tear_down=0
+
+cd ${original_dir}
