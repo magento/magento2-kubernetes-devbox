@@ -276,7 +276,7 @@ function assertPhpStormConfigured()
     assertTrue 'PhpStorm was not configured (webServers.xml is missing)' '[[ -f "${vagrant_dir}/.idea/webServers.xml" ]]'
 
     deployment_config_content="$(cat "${deployment_config_path}")"
-    assertTrue 'PhpStorm configured incorrectly. deployment.xml config is invalid' '[[ ${deployment_config_content} =~ \$PROJECT_DIR\$/magento2ce/app/etc ]]'
+    assertTrue 'PhpStorm configured incorrectly. deployment.xml config is invalid' '[[ ${deployment_config_content} =~ \$PROJECT_DIR\$/magento/app/etc ]]'
 
     misc_config_content="$(cat "${misc_config_path}")"
     assertTrue 'PhpStorm configured incorrectly. misc.xml config is invalid' '[[ ${misc_config_content} =~ urn:magento:module:Magento_Cron:etc/crontab.xsd ]]'
@@ -403,40 +403,47 @@ function assertTestsConfigured()
     echo "## assertTestsConfigured" >>${current_log_file_path}
 
     # Unit tests
-    unit_tests_config_path="${vagrant_dir}/magento2ce/dev/tests/unit/phpunit.xml"
+    unit_tests_config_path="${vagrant_dir}/magento/dev/tests/unit/phpunit.xml"
     assertTrue "Unit tests are not configured ('${unit_tests_config_path}' is missing)" '[[ -f ${unit_tests_config_path} ]]'
     
     # Integration tests
-    integration_tests_config_path="${vagrant_dir}/magento2ce/dev/tests/integration/phpunit.xml"
+    integration_tests_config_path="${vagrant_dir}/magento/dev/tests/integration/phpunit.xml"
     assertTrue "Integration tests are not configured ('${integration_tests_config_path}' is missing)" '[[ -f ${integration_tests_config_path} ]]'
-    integration_tests_mysql_config_path="${vagrant_dir}/magento2ce/dev/tests/integration/etc/install-config-mysql.php"
+    integration_tests_mysql_config_path="${vagrant_dir}/magento/dev/tests/integration/etc/install-config-mysql.php"
     assertTrue "Integration tests MySQL config ('${integration_tests_mysql_config_path}') is missing" '[[ -f ${integration_tests_mysql_config_path} ]]'
     integration_tests_mysql_config_content="$(cat "${integration_tests_mysql_config_path}")"
     pattern="amqp-password"
     assertTrue "Contents of '${integration_tests_mysql_config_path}' seems to be invalid${functional_tests_config_content} =~ ${pattern}" '[[ ${integration_tests_mysql_config_content} =~ ${pattern} ]]'
     
     # REST Web API tests
-    rest_tests_config_path="${vagrant_dir}/magento2ce/dev/tests/api-functional/rest.xml"
+    rest_tests_config_path="${vagrant_dir}/magento/dev/tests/api-functional/phpunit_rest.xml"
     assertTrue "REST tests are not configured ('${rest_tests_config_path}' is missing)" '[[ -f ${rest_tests_config_path} ]]'
     rest_tests_config_content="$(cat "${rest_tests_config_path}")"
     pattern="${current_magento_base_url}"
     assertTrue "Contents of '${rest_tests_config_path}' seems to be invalid ${rest_tests_config_content} =~ ${pattern}" '[[ ${rest_tests_config_content} =~ ${pattern} ]]'
     
     # SOAP Web API tests
-    soap_tests_config_path="${vagrant_dir}/magento2ce/dev/tests/api-functional/soap.xml"
+    soap_tests_config_path="${vagrant_dir}/magento/dev/tests/api-functional/phpunit_soap.xml"
     assertTrue "SOAP tests are not configured ('${soap_tests_config_path}' is missing)" '[[ -f ${soap_tests_config_path} ]]'
     soap_tests_config_content="$(cat "${soap_tests_config_path}")"
     pattern="${current_magento_base_url}"
     assertTrue "Contents of '${soap_tests_config_path}' seems to be invalid ${soap_tests_config_content} =~ ${pattern}" '[[ ${soap_tests_config_content} =~ ${pattern} ]]'
+       
+    # GraphQL Web API tests
+    graphql_tests_config_path="${vagrant_dir}/magento/dev/tests/api-functional/phpunit_graphql.xml"
+    assertTrue "GraphQL tests are not configured ('${graphql_tests_config_path}' is missing)" '[[ -f ${graphql_tests_config_path} ]]'
+    graphql_tests_config_content="$(cat "${graphql_tests_config_path}")"
+    pattern="${current_magento_base_url}"
+    assertTrue "Contents of '${graphql_tests_config_path}' seems to be invalid ${graphql_tests_config_content} =~ ${pattern}" '[[ ${graphql_tests_config_content} =~ ${pattern} ]]'
     
     # Functional tests
-    functional_tests_config_path="${vagrant_dir}/magento2ce/dev/tests/functional/phpunit.xml"
+    functional_tests_config_path="${vagrant_dir}/magento/dev/tests/functional/phpunit.xml"
     assertTrue "Functional tests are not configured ('${functional_tests_config_path}' is missing)" '[[ -f ${functional_tests_config_path} ]]'
     functional_tests_config_content="$(cat "${functional_tests_config_path}")"
     pattern="${current_magento_base_url}"
     assertTrue "Contents of '${functional_tests_config_path}' seems to be invalid ${functional_tests_config_content} =~ ${pattern}" '[[ ${functional_tests_config_content} =~ ${pattern} ]]'
 
-    functional_tests_config_path="${vagrant_dir}/magento2ce/dev/tests/functional/etc/config.xml"
+    functional_tests_config_path="${vagrant_dir}/magento/dev/tests/functional/etc/config.xml"
     assertTrue "Functional tests are not configured ('${functional_tests_config_path}' is missing)" '[[ -f ${functional_tests_config_path} ]]'
     functional_tests_config_content="$(cat "${functional_tests_config_path}")"
     pattern="${current_magento_base_url}"
@@ -493,7 +500,7 @@ function assertRedisCacheIsEnabled()
     echo "${blue}## assertRedisCacheIsEnabled${regular}"
     echo "## assertRedisCacheIsEnabled" >>${current_log_file_path}
 
-    cache_directory="${vagrant_dir}/magento2ce/var/cache"
+    cache_directory="${vagrant_dir}/magento/var/cache"
     assertFalse "Redis cache seems to be disabled since cache directory '${cache_directory}' was created." '[[ -d ${cache_directory} ]]'
 }
 
@@ -502,6 +509,6 @@ function assertRedisCacheIsDisabled()
     echo "${blue}## assertRedisCacheIsDisabled${regular}"
     echo "## assertRedisCacheIsDisabled" >>${current_log_file_path}
 
-    cache_directory="${vagrant_dir}/magento2ce/var/cache"
+    cache_directory="${vagrant_dir}/magento/var/cache"
     assertTrue "Redis cache seems to be enabled since cache directory '${cache_directory}' was not created." '[[ -d ${cache_directory} ]]'
 }

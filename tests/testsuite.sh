@@ -53,11 +53,11 @@ function testNoCustomConfig()
     installEnvironment
 #    assertVarnishDisabled
     executeCommonAssertions
-#    assertMagentoEditionIsCE
-#    assertCeSampleDataNotInstalled
-#    assertTestsConfigured
-#    assertDebugConfigurationWork
-#    assertRedisCacheIsEnabled
+    assertMagentoEditionIsCE
+    assertCeSampleDataNotInstalled
+    assertTestsConfigured
+    assertDebugConfigurationWork
+    assertRedisCacheIsEnabled
 }
 
 ## Call and Run all Tests
