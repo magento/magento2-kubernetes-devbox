@@ -118,7 +118,7 @@ The software listed below should be available in [PATH](https://en.wikipedia.org
     ```
     helm init-magento -e
     ```
-    If yiu have issues with nfs. To use filesystem mount instead of nfs use -d parameter to init_project.sh call.
+    If you have issues with nfs. To use filesystem mount instead of nfs use -d parameter to init_project.sh call.
     ```
     helm init-magento -d
     ```

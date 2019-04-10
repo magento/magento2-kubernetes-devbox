@@ -1,0 +1,32 @@
+sudo: required
+# Dummy changes 123
+# We need the systemd for the kubeadm and it's default from 16.04+
+dist: xenial
+# This moves Kubernetes specific config files.
+env:
+  - CHANGE_MINIKUBE_NONE_USER=true
+
+before_script:
+  # Make root mounted as rshared to fix kube-dns issues.
+  - sudo mount --make-rshared /
+  # Download kubectl, which is a requirement for using minikube. Had to install kubeadm on local VM https://kubernetes.io/docs/setup/independent/install-kubeadm/
+  - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+  # Download Minikube.
+  - curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.30.0/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+  # Download Helm
+  - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh && chmod +x get_helm.sh && sudo ./get_helm.sh
+  # Socat is required fo proper Helm operation
+  - sudo apt-get update && sudo apt-get install -y socat
+  # TODO Install sudo apt install nfs-kernel-server
+  - sudo apt install -y nfs-kernel-server
+  - sudo ./scripts/host/configure_nfs_exports.sh
+  - cp ./tests/include/configuration.sh.dist ./tests/include/configuration.sh
+  - sed -i "s|git@github.com:|https://github.com/|g" ./etc/config.yaml.dist
+  - sed -i "s|minikube start --cpus=2 --memory=4096|sudo minikube start --cpus=2 --memory=4096  --vm-driver=none --bootstrapper=kubeadm --kubernetes-version=v1.13.0|g" ./init_project.sh
+  - sed -i "s|&& eval \$(minikube docker-env) ||g" ./scripts/host/k_rebuild_environment.sh
+  - sed -i "s/set global.persistence.nfs.serverIp=\"192.168.99.1\"/set global.persistence.nfs.serverIp=\"$(ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')\"/g" ./scripts/host/k_rebuild_environment.sh
+  - sed -i "s/enabled:\ true \# NFS Status/enabled:\ false \# NFS Status/g" ./etc/helm/values.yaml
+
+script:
+  # Run DevBox tests
+  - cd ./tests && sudo bash ./testsuite.sh && cd ..

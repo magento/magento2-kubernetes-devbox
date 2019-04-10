@@ -15,7 +15,7 @@ cd "${vagrant_dir}/scripts" && eval $(minikube docker-env) && docker build -t ma
 # TODO: Delete does not work when no releases created yet
 cd "${vagrant_dir}/etc/helm"
 set +e
-helm list -q | xargs helm delete --purge
+helm list -q | xargs helm delete --purge 2>/dev/null
 set -e
 
 # TODO: Need to make sure all resources have been successfully deleted before the attempt of recreating them
@@ -29,18 +29,25 @@ while getopts 'de' flag; do
     *) error "Unexpected option" && exit 1;;
   esac
 done
+
+    # TODO: Make it work on OSX hosts
+    # --set global.persistence.nfs.serverIp="$(ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')" \
 cd "${vagrant_dir}/etc/helm" && helm install \
     --name magento2 \
     --values values.yaml \
     --wait \
+    --set global.persistence.nfs.serverIp="192.168.99.1" \
     --set global.monolith.volumeHostPath="${vagrant_dir}" \
     --set global.persistence.nfs.enabled="${enable_nfs}" \
     --set global.checkout.enabled="${enable_checkout}" \
     --set global.checkout.volumeHostPath="${vagrant_dir}" .
 
 # TODO: Waiting for containers to initialize before proceeding
+#waitForKubernetesPodToRun 'tiller-deploy'
 #waitForKubernetesPodToRun 'magento2-monolith'
 #waitForKubernetesPodToRun 'magento2-mysql'
 #waitForKubernetesPodToRun 'magento2-redis-master'
+
+#sleep 20
 
 exit 0

@@ -11,6 +11,6 @@ spec:
   storageClassName: standard
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: 192.168.99.1
+    server: {{.Values.global.persistence.nfs.serverIp}}
     path: {{.Values.global.monolith.volumeHostPath}}
 {{- end }}

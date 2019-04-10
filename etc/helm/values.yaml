@@ -43,7 +43,8 @@ global:
     volumeHostPath: /Users/user/Projects/magento2-kubernetes-for-developers
   persistence:
     nfs:
-      enabled: true
+      enabled: true # NFS Status
+      serverIp: 192.168.99.1
 
 resources: {}
   # Uncomment the following
@@ -67,11 +68,17 @@ mysql:
   service:
     type: NodePort
     nodePort: 30306
+  persistence:
+    size: 4Gi
 
 redis:
   usePassword: false
   master:
     disableCommands: []
+    persistence:
+      enabled: false
+  cluster:
+    enabled: false
 
 rabbitmq:
   serviceType: NodePort
