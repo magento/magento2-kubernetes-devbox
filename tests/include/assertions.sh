@@ -4,6 +4,7 @@
 
 function executeCommonAssertions()
 {
+    # TODO: Implement functionality and uncomment assertions
 #    assertPhpStormConfigured
 
     # Make sure Magento was installed and is accessible
@@ -16,19 +17,19 @@ function executeCommonAssertions()
 #    assertApacheRestartWorks
 #    assertMagentoFrontendAccessible
 #
-#    # Make sure Magento reinstall script works
-#    assertMagentoReinstallWorks
-#    assertMagentoFrontendAccessible
-#
+    # Make sure Magento reinstall script works
+    assertMagentoReinstallWorks
+    assertMagentoFrontendAccessible
+
 #    assertEmailLoggingWorks
-#
+
 #    # Check if varnish can be enabled/disabled
 #    assertVarnishEnablingWorks
 #    assertVarnishDisablingWorks
-#
-#    # Test search
-#    createSimpleProduct
-#    assertSearchWorks
+
+    # Test search
+    createSimpleProduct
+    assertSearchWorks
 }
 
 ## Assertions
@@ -110,7 +111,7 @@ function assertMagentoReinstallWorks()
     echo "## assertMagentoReinstallWorks" >>${current_log_file_path}
     cd "${vagrant_dir}"
     bash m-reinstall >>${current_log_file_path} 2>&1
-    pattern="Access storefront at .*(http\://magento2\.vagrant[0-9/:\.]+).*"
+    pattern="Access storefront at .*(http\://[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/.*"
     if [[ ${debug_vagrant_project} -eq 1 ]]; then
         tail_number=300
     else
@@ -126,7 +127,7 @@ function assertMagentoSwitchToEeWorks()
     echo "## assertMagentoSwitchToEeWorks" >>${current_log_file_path}
     cd "${vagrant_dir}"
     bash m-switch-to-ee -f >>${current_log_file_path} 2>&1
-    pattern="Access storefront at .*(http\://magento2\.vagrant[0-9/:\.]+).*"
+    pattern="Access storefront at .*(http\://[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/.*"
     output_log="$(tail -n5 ${current_log_file_path})"
     assertTrue 'Magento switch to EE failed (Frontend URL is not available in the output)' '[[ ${output_log} =~ ${pattern} ]]'
 }
@@ -137,7 +138,7 @@ function assertMagentoSwitchToCeWorks()
     echo "## assertMagentoSwitchToCeWorks" >>${current_log_file_path}
     cd "${vagrant_dir}"
     bash m-switch-to-ce -f >>${current_log_file_path} 2>&1
-    pattern="Access storefront at .*(http\://magento2\.vagrant[0-9/:\.]+).*"
+    pattern="Access storefront at .*(http\://[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/.*"
     output_log="$(tail -n5 ${current_log_file_path})"
     assertTrue 'Magento switch to CE failed (Frontend URL is not available in the output)' '[[ ${output_log} =~ ${pattern} ]]'
 }

@@ -48,16 +48,16 @@ if [[ "${checkout_source_from}" == "git" ]]; then
         git checkout composer.json
         git checkout composer.lock
 
-        if [[ ${host_os} == "Windows" ]] || [[ $(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs") == 0 ]]; then
-            # Prevent issues on Windows with incorrect symlinks to files
-            if [[ -f ${magento_ce_dir}/app/etc/aliases_to_classes_map.json ]]; then
-                rm ${magento_ce_dir}/app/etc/aliases_to_classes_map.json
-            fi
-            if [[ -f ${magento_ce_dir}/LICENSE_EE.txt ]] && [[ ! -L ${magento_ce_dir}/app/etc/enterprise ]]; then
-                rm ${magento_ce_dir}/LICENSE_EE.txt
-                rmdir ${magento_ce_dir}/app/etc/enterprise
-            fi
-        fi
+#        if [[ ${host_os} == "Windows" ]] || [[ $(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs") == 0 ]]; then
+#            # Prevent issues on Windows with incorrect symlinks to files
+#            if [[ -f ${magento_ce_dir}/app/etc/aliases_to_classes_map.json ]]; then
+#                rm ${magento_ce_dir}/app/etc/aliases_to_classes_map.json
+#            fi
+#            if [[ -f ${magento_ce_dir}/LICENSE_EE.txt ]] && [[ ! -L ${magento_ce_dir}/app/etc/enterprise ]]; then
+#                rm ${magento_ce_dir}/LICENSE_EE.txt
+#                rmdir ${magento_ce_dir}/app/etc/enterprise
+#            fi
+#        fi
     fi
 
     bash "${vagrant_dir}/scripts/host/relink_sample_data.sh" 2> >(logError)
@@ -71,9 +71,9 @@ fi
 
 bash "${vagrant_dir}/scripts/host/m_composer.sh" install 2> >(logError)
 
-if [[ ${host_os} == "Windows" ]] || [[ $(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs") == 0 ]]; then
-    read -p "$(warning "[Action Required] Wait while Magento2 code is uploaded in PhpStorm and press any key to continue...")" -n1 -s
-fi
+#if [[ ${host_os} == "Windows" ]] || [[ $(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs") == 0 ]]; then
+#    read -p "$(warning "[Action Required] Wait while Magento2 code is uploaded in PhpStorm and press any key to continue...")" -n1 -s
+#fi
 
 if [[ ${upgrade_only} -eq 1 ]]; then
     cd "${vagrant_dir}" && vagrant ssh -c 'chmod a+x ${MAGENTO_ROOT}/bin/magento' 2> >(logError)

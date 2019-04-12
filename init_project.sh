@@ -27,6 +27,7 @@ magento_ee_dir="${magento_ce_dir}/magento2ee"
 magento_ee_sample_data_dir="${magento_ce_dir}/magento2ee-sample-data"
 host_os="$(bash "${vagrant_dir}/scripts/host/get_host_os.sh")"
 use_nfs="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs")"
+nfs_server_ip="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_nfs_server_ip")"
 repository_url_ce="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "repository_url_ce")"
 #repository_url_checkout="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "repository_url_checkout")"
 repository_url_ee="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "repository_url_ee")"
@@ -37,12 +38,12 @@ checkout_source_from="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "check
 function checkoutSourceCodeFromGit()
 {
     if [[ ! -d ${magento_ce_dir} ]]; then
-        if [[ ${host_os} == "Windows" ]]; then
-            status "Configuring git for Windows host"
-            git config --global core.autocrlf false
-            git config --global core.eol LF
-            git config --global diff.renamelimit 5000
-        fi
+#        if [[ ${host_os} == "Windows" ]]; then
+#            status "Configuring git for Windows host"
+#            git config --global core.autocrlf false
+#            git config --global core.eol LF
+#            git config --global diff.renamelimit 5000
+#        fi
 
         initMagentoCeGit
         initMagentoCeSampleGit
@@ -241,6 +242,18 @@ if [[ $(isMinikubeRunning) -eq 0 ]]; then
 #      filterVagrantOutput "${lastline}"
 #    }
 fi
+
+config_content="$(cat ${config_path})"
+default_nfs_server_ip_pattern="nfs_server_ip: \"0\.0\.0\.0\""
+if [[ ! ${config_content} =~ ${default_nfs_server_ip_pattern} ]]; then
+    status "Custom NFS server IP is already specified in etc/config.yaml (${nfs_server_ip})"
+else
+    nfs_server_ip="$(minikube ip | grep -oh ^[0-9]*\.[0-9]*\.[0-9]*\. | head -1 | awk '{print $1"1"}')"
+    status "Saving NFS server IP to etc/config.yaml (${nfs_server_ip})"
+    sed -i.back "s|${default_nfs_server_ip_pattern}|nfs_server_ip: \"${nfs_server_ip}\"|g" "${config_path}"
+    rm -f "${config_path}.back"
+fi
+
 status "Configuring kubernetes cluster on the minikube"
 # TODO: Optimize. Helm tiller must be initialized and started before environment configuration can begin
 helm init --wait
@@ -261,10 +274,10 @@ else
     fi
 fi
 
-minikube_ip="$(minikube service magento2-monolith --url | grep -oE '[0-9][^:]+' | head -1)"
-status "Saving minikube IP to etc/config.yaml (${minikube_ip})"
-sed -i.back "s|ip_address: \".*\"|ip_address: \"${minikube_ip}\"|g" "${config_path}"
-sed -i.back "s|host_name: \".*\"|host_name: \"${minikube_ip}\"|g" "${config_path}"
+monolith_ip="$(minikube service magento2-monolith --url | grep -oE '[0-9][^:]+' | head -1)"
+status "Saving Magento monolith container IP to etc/config.yaml (${monolith_ip})"
+sed -i.back "s|ip_address: \".*\"|ip_address: \"${monolith_ip}\"|g" "${config_path}"
+sed -i.back "s|host_name: \".*\"|host_name: \"${monolith_ip}\"|g" "${config_path}"
 rm -f "${config_path}.back"
 
 bash "${vagrant_dir}/scripts/host/check_mounted_directories.sh"
@@ -278,28 +291,28 @@ if [[ ! -f "${vagrant_dir}/.idea/deployment.xml" ]]; then
 fi
 bash "${vagrant_dir}/scripts/host/configure_tests.sh"
 
-if [[ ${host_os} == "Windows" ]] || [[ ${use_nfs} == 0 ]]; then
-    # Automatic switch to EE during project initialization cannot be supported on Windows
-    status "Installing Magento CE"
-    bash "${vagrant_dir}/scripts/host/m_reinstall.sh" 2> >(logError)
-else
+#if [[ ${host_os} == "Windows" ]] || [[ ${use_nfs} == 0 ]]; then
+#    # Automatic switch to EE during project initialization cannot be supported on Windows
+#    status "Installing Magento CE"
+#    bash "${vagrant_dir}/scripts/host/m_reinstall.sh" 2> >(logError)
+#else
     if [[ -n "${repository_url_ee}" ]]; then
         bash "${vagrant_dir}/scripts/host/m_switch_to_ee.sh" -f 2> >(logError)
     else
         bash "${vagrant_dir}/scripts/host/m_switch_to_ce.sh" -f 2> >(logError)
     fi
-fi
+#fi
 
 success "Project initialization succesfully completed (make sure there are no errors in the log above)"
 
 info "$(bold)[Important]$(regular)
     Please use $(bold)${vagrant_dir}$(regular) directory as PhpStorm project root, NOT $(bold)${magento_ce_dir}$(regular)."
 
-if [[ ${host_os} == "Windows" ]] || [[ ${use_nfs} == 0 ]]; then
-    info "$(bold)[Optional]$(regular)
-    To verify that deployment configuration for $(bold)${magento_ce_dir}$(regular) in PhpStorm is correct,
-        use instructions provided here: $(bold)https://github.com/paliarush/magento2-vagrant-for-developers/blob/2.0/docs/phpstorm-configuration-windows-hosts.md$(regular).
-    If not using PhpStorm, you can set up synchronization using rsync"
-fi
+#if [[ ${host_os} == "Windows" ]] || [[ ${use_nfs} == 0 ]]; then
+#    info "$(bold)[Optional]$(regular)
+#    To verify that deployment configuration for $(bold)${magento_ce_dir}$(regular) in PhpStorm is correct,
+#        use instructions provided here: $(bold)https://github.com/paliarush/magento2-vagrant-for-developers/blob/2.0/docs/phpstorm-configuration-windows-hosts.md$(regular).
+#    If not using PhpStorm, you can set up synchronization using rsync"
+#fi
 
 info "$(regular)See details in $(bold)${vagrant_dir}/log/${current_script_name}.log$(regular). For debug output set $(bold)debug:vagrant_project$(regular) to $(bold)1$(regular) in $(bold)etc/config.yaml$(regular)"

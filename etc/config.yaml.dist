@@ -26,6 +26,8 @@ repository_url:
 guest:
   # [To apply changes: init_project.sh -f] NFS will be used for folder synchronization on *nix and OSX hosts by default.
   use_nfs: 1
+  # [To apply changes: init_project.sh -f] The placeholder IP will be replaced with auto-detected value, unless modified manually before execution of "init_project.sh" script.
+  nfs_server_ip: "0.0.0.0"
   # [To apply changes: vagrant reload] Default is 2Gb, around 3Gb is necessary to run functional tests.
   memory: 2048
   # Recommended number of CPUs is 2
