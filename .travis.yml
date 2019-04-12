@@ -24,8 +24,13 @@ before_script:
   - sed -i "s|git@github.com:|https://github.com/|g" ./etc/config.yaml.dist
   - sed -i "s|minikube start --cpus=2 --memory=4096|sudo minikube start --cpus=2 --memory=4096  --vm-driver=none --bootstrapper=kubeadm --kubernetes-version=v1.13.0|g" ./init_project.sh
   - sed -i "s|&& eval \$(minikube docker-env) ||g" ./scripts/host/k_rebuild_environment.sh
-  - sed -i "s/set global.persistence.nfs.serverIp=\"192.168.99.1\"/set global.persistence.nfs.serverIp=\"$(ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')\"/g" ./scripts/host/k_rebuild_environment.sh
+  - sed -i "s/use_nfs:\ 1/use_nfs:\ 0/g" ./etc/config.yaml.dist
+  - sed -i "s/nfs_server_ip:\ \"0\.0\.0\.0\"/nfs_server_ip:\ \"$(ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')\"/g" ./etc/config.yaml.dist
   - sed -i "s/enabled:\ true \# NFS Status/enabled:\ false \# NFS Status/g" ./etc/helm/values.yaml
+  - cat ./tests/include/configuration.sh
+  - cat ./scripts/host/k_rebuild_environment.sh
+  - cat ./init_project.sh
+  - cat ./etc/config.yaml.dist
 
 script:
   # Run DevBox tests

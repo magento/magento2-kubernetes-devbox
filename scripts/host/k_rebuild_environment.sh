@@ -30,13 +30,16 @@ while getopts 'de' flag; do
   esac
 done
 
-    # TODO: Make it work on OSX hosts
-    # --set global.persistence.nfs.serverIp="$(ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')" \
+nfs_server_ip="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_nfs_server_ip")"
+echo "NFS SERVER IP: ${nfs_server_ip}"
+# TODO: Instead of enable_nfs use_nfs="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs")"
+# "$(if [[ ${use_nfs} == "1" ]]; then echo "true"; else echo "false"; fi)"
+#
 cd "${vagrant_dir}/etc/helm" && helm install \
     --name magento2 \
     --values values.yaml \
     --wait \
-    --set global.persistence.nfs.serverIp="192.168.99.1" \
+    --set global.persistence.nfs.serverIp="${nfs_server_ip}" \
     --set global.monolith.volumeHostPath="${vagrant_dir}" \
     --set global.persistence.nfs.enabled="${enable_nfs}" \
     --set global.checkout.enabled="${enable_checkout}" \
