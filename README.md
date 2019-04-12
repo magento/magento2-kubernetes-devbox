@@ -109,20 +109,18 @@ The software listed below should be available in [PATH](https://en.wikipedia.org
     # NFS configuration is needed just once for each project, it will prompt for your password to make changes on the host
     bash scripts/host/configure_nfs_exports.sh
     
-    helm plugin install .
-    
-    helm init-magento
+    bash init_project.sh
     ```
     To initialize project with checkout container,
     clone sources to checkout directory and use -e parameter to init_project.sh call.
     ```
-    helm init-magento -e
+    bash init_project.sh -e
     ```
     If you have issues with nfs. To use filesystem mount instead of nfs use -d parameter to init_project.sh call.
     ```
-    helm init-magento -d
+    bash init_project.sh -d
     ```
-
+    
  1. Use the `magento2-devbox` directory as the project root in PHP Storm (not `magento2-devbox/magento`). This is important, because in this case PHP Storm will be configured automatically by [init_project.sh](init_project.sh).<!-- If NFS files sync is disabled in [config](etc/config.yaml.dist) and ![](docs/images/windows-icon.png)on Windows hosts [verify the deployment configuration in PHP Storm](docs/phpstorm-configuration-windows-hosts.md).-->
 
     <!--Use the URL for accessing your Magento storefront in the browser as your Web server root URL. Typically this is the localhost, which refers to your development machine. Depending on how you've set up your VM you may also need a port number, like `http://localhost:8080`.-->
