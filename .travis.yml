@@ -19,14 +19,7 @@ before_script:
   - sudo apt-get update && sudo apt-get install -y socat
   # TODO Install sudo apt install nfs-kernel-server
   - sudo apt install -y nfs-kernel-server
-  - sudo ./scripts/host/configure_nfs_exports.sh
-  - cp ./tests/include/configuration.sh.dist ./tests/include/configuration.sh
-  - sed -i "s|git@github.com:|https://github.com/|g" ./etc/config.yaml.dist
-  - sed -i "s|minikube start --cpus=2 --memory=4096|sudo minikube start --cpus=2 --memory=4096  --vm-driver=none --bootstrapper=kubeadm --kubernetes-version=v1.13.0|g" ./init_project.sh
-  - sed -i "s|&& eval \$(minikube docker-env) ||g" ./scripts/host/k_rebuild_environment.sh
-  - sed -i "s/use_nfs:\ 1/use_nfs:\ 0/g" ./etc/config.yaml.dist
-  - sed -i "s/nfs_server_ip:\ \"0\.0\.0\.0\"/nfs_server_ip:\ \"$(ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')\"/g" ./etc/config.yaml.dist
-  - sed -i "s/enabled:\ true \# NFS Status/enabled:\ false \# NFS Status/g" ./etc/helm/values.yaml
+  - sudo bash ./scripts/host/configure_ubuntu_travis.sh
   - cat ./tests/include/configuration.sh
   - cat ./scripts/host/k_rebuild_environment.sh
   - cat ./init_project.sh
@@ -35,3 +28,12 @@ before_script:
 script:
   # Run DevBox tests
   - cd ./tests && sudo bash ./testsuite.sh && cd ..
+
+after_script:
+  - sudo kubectl describe pods
+  - sudo kubectl describe deployments
+  - sudo kubectl get pv,pvc
+  - sudo kubectl logs -l app=magento -c monolith-xdebug
+  - sudo kubectl logs -l app=magento -c monolith
+  - sudo kubectl logs -l app=magento -c nginx
+  - sudo cat /etc/exports

@@ -15,13 +15,10 @@ if [[ ${debug_vagrant_project} -eq 1 ]]; then
 fi
 
 host_os="$(bash "${vagrant_dir}/scripts/host/get_host_os.sh")"
-
-# TODO: Calculate network IP
+nfs_exports_record="$(bash "${vagrant_dir}/scripts/host/get_nfs_exports_record.sh")"
 if [[ ${host_os} == "OSX" ]]; then
-    # TODO: Detect network IP dynamically
-    nfs_exports_record="\"${vagrant_dir}\" -alldirs -mapall=$(id -u):$(id -g) -mask 255.0.0.0 -network 192.0.0.0"
     if [[ -z "$(grep "${nfs_exports_record}" /etc/exports)" ]]; then
-        status "Updating /etc/exports to enable codebase sharing with containers via NFS"
+        status "Updating /etc/exports to enable codebase sharing with containers via NFS (${nfs_exports_record})"
         echo "${nfs_exports_record}" | sudo tee -a "/etc/exports" 2> >(logError) > >(log)
         sudo nfsd restart
         # TODO: Implement NFS exports clean up on project removal to prevent NFS mounting errors
@@ -31,10 +28,8 @@ if [[ ${host_os} == "OSX" ]]; then
 fi
 
 if [[ ${host_os} == "Linux" ]]; then
-    # TODO: Detect network IP dynamically
-    nfs_exports_record="\"${vagrant_dir}\" 172.17.0.0/255.255.0.0(rw,no_subtree_check,all_squash,anonuid=$(id -u),anongid=$(id -g))"
     if [[ -z "$(grep "${nfs_exports_record}" /etc/exports)" ]]; then
-        status "Updating /etc/exports to enable codebase sharing with containers via NFS"
+        status "Updating /etc/exports to enable codebase sharing with containers via NFS (${nfs_exports_record})"
         echo "${nfs_exports_record}" | sudo tee -a "/etc/exports" 2> >(logError) > >(log)
         sudo service nfs-kernel-server restart
         # TODO: Implement NFS exports clean up on project removal to prevent NFS mounting errors
