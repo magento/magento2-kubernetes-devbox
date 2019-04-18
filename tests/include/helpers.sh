@@ -95,6 +95,7 @@ function deployVagrantProject()
     echo "${grey}## deployVagrantProject${regular}"
     echo "## deployVagrantProject" >>${current_log_file_path}
     cd "${vagrant_dir}"
+    sudo bash "${vagrant_dir}/scripts/host/configure_nfs_exports.sh"
     bash init_project.sh -fcd 2> >(logAndEcho) | {
       while IFS= read -r line
       do

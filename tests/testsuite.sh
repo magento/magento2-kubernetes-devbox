@@ -46,13 +46,13 @@ See logs in ${logs_dir}"
 
 ## Tests
 
-function testNoCustomConfig()
+function testNoCustomConfigBasicTest()
 {
     current_config_name="no_custom_config"
     current_codebase="ce"
     installEnvironment
 #    assertVarnishDisabled
-    executeCommonAssertions
+    executeBasicCommonAssertions
     assertMagentoEditionIsCE
     assertCeSampleDataNotInstalled
     assertTestsConfigured
