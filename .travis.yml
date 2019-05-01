@@ -12,7 +12,7 @@ before_script:
   # Download kubectl, which is a requirement for using minikube. Had to install kubeadm on local VM https://kubernetes.io/docs/setup/independent/install-kubeadm/
   - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
   # Download Minikube.
-  - curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.30.0/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+  - curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.0.1/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
   # Download Helm
   - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh && chmod +x get_helm.sh && sudo ./get_helm.sh
   # Socat is required fo proper Helm operation
