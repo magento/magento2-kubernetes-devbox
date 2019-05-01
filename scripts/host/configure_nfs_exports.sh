@@ -2,19 +2,19 @@
 
 set -e
 
-cd "$(dirname "${BASH_SOURCE[0]}")/../.." && vagrant_dir=$PWD
+cd "$(dirname "${BASH_SOURCE[0]}")/../.." && devbox_dir=$PWD
 
-source "${vagrant_dir}/scripts/functions.sh"
+source "${devbox_dir}/scripts/functions.sh"
 resetNestingLevel
 current_script_name=`basename "$0"`
 initLogFile ${current_script_name}
 
-debug_vagrant_project="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "debug_vagrant_project")"
-if [[ ${debug_vagrant_project} -eq 1 ]]; then
+debug_devbox_project="$(bash "${devbox_dir}/scripts/get_config_value.sh" "debug_devbox_project")"
+if [[ ${debug_devbox_project} -eq 1 ]]; then
     set -x
 fi
 
-nfs_enabled="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs")"
+nfs_enabled="$(bash "${devbox_dir}/scripts/get_config_value.sh" "guest_use_nfs")"
 if [[ ${nfs_enabled} -eq 0 ]]; then
     status "Skipping NFS configuration per config.yaml"
     exit 0
@@ -22,12 +22,12 @@ fi
 
 userId=$(id -u)
 if [[ ${userId} -eq 0 ]]; then
-    error "${vagrant_dir}/scripts/host/configure_nfs_exports.sh MUST NOT be run with sudo. Run it from unprivileged user and enter password when prompted."
+    error "${devbox_dir}/scripts/host/configure_nfs_exports.sh MUST NOT be run with sudo. Run it from unprivileged user and enter password when prompted."
     exit 1
 fi
 
-host_os="$(bash "${vagrant_dir}/scripts/host/get_host_os.sh")"
-nfs_exports_record="$(bash "${vagrant_dir}/scripts/host/get_nfs_exports_record.sh")"
+host_os="$(bash "${devbox_dir}/scripts/host/get_host_os.sh")"
+nfs_exports_record="$(bash "${devbox_dir}/scripts/host/get_nfs_exports_record.sh")"
 if [[ ${host_os} == "OSX" ]]; then
     if [[ -z "$(grep "${nfs_exports_record}" /etc/exports)" ]]; then
         status "Updating /etc/exports to enable codebase sharing with containers via NFS (${nfs_exports_record})"
@@ -50,4 +50,4 @@ if [[ ${host_os} == "Linux" ]]; then
     fi
 fi
 
-info "$(regular)See details in $(bold)${vagrant_dir}/log/${current_script_name}.log$(regular). For debug output set $(bold)debug:vagrant_project$(regular) to $(bold)1$(regular) in $(bold)etc/config.yaml$(regular)"
+info "$(regular)See details in $(bold)${devbox_dir}/log/${current_script_name}.log$(regular). For debug output set $(bold)debug:devbox_project$(regular) to $(bold)1$(regular) in $(bold)etc/config.yaml$(regular)"

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-cd "$(dirname "${BASH_SOURCE[0]}")/../.." && vagrant_dir=$PWD
+cd "$(dirname "${BASH_SOURCE[0]}")/../.." && devbox_dir=$PWD
 
-source "${vagrant_dir}/scripts/functions.sh"
+source "${devbox_dir}/scripts/functions.sh"
 
-cd "${vagrant_dir}"
+cd "${devbox_dir}"
 
 # TODO: parameterize container
 
 arguments=$@
-executeInMagento2Container -- "${vagrant_dir}/scripts/guest/composer.sh" ${arguments} 2> >(logError)
+executeInMagento2Container -- "${devbox_dir}/scripts/guest/composer.sh" ${arguments} 2> >(logError)

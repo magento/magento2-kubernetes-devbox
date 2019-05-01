@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-cd "$(dirname "${BASH_SOURCE[0]}")/../.." && vagrant_dir=$PWD
+cd "$(dirname "${BASH_SOURCE[0]}")/../.." && devbox_dir=$PWD
 
-source "${vagrant_dir}/scripts/functions.sh"
+source "${devbox_dir}/scripts/functions.sh"
 
 function loadByUrl()
 {
@@ -13,8 +13,8 @@ function loadByUrl()
     done
 }
 
-admin_frontname="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "magento_admin_frontname")"
-host_name="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "magento_host_name")"
+admin_frontname="$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_admin_frontname")"
+host_name="$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_host_name")"
 
 status "Warming up Magento cache by loading frontend and admin pages"
 

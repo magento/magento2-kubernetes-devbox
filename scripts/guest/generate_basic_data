@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-vagrant_dir="${VAGRANT_ROOT}"
+devbox_dir="${DEVBOX_ROOT}"
 
-source "${vagrant_dir}/scripts/functions.sh"
+source "${devbox_dir}/scripts/functions.sh"
 
-host_name="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "magento_host_name")"
+host_name="$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_host_name")"
 
 status "Generating basic data"
 

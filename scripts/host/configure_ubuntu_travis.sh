@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-cd "$(dirname "${BASH_SOURCE[0]}")/../.." && vagrant_dir=$PWD
+cd "$(dirname "${BASH_SOURCE[0]}")/../.." && devbox_dir=$PWD
 
-cd "${vagrant_dir}"
+cd "${devbox_dir}"
 sudo ./scripts/host/configure_nfs_exports.sh
 cp ./tests/include/configuration.sh.dist ./tests/include/configuration.sh
 sed -i "s|git@github.com:|https://github.com/|g" ./etc/config.yaml.dist

@@ -5,10 +5,10 @@ original_dir="$(pwd)"
 cd "$(dirname "${BASH_SOURCE[0]}")/../.." && project_root_dir=$PWD
 
 # Path to local copy of devbox project has higher priority over repository. Comment out the next line to enable checkout from Git
-vagrant_project_local_path="${project_root_dir}"
+devbox_project_local_path="${project_root_dir}"
 
-vagrant_project_repository_url="git@github.com:magento/magento2-vagrant-for-developers.git"
-vagrant_project_branch="master"
+devbox_project_repository_url="git@github.com:magento/magento2-devbox-for-developers.git"
+devbox_project_branch="master"
 
 delete_test_project_on_tear_down=0
 

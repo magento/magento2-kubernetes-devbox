@@ -28,7 +28,7 @@ guest:
   use_nfs: 1
   # [To apply changes: init_project.sh -f] The placeholder IP will be replaced with auto-detected value, unless modified manually before execution of "init_project.sh" script.
   nfs_server_ip: "0.0.0.0"
-  # [To apply changes: vagrant reload] Default is 2Gb, around 3Gb is necessary to run functional tests.
+  # [To apply changes: devbox reload] Default is 2Gb, around 3Gb is necessary to run functional tests.
   memory: 2048
   # Recommended number of CPUs is 2
   cpus: 1
@@ -36,7 +36,7 @@ guest:
   forwarded_ssh_port: 3000
 
 environment:
-  # [To apply changes: vagrant reload] Valid versions: 5.6, 7.0, 7.1, 7.2
+  # [To apply changes: devbox reload] Valid versions: 5.6, 7.0, 7.1, 7.2
   php_version: "7.0"
   composer_prefer_source: 0
   # [To apply changes: m-reinstall OR m-varnish enable/disable]
@@ -50,7 +50,7 @@ magento:
   # [To apply changes: m-switch-to-ce -f OR m-switch-to-ee -f] Generate customer (customer@example.com:123123qQ), category, simple product, configurable product after successful Magento installation
   generate_basic_data: 1
   # [To apply changes: init_project.sh -f]
-  host_name: "magento2.vagrant2"
+  host_name: "magento2.devbox2"
   # [To apply changes: m-reinstall]
   admin_frontname: "admin"
   language: "en_US"
@@ -66,5 +66,5 @@ debug:
   magento_storefront: 0
   # [Changes applied on m-clear-cache] Enable template path hints in the admin panel
   magento_admin: 0
-  # [Changes applied immediately] Enable detailed output from all scripts provided by current vagrant project
-  vagrant_project: 0
+  # [Changes applied immediately] Enable detailed output from all scripts provided by current devbox project
+  devbox_project: 0

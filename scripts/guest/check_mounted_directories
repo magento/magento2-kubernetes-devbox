@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 
-vagrant_dir="${VAGRANT_ROOT}"
+devbox_dir="${DEVBOX_ROOT}"
 
-source "${vagrant_dir}/scripts/functions.sh"
+source "${devbox_dir}/scripts/functions.sh"
 
 status "Checking if all required directories were mounted successfully"
 incrementNestingLevel
 
 if [[ ! -f "${MAGENTO_ROOT}/bin/magento" ]]; then
     error "Directory '${MAGENTO_ROOT}' was not mounted as expected and Magento code base is not accessible on the guest machine.
-        If your host is OSX or *nix, please make sure that Vagrant is able to mount NFS shares on your environment (see https://github.com/paliarush/magento2-vagrant-for-developers/issues/88#issuecomment-254854019 ).
+        If your host is OSX or *nix, please make sure that Devbox is able to mount NFS shares on your environment (see https://github.com/paliarush/magento2-devbox-for-developers/issues/88#issuecomment-254854019 ).
         Also remove any stale declarations from /etc/exports on the host."
     exit 1
 fi
 
-if [[ ! -f "${vagrant_dir}/etc/config.yaml" ]]; then
-    error "Directory '${vagrant_dir}/etc' was not mounted as expected by Vagrant and is not accessible on the guest machine.
-        Please make sure that Vagrant is able to mount VirtualBox shared folders on your environment (see https://www.vagrantup.com/docs/synced-folders/basic_usage.html ).
+if [[ ! -f "${devbox_dir}/etc/config.yaml" ]]; then
+    error "Directory '${devbox_dir}/etc' was not mounted as expected by Devbox and is not accessible on the guest machine.
+        Please make sure that Devbox is able to mount VirtualBox shared folders on your environment (see https://www.devboxup.com/docs/synced-folders/basic_usage.html ).
         Also remove any stale declarations from /etc/exports on the host."
     exit 1
 fi

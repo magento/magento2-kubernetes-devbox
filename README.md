@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/magento/magento2-kubernetes-devbox.svg?branch=master)](https://travis-ci.com/magento/magento2-kubernetes-devbox)
 <!--[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)-->
 [![Semver](http://img.shields.io/SemVer/2.0.0.png?color=blue)](http://semver.org/spec/v2.0.0.html)
-<!--[![Latest GitHub release](docs/images/release_badge.png)](https://github.com/paliarush/magento2-vagrant-for-developers/releases/latest)-->
+<!--[![Latest GitHub release](docs/images/release_badge.png)](https://github.com/paliarush/magento2-devbox-for-developers/releases/latest)-->
 
  * [What You get](#what-you-get)
  * [How to install](#how-to-install)
@@ -68,7 +68,7 @@ The software listed below should be available in [PATH](https://en.wikipedia.org
 - [Helm](https://docs.helm.sh/using_helm/#installing-helm)
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) - Ensure that SSH keys are generated and associated with your Github account. See [how to check](https://help.github.com/articles/testing-your-ssh-connection/) and [how to configure](https://help.github.com/articles/generating-ssh-keys/), if not configured.<br />
-  :information_source: To obtain the codebase without cloning, just use the Magento 2 codebase instead of `vagrant-magento/magento2ce`. Either method will produce a successful installation.<br />
+  :information_source: To obtain the codebase without cloning, just use the Magento 2 codebase instead of `devbox-magento/magento2ce`. Either method will produce a successful installation.<br />
 
 <!--  :information_source: On Windows hosts ![](docs/images/windows-icon.png) Git must be [v2.7+](http://git-scm.com/download/win). Also make sure to set the following options to avoid issues with incorrect line separators:
 
@@ -163,7 +163,7 @@ Upon a successful installation, you'll see the location and URL of the newly-ins
 
 ### Getting updates and fixes
 
-Current vagrant project follows [semantic versioning](http://semver.org/spec/v2.0.0.html) so feel free to pull the latest features and fixes, they will not break your project.
+Current devbox project follows [semantic versioning](http://semver.org/spec/v2.0.0.html) so feel free to pull the latest features and fixes, they will not break your project.
 For example your current branch is `2.0`, then it will be safe to pull any changes from `origin/2.0`. However branch `3.0` will contain changes backward incompatible with `2.0`.
 Note, that semantic versioning is only used for `x.0` branches (not for `develop` or `master`).
 
@@ -320,7 +320,7 @@ bash m-composer update
 ### Running Magento tests
 
 Not available yet.
-<!--See [draft](https://github.com/paliarush/magento2-vagrant-for-developers/issues/120)-->
+<!--See [draft](https://github.com/paliarush/magento2-devbox-for-developers/issues/120)-->
 
 
 ## Environment configuration
@@ -329,7 +329,7 @@ Not available yet.
 
 Not available yet.
 <!--Switch between PHP versions using "php_version: <version>" option in [config.yaml](etc/config.yaml.dist). Supported versions are 5.6, 7.0, 7.1 and 7.2.
-PHP version will be applied after "vagrant reload".
+PHP version will be applied after "devbox reload".
 -->
 
 ### Activating Varnish
@@ -396,18 +396,18 @@ Note: See [Working with npm](https://www.npmjs.com/package/n#working-with-npm) i
 -->
 ### FAQ
 <!--
- 1. To debug any CLI script in current Vagrant project, set `debug:vagrant_project` option in [config.yaml](etc/config.yaml.dist) to `1`
- 1. Is Windows 10 supported? Yes, but you may face the same issue as described [here](https://github.com/paliarush/magento2-vagrant-for-developers/issues/36) or [here](https://github.com/paliarush/magento2-vagrant-for-developers/issues/173). Also Virtual box may not work on Windows 10 in headless mode, see how to [enable GUI mode](https://www.vagrantup.com/docs/virtualbox/configuration.html)
- 1. ![](docs/images/linux-icon.png)![](docs/images/osx-icon.png) On OSX and \*nix hosts NFS will be used by default to sync your project files with guest. On some hosts Vagrant cannot configure NFS properly, in this case it is possible to deploy project without NFS by setting `use_nfs` option in [config.yaml](etc/config.yaml.dist) to `0` <br />
+ 1. To debug any CLI script in current Devbox project, set `debug:devbox_project` option in [config.yaml](etc/config.yaml.dist) to `1`
+ 1. Is Windows 10 supported? Yes, but you may face the same issue as described [here](https://github.com/paliarush/magento2-devbox-for-developers/issues/36) or [here](https://github.com/paliarush/magento2-devbox-for-developers/issues/173). Also Virtual box may not work on Windows 10 in headless mode, see how to [enable GUI mode](https://www.devboxup.com/docs/virtualbox/configuration.html)
+ 1. ![](docs/images/linux-icon.png)![](docs/images/osx-icon.png) On OSX and \*nix hosts NFS will be used by default to sync your project files with guest. On some hosts Devbox cannot configure NFS properly, in this case it is possible to deploy project without NFS by setting `use_nfs` option in [config.yaml](etc/config.yaml.dist) to `0` <br />
  1. ![](docs/images/windows-icon.png) On Windows hosts you might face `Composer Install Error: ZipArchive::extractTo(): Full extraction path exceed MAXPATHLEN (260)` exception during `composer install`. This can be fixed in 2 ways: decrease path length to the project directory or set `composer_prefer_source` option in [config.yaml](etc/config.yaml.dist) to `1`
  1. Make sure that you used `magento2-devbox` directory as project root in PHP Storm (not `magento2-devbox/magento`)
  1. If project opened in PhpStorm looks broken, close PhpStorm  and remove `magento2-devbox/.idea`. Run `bash magento2-devbox/scripts/host/configure_php_storm.sh`. After opening project in PhpStorm again everything should look good
  1. If code is not synchronized properly on Windows hosts (or when NFS mode is disabled in [config.yaml](etc/config.yaml.dist) explicitly), make sure that PhpStorm is running before making any changes in the code. This is important because otherwise PhpStorm will not be able to detect changes and upload them to the guest machine
  1. Please make sure that currently installed software, specified in [requirements section](#requirements), meets minimum version requirement
- 1. Be careful if your OS is case-insensitive, NFS might break the symlinks if you cd into the wrong casing and you power the vagrant up. Just be sure to cd in to the casing the directory was originally created as.
- 1. Cannot run unit tests from PHPStorm on Magento 2.2, see possible solution [here](https://github.com/paliarush/magento2-vagrant-for-developers/issues/167)
- 1. [Permission denied (publickey)](https://github.com/paliarush/magento2-vagrant-for-developers/issues/165)
- 1. If during a vagrant reload, the following message appears:
+ 1. Be careful if your OS is case-insensitive, NFS might break the symlinks if you cd into the wrong casing and you power the devbox up. Just be sure to cd in to the casing the directory was originally created as.
+ 1. Cannot run unit tests from PHPStorm on Magento 2.2, see possible solution [here](https://github.com/paliarush/magento2-devbox-for-developers/issues/167)
+ 1. [Permission denied (publickey)](https://github.com/paliarush/magento2-devbox-for-developers/issues/165)
+ 1. If during a devbox reload, the following message appears:
  
     >There was a problem while downloading the metadata for your box
     to check for updates. This is not an error, since it is usually due
@@ -415,10 +415,10 @@ Note: See [Working with npm](https://www.npmjs.com/package/n#working-with-npm) i
     encountered was:
     The requested URL returned error: 404 Not Found
     
-    It is likely that your vagrant cli is caching an old url. Perform the following cli commands:
+    It is likely that your devbox cli is caching an old url. Perform the following cli commands:
     
     ```bash
-    sed -i -- 's/atlas.hashicorp/vagrantcloud/g' ~/.vagrant.d/boxes/{name of your paliarush/ubuntu image}/metadata_url
-    mv ~/.vagrant.d/boxes/{name of your paliarush/ubuntu image}/metadata_url2 ~/.vagrant.d/boxes/{name of your paliarush/ubuntu image}/metadata_url
+    sed -i -- 's/atlas.hashicorp/devboxcloud/g' ~/.devbox.d/boxes/{name of your paliarush/ubuntu image}/metadata_url
+    mv ~/.devbox.d/boxes/{name of your paliarush/ubuntu image}/metadata_url2 ~/.devbox.d/boxes/{name of your paliarush/ubuntu image}/metadata_url
     ``` 
 -->

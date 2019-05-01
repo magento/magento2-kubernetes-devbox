@@ -7,18 +7,18 @@
   </component>
   <component name="MessDetector">
     <phpmd_settings>
-      <MessDetectorConfiguration tool_path="$USER_HOME$/PhpstormProjects/magento2-vagrant/magento/vendor/phpmd/phpmd/src/bin/phpmd" />
+      <MessDetectorConfiguration tool_path="$USER_HOME$/PhpstormProjects/magento2-devbox/magento/vendor/phpmd/phpmd/src/bin/phpmd" />
     </phpmd_settings>
   </component>
   <component name="PhpCodeSniffer">
     <phpcs_settings>
-      <PhpCSConfiguration standards="MySource;PEAR;PHPCS;PSR1;PSR2;Squiz;Zend" tool_path="$USER_HOME$/PhpstormProjects/magento2-vagrant/magento/vendor/squizlabs/php_codesniffer/scripts/phpcs" />
+      <PhpCSConfiguration standards="MySource;PEAR;PHPCS;PSR1;PSR2;Squiz;Zend" tool_path="$USER_HOME$/PhpstormProjects/magento2-devbox/magento/vendor/squizlabs/php_codesniffer/scripts/phpcs" />
     </phpcs_settings>
   </component>
   <component name="PhpInterpreters">
     <interpreters>
-      <interpreter home="sftp://vagrant@127.0.0.1:<ssh_port>/usr/bin/php" id="php-interpreter-<host_name>" name="Remote PHP (<host_name>)" debugger_id="php.debugger.XDebug">
-        <remote_data WEB_SERVER_CONFIG_ID="web-server-id-<host_name>" WEB_SERVER_CONFIG_NAME="<host_name>" HOST="127.0.0.1" PORT="<ssh_port>" ANONYMOUS="false" USERNAME="vagrant" PASSWORD="" PRIVATE_KEY_FILE="$PROJECT_DIR$/.vagrant/machines/magento2.vagrant/virtualbox/private_key" MY_KNOWN_HOSTS_FILE="" PASSPHRASE="" USE_KEY_PAIR="true" INTERPRETER_PATH="/usr/bin/php" HELPERS_PATH="/home/vagrant/.phpstorm_helpers" INITIALIZED="false" VALID="true" />
+      <interpreter home="sftp://devbox@127.0.0.1:<ssh_port>/usr/bin/php" id="php-interpreter-<host_name>" name="Remote PHP (<host_name>)" debugger_id="php.debugger.XDebug">
+        <remote_data WEB_SERVER_CONFIG_ID="web-server-id-<host_name>" WEB_SERVER_CONFIG_NAME="<host_name>" HOST="127.0.0.1" PORT="<ssh_port>" ANONYMOUS="false" USERNAME="devbox" PASSWORD="" PRIVATE_KEY_FILE="$PROJECT_DIR$/.devbox/machines/magento2.devbox/virtualbox/private_key" MY_KNOWN_HOSTS_FILE="" PASSPHRASE="" USE_KEY_PAIR="true" INTERPRETER_PATH="/usr/bin/php" HELPERS_PATH="/home/devbox/.phpstorm_helpers" INITIALIZED="false" VALID="true" />
       </interpreter>
     </interpreters>
   </component>

@@ -17,14 +17,14 @@ parse_yaml() {
     }'
 }
 
-cd "$(dirname "${BASH_SOURCE[0]}")/.." && vagrant_dir=$PWD
+cd "$(dirname "${BASH_SOURCE[0]}")/.." && devbox_dir=$PWD
 
 variable_name=$1
 
 # Read configs
-eval $(parse_yaml "${vagrant_dir}/etc/config.yaml.dist")
-if [[ -f "${vagrant_dir}/etc/config.yaml" ]]; then
-    eval $(parse_yaml "${vagrant_dir}/etc/config.yaml")
+eval $(parse_yaml "${devbox_dir}/etc/config.yaml.dist")
+if [[ -f "${devbox_dir}/etc/config.yaml" ]]; then
+    eval $(parse_yaml "${devbox_dir}/etc/config.yaml")
 fi
 
 echo ${!variable_name}

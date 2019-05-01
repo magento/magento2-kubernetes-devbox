@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
-cd "$(dirname "${BASH_SOURCE[0]}")/../.." && vagrant_dir=$PWD
+cd "$(dirname "${BASH_SOURCE[0]}")/../.." && devbox_dir=$PWD
 
-source "${vagrant_dir}/scripts/functions.sh"
+source "${devbox_dir}/scripts/functions.sh"
 
 status "Creating configuration for Magento Tests"
 incrementNestingLevel
 
-magento_tests_root="${vagrant_dir}/magento/dev/tests"
-magento_host_name="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "magento_host_name")"
-magento_admin_frontname="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "magento_admin_frontname")"
-magento_admin_user="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "magento_admin_user")"
-magento_admin_password="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "magento_admin_password")"
+magento_tests_root="${devbox_dir}/magento/dev/tests"
+magento_host_name="$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_host_name")"
+magento_admin_frontname="$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_admin_frontname")"
+magento_admin_user="$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_admin_user")"
+magento_admin_password="$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_admin_password")"
 
 # Unit tests
 if [[ ! -f "${magento_tests_root}/unit/phpunit.xml" ]] && [[ -f "${magento_tests_root}/unit/phpunit.xml.dist" ]]; then
