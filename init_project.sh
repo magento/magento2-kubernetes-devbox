@@ -152,14 +152,12 @@ bash "${vagrant_dir}/scripts/host/check_requirements.sh"
 force_project_cleaning=0
 force_codebase_cleaning=0
 force_phpstorm_config_cleaning=0
-disable_nfs=0
 enable_checkout=0
-while getopts 'fcpde' flag; do
+while getopts 'fcpe' flag; do
   case "${flag}" in
     f) force_project_cleaning=1 ;;
     c) force_codebase_cleaning=1 ;;
     p) force_phpstorm_config_cleaning=1 ;;
-    d) disable_nfs=1 ;;
     e) enable_checkout=1 ;;
     *) error "Unexpected option" && exit 1;;
   esac
@@ -260,18 +258,11 @@ helm init --wait
 #waitForKubernetesPodToRun 'tiller-deploy'
 
 # TODO: change k-rebuild-environment to comply with formatting requirements
-if [[ "${disable_nfs}" == 1 ]]; then
-    if [[ "${enable_checkout}" == 1 ]]; then
-        bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh" -d -e
-    else
-        bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh" -d
-    fi
+
+if [[ "${enable_checkout}" == 1 ]]; then
+    bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh" -e
 else
-    if [[ "${enable_checkout}" == 1 ]]; then
-        bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh" -e
-    else
-        bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh"
-    fi
+    bash "${vagrant_dir}/scripts/host/k_rebuild_environment.sh"
 fi
 
 monolith_ip="$(minikube service magento2-monolith --url | grep -oE '[0-9][^:]+' | head -1)"

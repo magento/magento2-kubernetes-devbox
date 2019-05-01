@@ -20,11 +20,9 @@ set -e
 
 # TODO: Need to make sure all resources have been successfully deleted before the attempt of recreating them
 #sleep 20
-enable_nfs="true"
 enable_checkout="false"
-while getopts 'de' flag; do
+while getopts 'e' flag; do
   case "${flag}" in
-    d) enable_nfs="false" ;;
     e) enable_checkout="true" ;;
     *) error "Unexpected option" && exit 1;;
   esac
@@ -32,16 +30,14 @@ done
 
 nfs_server_ip="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_nfs_server_ip")"
 echo "NFS SERVER IP: ${nfs_server_ip}"
-# TODO: Instead of enable_nfs use_nfs="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs")"
-# "$(if [[ ${use_nfs} == "1" ]]; then echo "true"; else echo "false"; fi)"
-#
+use_nfs="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs")"
 cd "${vagrant_dir}/etc/helm" && helm install \
     --name magento2 \
     --values values.yaml \
     --wait \
     --set global.persistence.nfs.serverIp="${nfs_server_ip}" \
     --set global.monolith.volumeHostPath="${vagrant_dir}" \
-    --set global.persistence.nfs.enabled="${enable_nfs}" \
+    --set global.persistence.nfs.enabled="$(if [[ ${use_nfs} == "1" ]]; then echo "true"; else echo "false"; fi)" \
     --set global.checkout.enabled="${enable_checkout}" \
     --set global.checkout.volumeHostPath="${vagrant_dir}" .
 

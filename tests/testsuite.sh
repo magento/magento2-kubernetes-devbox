@@ -64,7 +64,7 @@ function testNoCustomConfigBasicTest()
     assertDebugConfigurationWork
     assertRedisCacheIsEnabled
 
-    executeExtendedCommonAssertions
+#    executeExtendedCommonAssertions
 }
 
 ## Call and Run all Tests
