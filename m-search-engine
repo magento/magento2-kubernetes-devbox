@@ -15,6 +15,7 @@ if [[ ${debug_vagrant_project} -eq 1 ]]; then
 fi
 
 cd "${vagrant_dir}"
-vagrant ssh -c "bash /vagrant/scripts/guest/m-search-engine ${@}" 2> >(logError)
+
+executeInMagento2Container -- "${vagrant_dir}/scripts/guest/m-search-engine" ${@} 2> >(logError)
 
 info "$(regular)See details in $(bold)${vagrant_dir}/log/${current_script_name}.log$(regular). For debug output set $(bold)debug:vagrant_project$(regular) to $(bold)1$(regular) in $(bold)etc/config.yaml$(regular)"

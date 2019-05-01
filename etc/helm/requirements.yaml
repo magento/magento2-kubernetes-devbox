@@ -1,14 +1,20 @@
 dependencies:
 - name: mysql
-  version: "0.9.2"
+  version: "0.15.0"
   appVersion: 5.7.14
   repository: "@stable"
 - name: redis
   repository: "@stable"
-  version: "5.0"
+  appVersion: "4.0.14"
+  version: "6.4.5"
 - name: rabbitmq
   repository: "@stable"
-  version: "3.6.3"
+  appVersion: "3.7.14"
+  version: "5.5.0"
+- name: elasticsearch
+  repository: "https://helm.elastic.co"
+  appVersion: "6.7.1"
+  version: "6.5.0"
 - name: checkout
   repository: file://./charts/
   version: 0.1.0

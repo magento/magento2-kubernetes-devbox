@@ -19,7 +19,7 @@ helm list -q | xargs helm delete --purge 2>/dev/null
 set -e
 
 # TODO: Need to make sure all resources have been successfully deleted before the attempt of recreating them
-sleep 7
+#sleep 20
 enable_nfs="true"
 enable_checkout="false"
 while getopts 'de' flag; do

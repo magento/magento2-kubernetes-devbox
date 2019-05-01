@@ -204,7 +204,7 @@ function refreshSearchIndexes()
     echo "## deleteElasticSearchIndexes" >>${current_log_file_path}
 
     cd "${vagrant_dir}"
-    vagrant ssh -c 'curl -X DELETE -i http://127.0.0.1:9200/_all' >>${current_log_file_path} 2>&1
+    executeInMagento2Container curl -- '-X' 'DELETE' '-i' 'http://elasticsearch-master:9200/_all' >>${current_log_file_path} 2>&1
     bash m-bin-magento indexer:reindex catalogsearch_fulltext >>${current_log_file_path} 2>&1
 }
 

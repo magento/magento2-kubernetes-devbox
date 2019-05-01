@@ -12,27 +12,23 @@ if [[ -z "$(grep "search_engine:" ${vagrant_dir}/etc/config.yaml)" ]]; then
     sed -i '/environment:/a \ \ search_engine: "mysql"' ${vagrant_dir}/etc/config.yaml
 fi
 
-if [[ -f "${MAGENTO_ROOT}/LICENSE_EE.txt" ]]; then
-    search_engine="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "environment_search_engine")"
-    if [[ ${search_engine} == "elasticsearch" ]]; then
-        status "Configuring ElasticSearch search engine"
-        "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/engine' 'elasticsearch'
-        "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/elasticsearch_server_hostname' 'localhost'
-        "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/elasticsearch_server_port' '9200'
-        "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/elasticsearch_index_prefix' 'magento2'
-        "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/elasticsearch_enable_auth' '0'
-        "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/elasticsearch_server_timeout' '15'
-    elif [[ ${search_engine} == "mysql" ]]; then
-        status "Configuring MySQL search engine"
-        "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/engine' 'mysql'
-    fi
-
-    bash "${VAGRANT_ROOT}/scripts/guest/m-clear-cache"
-
-    status "Rebuilding catalog search index"
-    php "${MAGENTO_ROOT}/bin/magento" indexer:reindex catalogsearch_fulltext 2> >(logError) > >(log)
-else
-    status "Search engine configuration was not changed (custom search engine is not available in Magento CE)."
+search_engine="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "environment_search_engine")"
+if [[ ${search_engine} == "elasticsearch" ]]; then
+    status "Configuring ElasticSearch search engine"
+    "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/engine' 'elasticsearch6'
+    "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/elasticsearch6_server_hostname' 'elasticsearch-master'
+    "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/elasticsearch6_server_port' '9200'
+    "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/elasticsearch6_index_prefix' 'magento2'
+    "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/elasticsearch6_enable_auth' '0'
+    "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/elasticsearch6_server_timeout' '15'
+elif [[ ${search_engine} == "mysql" ]]; then
+    status "Configuring MySQL search engine"
+    "${VAGRANT_ROOT}/scripts/guest/update_magento_config" 'catalog/search/engine' 'mysql'
 fi
+
+bash "${VAGRANT_ROOT}/scripts/guest/m-clear-cache"
+
+status "Rebuilding catalog search index"
+php "${MAGENTO_ROOT}/bin/magento" indexer:reindex catalogsearch_fulltext 2> >(logError) > >(log)
 
 decrementNestingLevel

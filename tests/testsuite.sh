@@ -11,6 +11,11 @@ source include/configuration.sh
 source include/helpers.sh
 source include/assertions.sh
 
+original_vagrant_dir="${vagrant_dir}"
+source ./../scripts/functions.sh
+vagrant_dir=${original_vagrant_dir}
+cd ${tests_dir}
+
 ## Setup and tear down
 
 function oneTimeSetUp
@@ -58,6 +63,8 @@ function testNoCustomConfigBasicTest()
     assertTestsConfigured
     assertDebugConfigurationWork
     assertRedisCacheIsEnabled
+
+    executeExtendedCommonAssertions
 }
 
 ## Call and Run all Tests

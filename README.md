@@ -63,6 +63,7 @@ If you never used Kubernetes before, read the [Kubernetes Docs](https://kubernet
 
 The software listed below should be available in [PATH](https://en.wikipedia.org/wiki/PATH_\(variable\)) (except for PHP Storm).
 
+- [Docker](https://docs.docker.com/docker-for-mac/install/)
 - [Minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)
 - [Helm](https://docs.helm.sh/using_helm/#installing-helm)
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
@@ -343,14 +344,9 @@ Use the following commands to enable/disable varnish without reinstalling Magent
 
 ### Activating ElasticSearch
 
-Not available yet.
-<!--
-:information_source: Available in Magento EE only.
-
 Set `search_engine: "elasticsearch"` in [config.yaml](etc/config.yaml.dist) to use ElasticSearch as current search engine or `search_engine: "mysql"` to use MySQL. Changes will be applied on `m-reinstall`.
 
 Use the following commands to switch between search engines without reinstalling Magento: `m-search-engine elasticsearch` or `m-search-engine mysql`.
--->
 
 ### Redis for caching
 

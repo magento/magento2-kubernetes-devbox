@@ -42,7 +42,7 @@ environment:
   # [To apply changes: m-reinstall OR m-varnish enable/disable]
   use_varnish: 0
   # [To apply changes: m-reinstall] Possible values: mysql, elasticsearch
-  search_engine: "mysql"
+  search_engine: "elasticsearch"
 
 magento:
   # [To apply changes: m-switch-to-ce -f OR m-switch-to-ee -f]

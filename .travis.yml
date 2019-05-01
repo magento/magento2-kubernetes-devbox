@@ -37,3 +37,5 @@ after_script:
   - sudo kubectl logs -l app=magento -c monolith
   - sudo kubectl logs -l app=magento -c nginx
   - sudo cat /etc/exports
+  - sudo cat ./tests/logs/*
+  - sudo cat ./logs/*

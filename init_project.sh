@@ -173,26 +173,26 @@ if [[ ${force_project_cleaning} -eq 1 ]]; then
 #    fi
 
 
-#    if [[ $(isMinikubeRunning) -eq 1 ]]; then
-#        minikube stop 2> >(logError) | {
-#          while IFS= read -r line
-#          do
-#            filterVagrantOutput "${line}"
-#            lastline="${line}"
-#          done
-#          filterVagrantOutput "${lastline}"
-#        }
-#    fi
-#    if [[ $(isMinikubeStopped) -eq 1 ]]; then
-#        minikube delete 2> >(logError) | {
-#          while IFS= read -r line
-#          do
-#            filterVagrantOutput "${line}"
-#            lastline="${line}"
-#          done
-#          filterVagrantOutput "${lastline}"
-#        }
-#    fi
+    if [[ $(isMinikubeRunning) -eq 1 ]]; then
+        minikube stop 2> >(logError) | {
+          while IFS= read -r line
+          do
+            filterVagrantOutput "${line}"
+            lastline="${line}"
+          done
+          filterVagrantOutput "${lastline}"
+        }
+    fi
+    if [[ $(isMinikubeStopped) -eq 1 ]]; then
+        minikube delete 2> >(logError) | {
+          while IFS= read -r line
+          do
+            filterVagrantOutput "${line}"
+            lastline="${line}"
+          done
+          filterVagrantOutput "${lastline}"
+        }
+    fi
 
     mv "${vagrant_dir}/etc/guest/.gitignore" "${vagrant_dir}/etc/.gitignore.back"
     rm -rf "${vagrant_dir}/.vagrant" "${vagrant_dir}/etc/guest"

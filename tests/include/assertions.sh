@@ -33,6 +33,10 @@ function executeExtendedCommonAssertions()
     # Test search
     createSimpleProduct
     assertSearchWorks
+
+    assertElasticSearchEnabled
+    assertElasticSearchDisablingWorks
+    assertElasticSearchEnablingWorks
 }
 
 ## Assertions
@@ -292,11 +296,13 @@ function assertElasticSearchEnabled()
     echo "## assertElasticSearchEnabled" >>${current_log_file_path}
 
     cd "${vagrant_dir}"
-    elasticSearchHealth="$(vagrant ssh -c 'curl -i http://127.0.0.1:9200/_cluster/health')"
+
+    elasticSearchHealth="$(executeInMagento2Container curl -- '-i' 'http://elasticsearch-master:9200/_cluster/health')"
+
     assertTrue "ElasticSearch server is down:
         ${elasticSearchHealth}" '[[ ${elasticSearchHealth} =~ \"status\":\"(green|yellow)\" ]]'
 
-    listOfIndexes="$(vagrant ssh -c 'curl -i http://127.0.0.1:9200/_cat/indices?v')"
+    listOfIndexes="$(executeInMagento2Container curl -- '-i' 'http://elasticsearch-master:9200/_cat/indices?v')"
     assertTrue "Products index is not available in ElasticSearch:
         ${listOfIndexes}" '[[ ${listOfIndexes} =~ magento2_product ]]'
 
@@ -309,11 +315,11 @@ function assertElasticSearchDisabled()
     echo "## assertElasticSearchDisabled" >>${current_log_file_path}
 
     cd "${vagrant_dir}"
-    elasticSearchHealth="$(vagrant ssh -c 'curl -i http://127.0.0.1:9200/_cluster/health')"
+    elasticSearchHealth="$(executeInMagento2Container curl -- '-i' 'http://elasticsearch-master:9200/_cluster/health')"
     assertTrue "ElasticSearch server is down:
         ${elasticSearchHealth}" '[[ ${elasticSearchHealth} =~ \"status\":\"(green|yellow)\" ]]'
 
-    listOfIndexes="$(vagrant ssh -c 'curl -i http://127.0.0.1:9200/_cat/indices?v')"
+    listOfIndexes="$(executeInMagento2Container curl -- '-i' 'http://elasticsearch-master:9200/_cat/indices?v')"
     assertTrue "Products index must not be available in ElasticSearch:
         ${listOfIndexes}" '[[ ! ${listOfIndexes} =~ magento2_product ]]'
 
