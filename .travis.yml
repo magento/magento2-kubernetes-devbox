@@ -1,12 +1,11 @@
 sudo: required
-# Dummy changes 123
 # We need the systemd for the kubeadm and it's default from 16.04+
 dist: xenial
 # This moves Kubernetes specific config files.
 env:
   - CHANGE_MINIKUBE_NONE_USER=true
 
-before_script:
+install:
   # Make root mounted as rshared to fix kube-dns issues.
   - sudo mount --make-rshared /
   # Download kubectl, which is a requirement for using minikube. Had to install kubeadm on local VM https://kubernetes.io/docs/setup/independent/install-kubeadm/
@@ -19,6 +18,8 @@ before_script:
   - sudo apt-get update && sudo apt-get install -y socat
   # TODO Install sudo apt install nfs-kernel-server
   - sudo apt install -y nfs-kernel-server
+
+before_script:
   - sudo bash ./scripts/host/configure_ubuntu_travis.sh
   - cat ./tests/include/configuration.sh
   - cat ./scripts/host/k_rebuild_environment.sh
