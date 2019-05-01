@@ -68,4 +68,4 @@ function testNoCustomConfigBasicTest()
 }
 
 ## Call and Run all Tests
-source lib/shunit2-2.1.6/src/shunit2
+source lib/shunit2/shunit2

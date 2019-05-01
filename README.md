@@ -92,7 +92,7 @@ The software listed below should be available in [PATH](https://en.wikipedia.org
     :warning: Do not open it in PhpStorm until `init_project.sh` has completed PhpStorm configuration in the initialize project step below.
 
      ```
-     git clone git@github.com:magento/magento2-kubernetes-devbox.git magento2-devbox
+     git clone --recursive git@github.com:magento/magento2-kubernetes-devbox.git magento2-devbox
      ```
 
     Optionally, if you use private repositories on GitHub or download packages from the Magento Marketplace using Composer.

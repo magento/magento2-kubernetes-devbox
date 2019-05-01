@@ -17,7 +17,7 @@ install:
   # Socat is required fo proper Helm operation
   - sudo apt-get update && sudo apt-get install -y socat
   # TODO Install sudo apt install nfs-kernel-server
-  - sudo apt install -y nfs-kernel-server
+#  - sudo apt install -y nfs-kernel-server
 
 before_script:
   - sudo bash ./scripts/host/configure_ubuntu_travis.sh
@@ -28,7 +28,7 @@ before_script:
 
 script:
   # Run DevBox tests
-  - cd ./tests && sudo bash ./testsuite.sh && cd ..
+  - cd ./tests && sudo bash ./run-tests-on-travis.sh && cd ..
 
 after_script:
   - sudo kubectl describe pods
