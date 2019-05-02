@@ -302,7 +302,7 @@ info "$(bold)[Important]$(regular)
 #if [[ ${host_os} == "Windows" ]] || [[ ${use_nfs} == 0 ]]; then
 #    info "$(bold)[Optional]$(regular)
 #    To verify that deployment configuration for $(bold)${magento_ce_dir}$(regular) in PhpStorm is correct,
-#        use instructions provided here: $(bold)https://github.com/paliarush/magento2-devbox-for-developers/blob/2.0/docs/phpstorm-configuration-windows-hosts.md$(regular).
+#        use instructions provided here: $(bold)https://github.com/paliarush/magento2-vagrant-for-developers/blob/2.0/docs/phpstorm-configuration-windows-hosts.md$(regular).
 #    If not using PhpStorm, you can set up synchronization using rsync"
 #fi
 

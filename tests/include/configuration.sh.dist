@@ -10,6 +10,6 @@ devbox_project_local_path="${project_root_dir}"
 devbox_project_repository_url="git@github.com:magento/magento2-devbox-for-developers.git"
 devbox_project_branch="master"
 
-delete_test_project_on_tear_down=0
+delete_test_project_on_tear_down=1
 
 cd ${original_dir}

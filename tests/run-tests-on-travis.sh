@@ -1,8 +1,9 @@
 #!/bin/bash
-set -ev
+set -e
 
-bash ./testsuite.sh
-
-if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
-  bundle exec rake test:integration
+echo "# Running Basic test suite"
+bash ./testsuite-basic.sh
+if [[ "${TRAVIS_EVENT_TYPE}" = "cron" ]] || [[ "${RUN_EXTENDED_TEST_SUITE}" = "true" ]]; then
+    echo '# Running extended test suite'
+    bash ./testsuite-extended.sh
 fi
