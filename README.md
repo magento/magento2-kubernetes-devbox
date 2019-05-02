@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/magento/magento2-kubernetes-devbox.svg?branch=master)](https://travis-ci.com/magento/magento2-kubernetes-devbox)
 <!--[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)-->
 [![Semver](http://img.shields.io/SemVer/2.0.0.png?color=blue)](http://semver.org/spec/v2.0.0.html)
-<!--[![Latest GitHub release](docs/images/release_badge.png)](https://github.com/paliarush/magento2-devbox-for-developers/releases/latest)-->
+<!--[![Latest GitHub release](docs/images/release_badge.png)](https://github.com/paliarush/magento2-vagrant-for-developers/releases/latest)-->
 
  * [What You get](#what-you-get)
  * [How to install](#how-to-install)
@@ -33,6 +33,7 @@
    * [Redis for caching](#redis-for-caching)
    * [Reset environment](#reset-environment)
    * [Switch NodeJS Versions](#switch-nodejs-versions)
+ * [DevBox tests](#devbox-tests)
  * [FAQ](#faq)
 
 ## What You get
@@ -320,7 +321,7 @@ bash m-composer update
 ### Running Magento tests
 
 Not available yet.
-<!--See [draft](https://github.com/paliarush/magento2-devbox-for-developers/issues/120)-->
+<!--See [draft](https://github.com/paliarush/magento2-vagrant-for-developers/issues/120)-->
 
 
 ## Environment configuration
@@ -394,31 +395,26 @@ n <version>
 
 Note: See [Working with npm](https://www.npmjs.com/package/n#working-with-npm) if after switching versions with `n`, `npm` is not working properly.
 -->
+
+### DevBox tests
+
+The tests are executed on every PR on Travis CI. It is possible to configure the same tests to run on the forked repository.
+
+An extended testsuite is executed nightly on the master branch. On every PR by default only basic smoke tests are executed.
+It is possible to execute an extended testsuite on every PR build by uncommenting `RUN_EXTENDED_TEST_SUITE=true` in the [.travis.yaml](./.travis.yml)
+
+The same tests can be run on local using the following command. :warning: only one devbox can be running on the same host at the same time. The tests will destroy existing devbox installation.
+
+```
+cd tests
+bash ./testsuite-basic.sh # OR bash ./testsuite-extended.sh
+```
+
 ### FAQ
-<!--
  1. To debug any CLI script in current Devbox project, set `debug:devbox_project` option in [config.yaml](etc/config.yaml.dist) to `1`
- 1. Is Windows 10 supported? Yes, but you may face the same issue as described [here](https://github.com/paliarush/magento2-devbox-for-developers/issues/36) or [here](https://github.com/paliarush/magento2-devbox-for-developers/issues/173). Also Virtual box may not work on Windows 10 in headless mode, see how to [enable GUI mode](https://www.devboxup.com/docs/virtualbox/configuration.html)
- 1. ![](docs/images/linux-icon.png)![](docs/images/osx-icon.png) On OSX and \*nix hosts NFS will be used by default to sync your project files with guest. On some hosts Devbox cannot configure NFS properly, in this case it is possible to deploy project without NFS by setting `use_nfs` option in [config.yaml](etc/config.yaml.dist) to `0` <br />
- 1. ![](docs/images/windows-icon.png) On Windows hosts you might face `Composer Install Error: ZipArchive::extractTo(): Full extraction path exceed MAXPATHLEN (260)` exception during `composer install`. This can be fixed in 2 ways: decrease path length to the project directory or set `composer_prefer_source` option in [config.yaml](etc/config.yaml.dist) to `1`
  1. Make sure that you used `magento2-devbox` directory as project root in PHP Storm (not `magento2-devbox/magento`)
  1. If project opened in PhpStorm looks broken, close PhpStorm  and remove `magento2-devbox/.idea`. Run `bash magento2-devbox/scripts/host/configure_php_storm.sh`. After opening project in PhpStorm again everything should look good
- 1. If code is not synchronized properly on Windows hosts (or when NFS mode is disabled in [config.yaml](etc/config.yaml.dist) explicitly), make sure that PhpStorm is running before making any changes in the code. This is important because otherwise PhpStorm will not be able to detect changes and upload them to the guest machine
  1. Please make sure that currently installed software, specified in [requirements section](#requirements), meets minimum version requirement
  1. Be careful if your OS is case-insensitive, NFS might break the symlinks if you cd into the wrong casing and you power the devbox up. Just be sure to cd in to the casing the directory was originally created as.
- 1. Cannot run unit tests from PHPStorm on Magento 2.2, see possible solution [here](https://github.com/paliarush/magento2-devbox-for-developers/issues/167)
- 1. [Permission denied (publickey)](https://github.com/paliarush/magento2-devbox-for-developers/issues/165)
- 1. If during a devbox reload, the following message appears:
- 
-    >There was a problem while downloading the metadata for your box
-    to check for updates. This is not an error, since it is usually due
-    to temporary network problems. This is just a warning. The problem
-    encountered was:
-    The requested URL returned error: 404 Not Found
-    
-    It is likely that your devbox cli is caching an old url. Perform the following cli commands:
-    
-    ```bash
-    sed -i -- 's/atlas.hashicorp/devboxcloud/g' ~/.devbox.d/boxes/{name of your paliarush/ubuntu image}/metadata_url
-    mv ~/.devbox.d/boxes/{name of your paliarush/ubuntu image}/metadata_url2 ~/.devbox.d/boxes/{name of your paliarush/ubuntu image}/metadata_url
-    ``` 
--->
+ 1. Cannot run unit tests from PHPStorm on Magento 2.2, see possible solution [here](https://github.com/paliarush/magento2-vagrant-for-developers/issues/167)
+ 1. [Permission denied (publickey)](https://github.com/paliarush/magento2-vagrant-for-developers/issues/165)

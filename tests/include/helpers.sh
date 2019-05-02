@@ -43,7 +43,7 @@ function downloadBaseVersionOfDevboxProject()
     echo "${grey}## downloadBaseVersionOfDevboxProject${regular}"
     echo "## downloadBaseVersionOfDevboxProject" >>${current_log_file_path}
     cd ${tests_dir}
-    git clone git@github.com:paliarush/magento2-devbox-for-developers.git "${devbox_dir}" >>${current_log_file_path} 2>&1
+    git clone git@github.com:paliarush/magento2-vagrant-for-developers.git "${devbox_dir}" >>${current_log_file_path} 2>&1
     cd "${devbox_dir}"
     git checkout tags/v2.2.0 >>${current_log_file_path} 2>&1
     # Make sure that older box version is used
@@ -174,7 +174,7 @@ function clearTestTmp()
     echo "## clearTestTmp" >>${current_log_file_path}
     if [ -e "${devbox_dir}" ]; then
         cd "${devbox_dir}"
-        devbox destroy -f &>/dev/null
+        minikube delete &>/dev/null
         cd ${tests_dir}
         rm -rf "${devbox_dir}"
     fi

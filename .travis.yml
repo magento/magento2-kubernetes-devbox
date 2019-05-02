@@ -3,7 +3,10 @@ sudo: required
 dist: xenial
 # This moves Kubernetes specific config files.
 env:
-  - CHANGE_MINIKUBE_NONE_USER=true
+  global:
+    - CHANGE_MINIKUBE_NONE_USER=true
+    # Uncomment the following line to execute full test suite on Travis
+    # - RUN_EXTENDED_TEST_SUITE=true
 
 install:
   # Make root mounted as rshared to fix kube-dns issues.
