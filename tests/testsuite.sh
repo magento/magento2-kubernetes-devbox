@@ -11,6 +11,11 @@ source include/configuration.sh
 source include/helpers.sh
 source include/assertions.sh
 
+original_devbox_dir="${devbox_dir}"
+source ./../scripts/functions.sh
+devbox_dir=${original_devbox_dir}
+cd ${tests_dir}
+
 ## Setup and tear down
 
 function oneTimeSetUp
@@ -20,7 +25,7 @@ function oneTimeSetUp
 
 function setUp()
 {
-    debug_vagrant_project=0
+    debug_devbox_project=0
     skip_codebase_stash=0
 }
 
@@ -34,8 +39,8 @@ function tearDown()
         clearTestTmp
     fi
 
-    # TODO: change globally when https://github.com/paliarush/magento2-vagrant-for-developers/issues/58 is unblocked
-    vagrant_dir="${tests_dir}/tmp/test/magento2-vagrant"
+    # TODO: change globally when https://github.com/paliarush/magento2-devbox-for-developers/issues/58 is unblocked
+    devbox_dir="${tests_dir}/tmp/test/magento2-devbox"
 }
 
 function oneTimeTearDown()
@@ -58,7 +63,9 @@ function testNoCustomConfigBasicTest()
     assertTestsConfigured
     assertDebugConfigurationWork
     assertRedisCacheIsEnabled
+
+#    executeExtendedCommonAssertions
 }
 
 ## Call and Run all Tests
-source lib/shunit2-2.1.6/src/shunit2
+source lib/shunit2/shunit2

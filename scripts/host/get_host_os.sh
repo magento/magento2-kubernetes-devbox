@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-cd "$(dirname "${BASH_SOURCE[0]}")/../.." && vagrant_dir=$PWD
+cd "$(dirname "${BASH_SOURCE[0]}")/../.." && devbox_dir=$PWD
 
-source "${vagrant_dir}/scripts/functions.sh"
+source "${devbox_dir}/scripts/functions.sh"
 incrementNestingLevel
 
 os_name="$(uname)"

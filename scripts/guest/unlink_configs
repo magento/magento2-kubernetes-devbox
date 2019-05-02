@@ -7,7 +7,7 @@
 #    do
 #        if [[ -L ${config_dir}/${config} ]] && [[ -e ${config_dir}/${config} ]]; then
 #            sudo rm ${config_dir}/${config}
-#            sudo mv ${vagrant_dir}/etc/guest/${config} ${config_dir}/${config}
+#            sudo mv ${devbox_dir}/etc/guest/${config} ${config_dir}/${config}
 #        elif [[ ! -e ${config_dir}/${config} ]] && [[ -e "${config_dir}/${config}.back" ]]; then
 #            sudo rm -rf ${config_dir}/${config}
 #            sudo cp -rp "${config_dir}/${config}.back" ${config_dir}/${config}
@@ -15,9 +15,9 @@
 #    done
 #}
 #
-#vagrant_dir="${vagrant_dir}"
+#devbox_dir="${devbox_dir}"
 #
-#source "${vagrant_dir}/scripts/functions.sh"
+#source "${devbox_dir}/scripts/functions.sh"
 #
 #status "Reverting configs before shutdown or reboot to allow proper services initialization on booting"
 #incrementNestingLevel

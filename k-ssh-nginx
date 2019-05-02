@@ -2,8 +2,8 @@
 
 set -e
 
-cd "$(dirname "${BASH_SOURCE[0]}")" && vagrant_dir=$PWD
+cd "$(dirname "${BASH_SOURCE[0]}")" && devbox_dir=$PWD
 
-source "${vagrant_dir}/scripts/functions.sh"
+source "${devbox_dir}/scripts/functions.sh"
 
 kubectl exec -it "$(getMagento2PodId)" --container nginx -- /bin/bash

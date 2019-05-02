@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-vagrant_dir="${VAGRANT_ROOT}"
+devbox_dir="${DEVBOX_ROOT}"
 
-source "${vagrant_dir}/scripts/functions.sh"
+source "${devbox_dir}/scripts/functions.sh"
 
 if [[ ${SKIP_CACHE_CLEAN} -eq 1 ]] ; then
     exit 0
@@ -13,7 +13,7 @@ incrementNestingLevel
 
 status "Clearing directories containing temporary files"
 
-mage_mode=$(bash "${vagrant_dir}/scripts/get_config_value.sh" "magento_mode")
+mage_mode=$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_mode")
 
 rm -f "${MAGENTO_ROOT}/app/etc/paths.php"
 if [[ -d "${MAGENTO_ROOT}/var" ]]; then
@@ -65,7 +65,7 @@ redis-cli -h magento2-redis-master flushall 2> >(logError) > >(log)
 
 if [[ -f "${MAGENTO_ROOT}/app/etc/env.php" ]]; then
 
-    bash "${VAGRANT_ROOT}/scripts/guest/configure_debugging"
+    bash "${DEVBOX_ROOT}/scripts/guest/configure_debugging"
 
     status "Flushing cache using 'bin/magento cache:flush'"
     php "${MAGENTO_ROOT}/bin/magento" cache:flush 2> >(logError) > >(log)

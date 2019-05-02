@@ -2,19 +2,19 @@
 
 set -e
 
-cd "$(dirname "${BASH_SOURCE[0]}")" && vagrant_dir=$PWD
+cd "$(dirname "${BASH_SOURCE[0]}")" && devbox_dir=$PWD
 
-source "${vagrant_dir}/scripts/functions.sh"
+source "${devbox_dir}/scripts/functions.sh"
 resetNestingLevel
 current_script_name=`basename "$0"`
 initLogFile ${current_script_name}
 
-debug_vagrant_project="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "debug_vagrant_project")"
-if [[ ${debug_vagrant_project} -eq 1 ]]; then
+debug_devbox_project="$(bash "${devbox_dir}/scripts/get_config_value.sh" "debug_devbox_project")"
+if [[ ${debug_devbox_project} -eq 1 ]]; then
     set -x
 fi
 
-cd "${vagrant_dir}"
-vagrant ssh -c "bash /vagrant/scripts/guest/m-varnish ${@}" 2> >(logError)
+cd "${devbox_dir}"
+devbox ssh -c "bash /devbox/scripts/guest/m-varnish ${@}" 2> >(logError)
 
-info "$(regular)See details in $(bold)${vagrant_dir}/log/${current_script_name}.log$(regular). For debug output set $(bold)debug:vagrant_project$(regular) to $(bold)1$(regular) in $(bold)etc/config.yaml$(regular)"
+info "$(regular)See details in $(bold)${devbox_dir}/log/${current_script_name}.log$(regular). For debug output set $(bold)debug:devbox_project$(regular) to $(bold)1$(regular) in $(bold)etc/config.yaml$(regular)"

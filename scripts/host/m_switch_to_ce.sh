@@ -2,18 +2,18 @@
 
 set -e
 
-cd "$(dirname "${BASH_SOURCE[0]}")/../.." && vagrant_dir=$PWD
+cd "$(dirname "${BASH_SOURCE[0]}")/../.." && devbox_dir=$PWD
 
-source "${vagrant_dir}/scripts/functions.sh"
+source "${devbox_dir}/scripts/functions.sh"
 
 status "Switching to Magento CE"
 incrementNestingLevel
 
-magento_ce_dir="${vagrant_dir}/magento"
+magento_ce_dir="${devbox_dir}/magento"
 magento_ee_dir="${magento_ce_dir}/magento2ee"
-host_os="$(bash "${vagrant_dir}/scripts/host/get_host_os.sh")"
-php_executable="$(bash "${vagrant_dir}/scripts/host/get_path_to_php.sh")"
-checkout_source_from="$(bash "${vagrant_dir}/scripts/get_config_value.sh" "checkout_source_from")"
+host_os="$(bash "${devbox_dir}/scripts/host/get_host_os.sh")"
+php_executable="$(bash "${devbox_dir}/scripts/host/get_path_to_php.sh")"
+checkout_source_from="$(bash "${devbox_dir}/scripts/get_config_value.sh" "checkout_source_from")"
 
 force_switch=0
 upgrade_only=0
@@ -48,7 +48,7 @@ if [[ "${checkout_source_from}" == "git" ]]; then
         git checkout composer.json
         git checkout composer.lock
 
-#        if [[ ${host_os} == "Windows" ]] || [[ $(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs") == 0 ]]; then
+#        if [[ ${host_os} == "Windows" ]] || [[ $(bash "${devbox_dir}/scripts/get_config_value.sh" "guest_use_nfs") == 0 ]]; then
 #            # Prevent issues on Windows with incorrect symlinks to files
 #            if [[ -f ${magento_ce_dir}/app/etc/aliases_to_classes_map.json ]]; then
 #                rm ${magento_ce_dir}/app/etc/aliases_to_classes_map.json
@@ -60,7 +60,7 @@ if [[ "${checkout_source_from}" == "git" ]]; then
 #        fi
     fi
 
-    bash "${vagrant_dir}/scripts/host/relink_sample_data.sh" 2> >(logError)
+    bash "${devbox_dir}/scripts/host/relink_sample_data.sh" 2> >(logError)
 else
     # Current installation is Composer-based
     warning "Switching between CE and EE is not possible for composer-based installation. Falling back to reinstall"
@@ -69,19 +69,19 @@ else
     fi
 fi
 
-bash "${vagrant_dir}/scripts/host/m_composer.sh" install 2> >(logError)
+bash "${devbox_dir}/scripts/host/m_composer.sh" install 2> >(logError)
 
-#if [[ ${host_os} == "Windows" ]] || [[ $(bash "${vagrant_dir}/scripts/get_config_value.sh" "guest_use_nfs") == 0 ]]; then
+#if [[ ${host_os} == "Windows" ]] || [[ $(bash "${devbox_dir}/scripts/get_config_value.sh" "guest_use_nfs") == 0 ]]; then
 #    read -p "$(warning "[Action Required] Wait while Magento2 code is uploaded in PhpStorm and press any key to continue...")" -n1 -s
 #fi
 
 if [[ ${upgrade_only} -eq 1 ]]; then
-    cd "${vagrant_dir}" && vagrant ssh -c 'chmod a+x ${MAGENTO_ROOT}/bin/magento' 2> >(logError)
-    bash "${vagrant_dir}/m-bin-magento" "setup:upgrade" 2> >(logError)
-    bash "${vagrant_dir}/m-bin-magento" "indexer:reindex" 2> >(logError)
-    bash "${vagrant_dir}/m-clear-cache" 2> >(logError)
+    cd "${devbox_dir}" && devbox ssh -c 'chmod a+x ${MAGENTO_ROOT}/bin/magento' 2> >(logError)
+    bash "${devbox_dir}/m-bin-magento" "setup:upgrade" 2> >(logError)
+    bash "${devbox_dir}/m-bin-magento" "indexer:reindex" 2> >(logError)
+    bash "${devbox_dir}/m-clear-cache" 2> >(logError)
 else
-    bash "${vagrant_dir}/scripts/host/m_reinstall.sh" 2> >(logError)
+    bash "${devbox_dir}/scripts/host/m_reinstall.sh" 2> >(logError)
 fi
 
 decrementNestingLevel

@@ -2,7 +2,7 @@
 
 #tests_dir=$(cd "$(dirname "$0")"; pwd)
 test_config_dir="${tests_dir}/_files"
-vagrant_dir="${tests_dir}/tmp/test/magento2-vagrant"
+devbox_dir="${tests_dir}/tmp/test/magento2-devbox"
 current_log_file_path="${tests_dir}/tmp/test/current-test.log"
 magento_codebase_stash_dir="${tests_dir}/tmp/testsuite/codebases"
 skip_codebase_stash=0

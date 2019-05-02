@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-vagrant_dir="${VAGRANT_ROOT}"
+devbox_dir="${DEVBOX_ROOT}"
 
-source "${vagrant_dir}/scripts/functions.sh"
+source "${devbox_dir}/scripts/functions.sh"
 
 config_path=$1
 config_value=$2

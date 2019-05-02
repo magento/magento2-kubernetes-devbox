@@ -32,7 +32,7 @@ spec:
                       - name: code
                         mountPath: {{.Values.global.monolith.volumeHostPath}}
                   env:
-                      - name: VAGRANT_ROOT
+                      - name: DEVBOX_ROOT
                         value: {{.Values.global.monolith.volumeHostPath}}
                       - name: COMPOSER_HOME
                         value: {{.Values.global.monolith.volumeHostPath}}/.composer
@@ -40,7 +40,7 @@ spec:
                         value: {{.Values.global.monolith.volumeHostPath}}/magento
                       - name: MAGENTO_ROOT_HOST
                         value: {{.Values.global.monolith.volumeHostPath}}/magento
-                      - name: VAGRANT_ROOT_HOST
+                      - name: DEVBOX_ROOT_HOST
                         value: {{.Values.global.monolith.volumeHostPath}}
                       - name: IS_WINDOWS_HOST
                         value: "0"
@@ -55,7 +55,7 @@ spec:
                       - name: code
                         mountPath: {{.Values.global.monolith.volumeHostPath}}
                   env:
-                      - name: VAGRANT_ROOT
+                      - name: DEVBOX_ROOT
                         value: {{.Values.global.monolith.volumeHostPath}}
                       - name: COMPOSER_HOME
                         value: {{.Values.global.monolith.volumeHostPath}}/.composer
@@ -63,7 +63,7 @@ spec:
                         value: {{.Values.global.monolith.volumeHostPath}}/magento
                       - name: MAGENTO_ROOT_HOST
                         value: {{.Values.global.monolith.volumeHostPath}}/magento
-                      - name: VAGRANT_ROOT_HOST
+                      - name: DEVBOX_ROOT_HOST
                         value: {{.Values.global.monolith.volumeHostPath}}
                       - name: IS_WINDOWS_HOST
                         value: "0"
