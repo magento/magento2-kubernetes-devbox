@@ -60,11 +60,7 @@ function testNoCustomConfigBasicTest()
     executeBasicCommonAssertions
     assertMagentoEditionIsCE
     assertCeSampleDataNotInstalled
-    assertTestsConfigured
-    assertDebugConfigurationWork
     assertRedisCacheIsEnabled
-
-#    executeExtendedCommonAssertions
 }
 
 ## Call and Run all Tests

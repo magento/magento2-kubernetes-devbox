@@ -43,8 +43,8 @@ global:
     volumeHostPath: /Users/user/Projects/magento2-kubernetes-for-developers
   persistence:
     nfs:
-      enabled: true # NFS Status
-      serverIp: 192.168.99.1
+      enabled: true # This value is overridden via <devbox_project>/etc/config.yaml
+      serverIp: 192.168.99.1 # This value is overridden via <devbox_project>/etc/config.yaml
 
 resources: {}
   # Uncomment the following

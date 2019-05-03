@@ -51,17 +51,24 @@ See logs in ${logs_dir}"
 
 ## Tests
 
-function testNoCustomConfigExtendedTest()
+function testCe23WithSampleDataMysqlSearchNoNfs()
 {
-    current_config_name="no_custom_config"
-    current_codebase="ce"
+    current_config_name="ce23_with_sample_data_mysql_search_no_nfs"
+    current_codebase="ce23_with_sample_data"
+
     installEnvironment
-#    assertVarnishDisabled
+
+    assertSourceCodeIsFromBranch "${devbox_dir}/magento" "2.3"
+    assertSourceCodeIsFromBranch "${devbox_dir}/magento/magento2ce-sample-data" "2.3"
+
     executeBasicCommonAssertions
+    assertCeSampleDataInstalled
     assertMagentoEditionIsCE
-    assertCeSampleDataNotInstalled
-    assertTestsConfigured
-    assertDebugConfigurationWork
+
+    assertElasticSearchDisabled
+    assertSearchWorks
+    assertElasticSearchEnablingWorks
+
     assertRedisCacheIsEnabled
 
     executeExtendedCommonAssertions

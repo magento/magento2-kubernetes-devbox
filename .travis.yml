@@ -28,10 +28,13 @@ before_script:
   - cat ./scripts/host/k_rebuild_environment.sh
   - cat ./init_project.sh
   - cat ./etc/config.yaml.dist
+  - cat ./etc/helm/values.yaml
+  - cat ./tests/_files/*
+  - cat ./scripts/host/get_path_to_php.sh
 
 script:
   # Run DevBox tests
-  - cd ./tests && sudo bash ./run-tests-on-travis.sh && cd ..
+  - travis_wait 30 sudo bash ./tests/run-tests-on-travis.sh
 
 after_script:
   - sudo kubectl describe pods
