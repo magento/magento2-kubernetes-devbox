@@ -12,6 +12,8 @@ function executeBasicCommonAssertions()
 
 function executeExtendedCommonAssertions()
 {
+    assertTestsConfigured
+    assertDebugConfigurationWork
     # TODO: Implement functionality and uncomment assertions
 #    assertPhpStormConfigured
 

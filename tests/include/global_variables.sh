@@ -11,6 +11,8 @@ current_config_name=""
 current_codebase=""
 current_magento_base_url=""
 
+export SHUNIT_COLOR="always"
+
 # Colors for CLI output
 bold=$(tput bold)
 green=$(tput setaf 2)
