@@ -2,11 +2,23 @@ sudo: required
 # We need the systemd for the kubeadm and it's default from 16.04+
 dist: xenial
 # This moves Kubernetes specific config files.
+
+stages:
+  - name: "Basic Tests"
+  - name: "Extended Tests"
+    if: type = cron
+jobs:
+  include:
+    - stage: "Basic Tests"
+      script:
+        - travis_wait 15 sudo bash ./tests/run-tests-on-travis.sh testNoCustomConfigBasicTest
+    - stage: "Extended Tests"
+      script: travis_wait 30 sudo bash ./tests/run-tests-on-travis.sh testCe23WithSampleDataMysqlSearchNoNfs
+    # - script: travis_wait 30 sudo bash ./tests/run-tests-on-travis.sh anotherTestGoesHere
+
 env:
   global:
     - CHANGE_MINIKUBE_NONE_USER=true
-    # Uncomment the following line to execute full test suite on Travis
-    # - RUN_EXTENDED_TEST_SUITE=true
 
 install:
   # Make root mounted as rshared to fix kube-dns issues.
@@ -31,10 +43,6 @@ before_script:
   - cat ./etc/helm/values.yaml
   - cat ./tests/_files/*
   - cat ./scripts/host/get_path_to_php.sh
-
-script:
-  # Run DevBox tests
-  - travis_wait 30 sudo bash ./tests/run-tests-on-travis.sh
 
 after_script:
   - sudo kubectl describe pods
