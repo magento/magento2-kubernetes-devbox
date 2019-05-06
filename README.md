@@ -401,13 +401,13 @@ Note: See [Working with npm](https://www.npmjs.com/package/n#working-with-npm) i
 The tests are executed on every PR on Travis CI. It is possible to configure the same tests to run on the forked repository.
 
 An extended testsuite is executed nightly on the master branch. On every PR by default only basic smoke tests are executed.
-It is possible to execute an extended testsuite on every PR build by uncommenting `RUN_EXTENDED_TEST_SUITE=true` in the [.travis.yaml](./.travis.yml)
+It is possible to execute an extended testsuite on every PR build by commenting out `if: type = cron` in the [.travis.yaml](./.travis.yml)
 
 The same tests can be run on local using the following command. :warning: only one devbox can be running on the same host at the same time. The tests will destroy existing devbox installation.
 
 ```
 cd tests
-bash ./testsuite-basic.sh # OR bash ./testsuite-extended.sh
+bash ./<test-name>.sh
 ```
 
 ### FAQ
