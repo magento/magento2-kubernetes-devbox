@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/magento/magento2-kubernetes-devbox.svg?branch=master)](https://travis-ci.com/magento/magento2-kubernetes-devbox)
 <!--[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)-->
-[![Semver](http://img.shields.io/SemVer/2.0.0.png?color=blue)](http://semver.org/spec/v2.0.0.html)
+<!--[![Semver](http://img.shields.io/SemVer/2.0.0.png?color=blue)](http://semver.org/spec/v2.0.0.html)-->
 <!--[![Latest GitHub release](docs/images/release_badge.png)](https://github.com/paliarush/magento2-vagrant-for-developers/releases/latest)-->
 
  * [What You get](#what-you-get)
@@ -109,19 +109,18 @@ The software listed below should be available in [PATH](https://en.wikipedia.org
     cd magento2-devbox
     
     # NFS configuration is needed just once for each project, it will prompt for your password to make changes on the host
+    
     bash scripts/host/configure_nfs_exports.sh
     
     bash init_project.sh
     ```
+    <!--
     To initialize project with checkout container,
     clone sources to checkout directory and use -e parameter to init_project.sh call.
     ```
     bash init_project.sh -e
     ```
-    If you have issues with nfs. To use filesystem mount instead of nfs use -d parameter to init_project.sh call.
-    ```
-    bash init_project.sh -d
-    ```
+    -->
     
  1. Use the `magento2-devbox` directory as the project root in PHP Storm (not `magento2-devbox/magento`). This is important, because in this case PHP Storm will be configured automatically by [init_project.sh](init_project.sh).<!-- If NFS files sync is disabled in [config](etc/config.yaml.dist) and ![](docs/images/windows-icon.png)on Windows hosts [verify the deployment configuration in PHP Storm](docs/phpstorm-configuration-windows-hosts.md).-->
 
@@ -289,7 +288,7 @@ The following configuration files are used by default:
 - [Actually applied Dockerfile for monolith with xDebug and customizations](etc/docker/monolith-with-xdebug/Dockerfile)
 - [Kubernetes config for Monolith](etc/helm/templates/magento2-deployment.yaml)
 - [Kubernetes Helm variables](etc/helm/values.yaml)
-- [Configs for Checkout service](etc/helm/charts/checkout)
+<!--- [Configs for Checkout service](etc/helm/charts/checkout)-->
 <!--It is possible to view/modify majority of guest machine config files directly from IDE on the host. They will be accessible in [etc/guest](etc/guest) directory only when guest machine is running. The list of accessible configs includes: PHP, Apache, Mysql, Varnish, RabbitMQ.
 Do not edit any symlinks using PhpStorm because it may break your installation.
 
@@ -399,9 +398,13 @@ Note: See [Working with npm](https://www.npmjs.com/package/n#working-with-npm) i
 ### DevBox tests
 
 The tests are executed on every PR on Travis CI. It is possible to configure the same tests to run on the forked repository.
+In order to run composer-based Magento tests for the fork, repo.magento.com credentials must be set to `COMPOSER_AUTH` [environment variable](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings) on Travis CI, the variable value should be:
+```
+'{"http-basic": {"repo.magento.com": {"username": "<public_key>","password": "<secret_key>"}}}'
+```
 
-An extended testsuite is executed nightly on the master branch. On every PR by default only basic smoke tests are executed.
-It is possible to execute an extended testsuite on every PR build by commenting out `if: type = cron` in the [.travis.yaml](./.travis.yml)
+An extended testsuite by default is executed against the master branch only.
+It is possible to execute an extended testsuite on every build by commenting out `if: branch = master` in the [.travis.yaml](./.travis.yml)
 
 The same tests can be run on local using the following command. :warning: only one devbox can be running on the same host at the same time. The tests will destroy existing devbox installation.
 

@@ -14,10 +14,13 @@ composer_auth_json="${devbox_dir}/etc/composer/auth.json"
 # commented out due to composer conflicts
 # ${php_executable} "${composer_phar}" global require "hirak/prestissimo:^0.3"
 
-cd "${DEVBOX_ROOT}/magento"
 if [[ -f ${composer_auth_json} ]]; then
     status "Exporting etc/auth.json to environment variable"
     export COMPOSER_AUTH="$(cat "${composer_auth_json}")"
+fi
+
+if [[ -d "${DEVBOX_ROOT}/magento" ]]; then
+    cd "${DEVBOX_ROOT}/magento"
 fi
 
 status "composer --no-interaction "$@""

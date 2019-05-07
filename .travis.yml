@@ -6,7 +6,7 @@ dist: xenial
 stages:
   - name: "Basic Tests"
   - name: "Extended Tests"
-    if: type = cron
+    if: branch = master
 jobs:
   include:
     - stage: "Basic Tests"
@@ -14,7 +14,7 @@ jobs:
         - travis_wait 15 sudo bash ./tests/run-tests-on-travis.sh testNoCustomConfigBasicTest
     - stage: "Extended Tests"
       script: travis_wait 30 sudo bash ./tests/run-tests-on-travis.sh testCe23WithSampleDataMysqlSearchNoNfs
-    # - script: travis_wait 30 sudo bash ./tests/run-tests-on-travis.sh anotherTestGoesHere
+    - script: travis_wait 20 sudo bash ./tests/run-tests-on-travis.sh testCeFromComposerNoNfs
 
 env:
   global:
@@ -51,6 +51,7 @@ after_script:
   - sudo kubectl logs -l app=magento -c monolith-xdebug
   - sudo kubectl logs -l app=magento -c monolith
   - sudo kubectl logs -l app=magento -c nginx
-  - sudo cat /etc/exports
-  - sudo cat ./tests/logs/*
   - sudo cat ./logs/*
+  - sudo cat ./tests/tmp/test/current-test.log
+  - sudo cat ./tests/tmp/test/magento2-devbox/log/*
+  - sudo cat /etc/exports
