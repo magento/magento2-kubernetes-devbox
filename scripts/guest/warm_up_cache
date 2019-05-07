@@ -9,7 +9,7 @@ function loadByUrl()
     log "Warming up ${1}"
     wget -q -O - "${1}" | grep -o "http://${host_name}[^\"]*" | grep -o ".*\.[A-Za-z]*$" | while read -r link ; do
         log "Warming up ${link}"
-        wget -q ${link} 2> >(log) > >(log)
+        wget -q -O - ${link} &> /dev/null
     done
 }
 
