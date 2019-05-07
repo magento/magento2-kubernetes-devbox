@@ -12,6 +12,7 @@
    * [Default credentials and settings](#default-credentials-and-settings)
    * [Getting updates and fixes](#getting-updates-and-fixes)
  * [Day-to-day development scenarios](#day-to-day-development-scenarios)
+   * [Access Magento](#access-magento)
    * [Reinstall Magento](#reinstall-magento)
    * [Clear Magento cache](#clear-magento-cache)
    * [Switch between CE and EE](#switch-between-ce-and-ee)
@@ -92,7 +93,7 @@ The software listed below should be available in [PATH](https://en.wikipedia.org
     
     :warning: Do not open it in PhpStorm until `init_project.sh` has completed PhpStorm configuration in the initialize project step below.
 
-     ```
+     ```bash
      git clone --recursive git@github.com:magento/magento2-kubernetes-devbox.git magento2-devbox
      ```
 
@@ -105,7 +106,7 @@ The software listed below should be available in [PATH](https://en.wikipedia.org
 
  1. Initialize the project (this will configure the environment, install Magento<!--, and configure the PHPStorm project-->):
 
-    ```
+    ```bash
     cd magento2-devbox
     
     # NFS configuration is needed just once for each project, it will prompt for your password to make changes on the host
@@ -117,7 +118,7 @@ The software listed below should be available in [PATH](https://en.wikipedia.org
     <!--
     To initialize project with checkout container,
     clone sources to checkout directory and use -e parameter to init_project.sh call.
-    ```
+    ```bash
     bash init_project.sh -e
     ```
     -->
@@ -171,6 +172,15 @@ Note, that semantic versioning is only used for `x.0` branches (not for `develop
 
 ## Day-to-day development scenarios
 
+### Access Magento
+
+Use the following command to open current instance:
+```bash
+./m-open
+```
+
+Hostname can also be found in `maghento/host_name` section of [config.yaml](etc/config.yaml.dist).
+
 ### Reinstall Magento
 
 Use commands described in [Switch between CE and EE](#switch-between-ce-and-ee) section with `-f` flag. Before doing actual re-installation, these commands update linking of EE codebase, clear cache, update composer dependencies.
@@ -179,16 +189,16 @@ If no composer update and relinking of EE codebase is necessary, use the followi
 
 Go to the root of the project in command line and execute:
 
-```
-bash m-reinstall
+```bash
+./m-reinstall
 ```
 
 ### Clear Magento cache
 
 Go to the root of the project in command line and execute:
 
-```
-bash m-clear-cache
+```bash
+./m-clear-cache
 ```
 
 ### Switch between CE and EE
@@ -197,10 +207,10 @@ Assume, that EE codebase is available in `magento2-devbox/magento/magento2ee`.
 The following commands will link/unlink EE codebase, clear cache, update composer dependencies and reinstall Magento.
 Go to 'magento2-devbox' created earlier and run in command line:
 
-```
-bash m-switch-to-ce
-OR
-bash m-switch-to-ee
+```bash
+./m-switch-to-ce
+# OR
+./m-switch-to-ee
 ```
 
 Force switch can be done using `-f` flag even if already switched to the target edition. May be helpful to relink EE modules after switching between branches.
@@ -214,7 +224,7 @@ Upgrade can be performed instead of re-installation using `-u` flag.
 Make sure that `ce_sample_data` and `ee_sample_data` are defined in [config.yaml](etc/config.yaml.dist) and point CE and optionally EE sample data repositories.
 During initial project setup or during `bash init_project.sh -fc` (with `-fc` project will be re-created from scratch), sample data repositories willl be checked out to `magento2-devbox/magento/magento2ce-sample-data` and `magento2-devbox/magento/magento2ee-sample-data`.
 
-To install Magento with sample data set `install_sample_data` in [config.yaml](etc/config.yaml.dist) to `1` and run `bash m-switch-to-ce -f` or `bash m-switch-to-ee -f`, depending on the edition to be installed. To disable sample data, set this option to `0` and force-switch to necessary edition (using the same commands).
+To install Magento with sample data set `install_sample_data` in [config.yaml](etc/config.yaml.dist) to `1` and run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed. To disable sample data, set this option to `0` and force-switch to necessary edition (using the same commands).
 
 ### Basic data generation
 
@@ -224,16 +234,16 @@ Several entities are generated for testing purposes by default using REST API af
 - Couple simple products
 - Configurable product
 
-To disable this feature, set `magento/generate_basic_data` in [config.yaml](etc/config.yaml.dist) to `0` and run `bash m-switch-to-ce -f` or `bash m-switch-to-ee -f`, depending on the edition to be installed.
+To disable this feature, set `magento/generate_basic_data` in [config.yaml](etc/config.yaml.dist) to `0` and run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed.
 
 ### Use Magento CLI (bin/magento)
 
 Go to 'magento2-devbox' created earlier and run in command line:
 
-```
-bash m-bin-magento <command_name>
-e.g.
-bash m-bin-magento list
+```bash
+./m-bin-magento <command_name>
+# e.g.
+./m-bin-magento list
 ```
 
 ### Debugging with XDebug
@@ -250,7 +260,7 @@ XDebug is already configured to connect to the host machine automatically. So ju
  1. Run created remote debug configuration
  1. Run CLI command on the guest as follows (`xdebug.remote_host` value might be different for you):
 
- ```
+ ```bash
  php -d xdebug.remote_autostart=1 <path_to_cli_script>
  ```
 
@@ -311,10 +321,10 @@ Unique IP address, SSH port and domain name will be generated for each new insta
 
 Go to 'magento2-devbox' created earlier and run in command line:
 
-```
-bash m-composer install
-OR
-bash m-composer update
+```bash
+./m-composer install
+# OR
+./m-composer update
 ```
 
 ### Running Magento tests
@@ -360,26 +370,26 @@ It is possible to reset project environment to default state, which you usually 
 
 Go to 'magento2-devbox' created earlier and run in command line:
 
-```
-bash init_project.sh -f
+```bash
+./init_project.sh -f
 ```
 
 It is possible to reset Magento 2 code base at the same time. Magento 2 code base will be deleted and then cloned from the repositories specified in [etc/config.yaml](etc/config.yaml.dist)
 
-```
-bash init_project.sh -fc
+```bash
+./init_project.sh -fc
 ```
 
 To reset PhpStorm project configuration, in addition to `-f` specify `-p` option:
 
-```
-bash init_project.sh -fp
+```bash
+./init_project.sh -fp
 ```
 
 Ultimate project reset can be achieved by combining all available flags:
 
-```
-bash init_project.sh -fcp
+```bash
+./init_project.sh -fcp
 ```
 
 ### Switch NodeJS Versions
@@ -399,7 +409,7 @@ Note: See [Working with npm](https://www.npmjs.com/package/n#working-with-npm) i
 
 The tests are executed on every PR on Travis CI. It is possible to configure the same tests to run on the forked repository.
 In order to run composer-based Magento tests for the fork, repo.magento.com credentials must be set to `COMPOSER_AUTH` [environment variable](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings) on Travis CI, the variable value should be:
-```
+```json
 '{"http-basic": {"repo.magento.com": {"username": "<public_key>","password": "<secret_key>"}}}'
 ```
 
@@ -408,7 +418,7 @@ It is possible to execute an extended testsuite on every build by commenting out
 
 The same tests can be run on local using the following command. :warning: only one devbox can be running on the same host at the same time. The tests will destroy existing devbox installation.
 
-```
+```bash
 cd tests
 bash ./<test-name>.sh
 ```
@@ -416,7 +426,7 @@ bash ./<test-name>.sh
 ### FAQ
  1. To debug any CLI script in current Devbox project, set `debug:devbox_project` option in [config.yaml](etc/config.yaml.dist) to `1`
  1. Make sure that you used `magento2-devbox` directory as project root in PHP Storm (not `magento2-devbox/magento`)
- 1. If project opened in PhpStorm looks broken, close PhpStorm  and remove `magento2-devbox/.idea`. Run `bash magento2-devbox/scripts/host/configure_php_storm.sh`. After opening project in PhpStorm again everything should look good
+ 1. If project opened in PhpStorm looks broken, close PhpStorm  and remove `magento2-devbox/.idea`. Run `./magento2-devbox/scripts/host/configure_php_storm.sh`. After opening project in PhpStorm again everything should look good
  1. Please make sure that currently installed software, specified in [requirements section](#requirements), meets minimum version requirement
  1. Be careful if your OS is case-insensitive, NFS might break the symlinks if you cd into the wrong casing and you power the devbox up. Just be sure to cd in to the casing the directory was originally created as.
  1. Cannot run unit tests from PHPStorm on Magento 2.2, see possible solution [here](https://github.com/paliarush/magento2-vagrant-for-developers/issues/167)
