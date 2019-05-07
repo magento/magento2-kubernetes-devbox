@@ -6,10 +6,11 @@ source "${devbox_dir}/scripts/functions.sh"
 
 magento_app_code_dir="${devbox_dir}/magento/app/code/Magento"
 
-cd "${magento_app_code_dir}"
-
-status "Deleting TestModule directories"
-ls | grep "TestModule" | xargs rm -rf
+if [[ -d "${magento_app_code_dir}" ]]; then
+    cd "${magento_app_code_dir}"
+    status "Deleting TestModule directories"
+    ls | grep "TestModule" | xargs rm -rf
+fi
 
 cd "${devbox_dir}"
 

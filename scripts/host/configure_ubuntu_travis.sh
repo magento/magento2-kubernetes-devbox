@@ -14,3 +14,4 @@ sed -i "s|minikube start --cpus=2 --memory=4096|sudo minikube start --cpus=2 --m
 sed -i "s|&& eval \$(minikube docker-env) ||g" ./scripts/host/k_rebuild_environment.sh
 sed -i "s/use_nfs:\ 1/use_nfs:\ 0/g" ./etc/config.yaml.dist
 sed -i "s/nfs_server_ip:\ \"0\.0\.0\.0\"/nfs_server_ip:\ \"$(ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')\"/g" ./etc/config.yaml.dist
+echo "${COMPOSER_AUTH}" > ./etc/composer/auth.json
