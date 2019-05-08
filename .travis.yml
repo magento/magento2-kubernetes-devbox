@@ -11,13 +11,13 @@ jobs:
   include:
     - stage: "Basic Tests"
       script:
-        - travis_wait 15 sudo bash ./tests/run-tests-on-travis.sh testNoCustomConfigBasicTest
+        - cd tests && sudo bash ./NoCustomConfigBasicTest.sh
     - stage: "Extended Tests"
-      script: travis_wait 30 sudo bash ./tests/run-tests-on-travis.sh testCe23WithSampleDataMysqlSearchNoNfs
-    - script: travis_wait 20 sudo bash ./tests/run-tests-on-travis.sh testCeFromComposerNoNfs
+      script: cd tests && sudo bash ./Ce23WithSampleDataMysqlSearchNoNfsTest.sh
+    - script: cd tests && sudo bash ./CeFromComposerNoNfsTest.sh
+    - script: cd tests && sudo bash ./EeLinkingTest.sh
 
 env:
-  global:
     - CHANGE_MINIKUBE_NONE_USER=true
 
 install:
@@ -41,8 +41,9 @@ before_script:
   - cat ./init_project.sh
   - cat ./etc/config.yaml.dist
   - cat ./etc/helm/values.yaml
-  - cat ./tests/_files/*
+#  - cat ./tests/_files/* # TODO: Cannot cat because of directory, move configs to a separate directory
   - cat ./scripts/host/get_path_to_php.sh
+  - while sleep 540; do echo "=====[ $SECONDS seconds still running ]====="; done &
 
 after_script:
   - sudo kubectl describe pods
@@ -55,3 +56,4 @@ after_script:
   - sudo cat ./tests/tmp/test/current-test.log
   - sudo cat ./tests/tmp/test/magento2-devbox/log/*
   - sudo cat /etc/exports
+  - kill %1

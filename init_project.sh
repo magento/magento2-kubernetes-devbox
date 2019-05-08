@@ -216,11 +216,11 @@ cd "${devbox_dir}"
 
 if [[ $(isMinikubeRunning) -eq 0 ]]; then
     status "Starting minikube"
-    minikube start --cpus=2 --memory=4096
+    minikube start -v=0 --cpus=2 --memory=4096
     minikube addons enable ingress
     minikube addons enable heapster
     # hanged in some cases todo
-#    minikube start --cache-images --cpus=2 --memory=4096 2> >(logError) | {
+#    minikube start -v=0 --cache-images --cpus=2 --memory=4096 2> >(logError) | {
 #      while IFS= read -r line
 #      do
 #        filterDevboxOutput "${line}"

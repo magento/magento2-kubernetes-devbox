@@ -208,6 +208,16 @@ function refreshSearchIndexes()
     bash m-bin-magento indexer:reindex catalogsearch_fulltext >>${current_log_file_path} 2>&1
 }
 
+function emulateEeRepoCloning()
+{
+    echo "${grey}## emulateEeDownloading${regular}"
+    echo "## emulateEeDownloading" >>${current_log_file_path}
+
+    cp -r "${tests_dir}/_files/magento2ee" "${devbox_dir}/magento/"
+    cp "${devbox_dir}/magento/composer.lock" "${devbox_dir}/magento/magento2ee/composer.lock"
+    sed -i.back 's|Composer installer for Magento modules|Composer installer for Magento modules EE MARK FOR TESTS|g' "${devbox_dir}/magento/magento2ee/composer.lock" >>${current_log_file_path} 2>&1
+}
+
 function logAndEcho() {
     if [[ -n "${1}" ]]; then
         input="${1}"
