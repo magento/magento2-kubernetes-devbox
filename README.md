@@ -154,7 +154,7 @@ Upon a successful installation, you'll see the location and URL of the newly-ins
   - ![](docs/images/linux-icon.png)![](docs/images/osx-icon.png) On Mac and \*nix hosts: the same as on host
 - MySQL DB host: 
   - inside the container: `localhost`
-  - remotely: `<ip-from-config-yaml>`
+  - remotely: `<ip-from-config-yaml>` with port `30306`. Related configuration can be found in values.yaml inside magento2-devbox/etc/helm
 - MySQL DB name: `magento`, `magento_integration_tests`
 - MySQL DB user/password: `root:123123q`
 
