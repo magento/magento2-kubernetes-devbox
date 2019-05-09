@@ -1,0 +1,1 @@
+This file is used by the DevBox to check if Magento Commerce modules are linked properly in git-based installation.

@@ -12,6 +12,6 @@ if [[ $(isMinikubeRunning) -eq 1 || $(isMinikubeSaved) -eq 1 ]]; then
 fi
 
 # TODO: Avoid duplication with init_project.sh
-minikube start --cpus=2 --memory=4096 2> >(logError)
+minikube start -v=0 --cpus=2 --memory=4096 2> >(logError)
 
 info "$(regular)See details in $(bold)${devbox_dir}/log/${current_script_name}.log$(regular). For debug output set $(bold)debug:devbox_project$(regular) to $(bold)1$(regular) in $(bold)etc/config.yaml$(regular)"

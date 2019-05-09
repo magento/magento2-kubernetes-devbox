@@ -134,6 +134,7 @@ function assertMagentoSwitchToEeWorks()
 {
     echo "${blue}## assertMagentoSwitchToEeWorks${regular}"
     echo "## assertMagentoSwitchToEeWorks" >>${current_log_file_path}
+
     cd "${devbox_dir}"
     bash m-switch-to-ee -f >>${current_log_file_path} 2>&1
     pattern="Access storefront at .*(http\://[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/.*"

@@ -1,0 +1,12 @@
+{
+    "name": "magento/module-enterprise",
+    "description": "N/A",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Magento\\Enterprise\\": ""
+        }
+    }
+}
