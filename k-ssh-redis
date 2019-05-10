@@ -6,4 +6,4 @@ cd "$(dirname "${BASH_SOURCE[0]}")" && devbox_dir=$PWD
 
 source "${devbox_dir}/scripts/functions.sh"
 
-kubectl exec -it "$(getRedisMasterPodId)" --container magento2-redis -- /bin/bash
+loginToPodContainer "$(getRedisMasterPodId)" "magento2-redis"

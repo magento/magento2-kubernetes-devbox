@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "${BASH_SOURCE[0]}")/../.." && devbox_dir=$PWD
+
+source "${devbox_dir}/scripts/functions.sh"
+
+status "Switching to Magento CE"
+incrementNestingLevel
+
+magento_ce_dir="${devbox_dir}/magento"
+magento_ee_dir="${magento_ce_dir}/magento2ee"
+checkout_source_from="$(bash "${devbox_dir}/scripts/get_config_value.sh" "checkout_source_from")"
+
+force_switch=0
+upgrade_only=0
+while getopts 'fu' flag; do
+  case "${flag}" in
+    f) force_switch=1 ;;
+    u) upgrade_only=1 ;;
+    *) error "Unexpected option" && decrementNestingLevel && exit 1;;
+  esac
+done
+
+if [[ "${checkout_source_from}" == "git" ]]; then
+    # Current installation is Git-based
+    if [[ ! -f ${magento_ee_dir}/LICENSE_EE.txt ]]; then
+        if [[ ${force_switch} -eq 0 ]]; then
+            error "EE codebase is not available. Use 'm-switch-to-ce -f' to switch anyway."
+            decrementNestingLevel
+            exit 0
+        fi
+    else
+        if [[ ! -f ${magento_ce_dir}/LICENSE_EE.txt ]] && [[ ${force_switch} -eq 0 ]]; then
+            warning "Already switched to CE. Use 'm-switch-to-ce -f' to switch anyway."
+            decrementNestingLevel
+            exit 0
+        fi
+
+        status "Unlinking EE repository"
+        php -f ${magento_ee_dir}/dev/tools/build-ee.php -- --command=unlink --ee-source="${magento_ee_dir}" --ce-source="${magento_ce_dir}" --exclude=true 2> >(logError) > >(log)
+    fi
+
+    bash "${devbox_dir}/scripts/guest/relink-sample-data" 2> >(logError)
+else
+    # Current installation is Composer-based
+    warning "Switching between CE and EE is not possible for composer-based installation. Falling back to reinstall"
+    if [[ ${upgrade_only} -eq 1 ]]; then
+        rm "${magento_ce_dir}/composer.lock"
+    fi
+fi
+
+bash "${devbox_dir}/scripts/guest/composer.sh" install 2> >(logError)
+
+if [[ ${upgrade_only} -eq 1 ]]; then
+    chmod a+x "${MAGENTO_ROOT}/bin/magento" 2> >(logError)
+    bash "${MAGENTO_ROOT}/bin/magento" "setup:upgrade" 2> >(logError)
+    bash "${MAGENTO_ROOT}/bin/magento" "indexer:reindex" 2> >(logError)
+    bash "${devbox_dir}/scripts/guest/m-clear-cache" 2> >(logError)
+else
+    bash "${devbox_dir}/scripts/guest/m-reinstall" 2> >(logError)
+fi
+
+decrementNestingLevel

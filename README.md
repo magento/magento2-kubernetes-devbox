@@ -224,7 +224,7 @@ Upgrade can be performed instead of re-installation using `-u` flag.
 Make sure that `ce_sample_data` and `ee_sample_data` are defined in [config.yaml](etc/config.yaml.dist) and point CE and optionally EE sample data repositories.
 During initial project setup or during `bash init_project.sh -fc` (with `-fc` project will be re-created from scratch), sample data repositories willl be checked out to `magento2-devbox/magento/magento2ce-sample-data` and `magento2-devbox/magento/magento2ee-sample-data`.
 
-To install Magento with sample data set `install_sample_data` in [config.yaml](etc/config.yaml.dist) to `1` and run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed. To disable sample data, set this option to `0` and force-switch to necessary edition (using the same commands).
+To install Magento with sample data specify/uncomment sample data repository link at `repository_url_additional_repositories` in [config.yaml](etc/config.yaml.dist) and run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed. To disable sample data, comment out additional repositories and force-switch to necessary edition (using the same commands).
 
 ### Basic data generation
 

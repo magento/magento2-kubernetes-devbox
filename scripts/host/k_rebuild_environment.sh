@@ -29,7 +29,7 @@ while getopts 'e' flag; do
 done
 
 nfs_server_ip="$(bash "${devbox_dir}/scripts/get_config_value.sh" "guest_nfs_server_ip")"
-echo "NFS SERVER IP: ${nfs_server_ip}"
+echo "NFS server IP: ${nfs_server_ip}"
 use_nfs="$(bash "${devbox_dir}/scripts/get_config_value.sh" "guest_use_nfs")"
 cd "${devbox_dir}/etc/helm" && helm install \
     --name magento2 \

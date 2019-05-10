@@ -205,6 +205,11 @@ function getRedisMasterPodId()
     echo "$(kubectl get pods | grep -ohE 'magento2-redis-master-[a-z0-9\-]+')"
 }
 
+function getElasticsearchMasterPodId()
+{
+    echo "elasticsearch-master-0"
+}
+
 function getMysqlPodId()
 {
     echo "$(kubectl get pods | grep -ohE 'magento2-mysql-[a-z0-9\-]+')"
@@ -256,6 +261,7 @@ function isMinikubeInitialized() {
 
 function waitForKubernetesPodToRun()
 {
+    # TODO: Remove if not used anymore
     set +e
 
     if [[ -n "${1}" ]]; then
@@ -276,4 +282,17 @@ function waitForKubernetesPodToRun()
         pod_status=$(kubectl get pods --all-namespaces | grep -hE "${pod_id}-[a-z0-9\-]+" | grep -o 'Running')
     done
     set -e
+}
+
+# {1} - pod name
+# {2} - container name
+function loginToPodContainer()
+{
+    if [[ -z "${1}" ]] || [[ -z "${2}" ]]; then
+        error "Container and pod names must be specified"
+    fi
+    pod_name="${1}"
+    container_name="${2}"
+    echo "Logging in to '${container_name}' container in '${pod_name}' pod"
+    kubectl exec -it "${pod_name}" --container "${container_name}" -- /bin/bash
 }
