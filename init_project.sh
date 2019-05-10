@@ -46,17 +46,13 @@ function checkoutSourceCodeFromGit()
 #        fi
 
         initMagentoCeGit
-        initMagentoCeSampleGit
 
         # By default EE repository is not specified and EE project is not checked out
         if [[ -n "${repository_url_ee}" ]]; then
             initMagentoEeGit
         fi
-        # By default EE sample data repository is not specified and EE project is not checked out
-        repository_url_ee_sample_data="$(bash "${devbox_dir}/scripts/get_config_value.sh" "repository_url_ee_sample_data")"
-        if [ -n "${repository_url_ee_sample_data}" ]; then
-            initMagentoEeSampleGit
-        fi
+
+        initAdditionalGitRepositories
     fi
 }
 
@@ -74,6 +70,21 @@ function initMagentoCeSampleGit()
 {
     repository_url_ce_sample_data="$(bash "${devbox_dir}/scripts/get_config_value.sh" "repository_url_ce_sample_data")"
     initGitRepository ${repository_url_ce_sample_data} "CE sample data" "${magento_ce_sample_data_dir}"
+}
+
+function initAdditionalGitRepositories()
+{
+    repository_url_ce_sample_data="$(bash "${devbox_dir}/scripts/get_config_value.sh" "repository_url_ce_sample_data")"
+
+    additional_repository_index=1
+    current_additional_repo_name="$(bash "${devbox_dir}/scripts/get_config_value.sh" "repository_url_additional_repositories_${additional_repository_index}")"
+    while [[ ! -z "${current_additional_repo_name}" ]]
+    do
+        initGitRepository "${current_additional_repo_name}" "${current_additional_repo_name}"
+
+        ((additional_repository_index++))
+        current_additional_repo_name="$(bash "${devbox_dir}/scripts/get_config_value.sh" "repository_url_additional_repositories_${additional_repository_index}")"
+    done
 }
 
 function initMagentoEeSampleGit()
@@ -100,6 +111,14 @@ function initGitRepository()
     fi
 
     status "Checking out ${repository_name} repository"
+    if [[ -z "${directory}" ]]; then
+        pattern=".*\/(.*)\.git"
+        if [[ ! ${repository_url} =~ ${pattern} ]]; then
+            error "Specified repository URL is invalid: '${repository_url}'"
+            exit 1
+        fi
+        directory="${magento_ce_dir}/${BASH_REMATCH[1]}"
+    fi
     git clone ${repo} "${directory}" 2> >(logError) > >(log)
 
     if [[ -n ${branch} ]]; then

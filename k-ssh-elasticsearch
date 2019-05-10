@@ -6,4 +6,4 @@ cd "$(dirname "${BASH_SOURCE[0]}")" && devbox_dir=$PWD
 
 source "${devbox_dir}/scripts/functions.sh"
 
-loginToPodContainer "$(getMysqlPodId)" "magento2-mysql"
+loginToPodContainer "$(getElasticsearchMasterPodId)" "elasticsearch"

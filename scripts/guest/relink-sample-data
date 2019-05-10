@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+cd "$(dirname "${BASH_SOURCE[0]}")/../.." && devbox_dir=$PWD
+
+source "${devbox_dir}/scripts/functions.sh"
+
+magento_ce_dir="${devbox_dir}/magento"
+magento_ee_dir="${magento_ce_dir}/magento2ee"
+php_executable="$(bash "${devbox_dir}/scripts/host/get_path_to_php.sh")"
+
+status "Linking/unlinking additional sources according to config.yaml"
+incrementNestingLevel
+
+install_ee=0
+if [[ -f "${magento_ce_dir}/LICENSE_EE.txt" ]]; then
+    install_ee=1
+fi
+
+status "Unlinking additional sources"
+php -f "${devbox_dir}/scripts/guest/link-additional-sources.php" -- --command=unlink --ce-source="${magento_ce_dir}" 2> >(logError) > >(log)
+
+if [[ ${install_ee} -eq 1 ]]; then
+    status "Linking EE to CE"
+    php -f "${magento_ee_dir}/dev/tools/build-ee.php" -- --command=link --ee-source="${magento_ee_dir}" --ce-source="${magento_ce_dir}" --exclude=true 2> >(logError) > >(log)
+fi
+
+additional_repository_index=1
+current_additional_repo_name="$(bash "${devbox_dir}/scripts/get_config_value.sh" "repository_url_additional_repositories_${additional_repository_index}")"
+while [[ -n "${current_additional_repo_name}" ]]
+do
+    # TODO: Refactor into function to avoid duplication with the same logic in init_project.sh
+    pattern=".*\/(.*)\.git"
+    if [[ ! ${current_additional_repo_name} =~ ${pattern} ]]; then
+        error "Specified repository URL is invalid: '${current_additional_repo_name}'"
+        exit 1
+    fi
+    additional_source_directory="${magento_ce_dir}/${BASH_REMATCH[1]}"
+
+    status "Linking ${current_additional_repo_name} sources to CE"
+    php -f "${devbox_dir}/scripts/guest/link-additional-sources.php" -- --command=link --additional-source="${additional_source_directory}" --ce-source="${magento_ce_dir}" --exclude=true 2> >(logError) > >(log)
+
+    ((additional_repository_index++))
+    current_additional_repo_name="$(bash "${devbox_dir}/scripts/get_config_value.sh" "repository_url_additional_repositories_${additional_repository_index}")"
+done
+
+decrementNestingLevel
