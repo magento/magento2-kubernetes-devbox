@@ -27,8 +27,11 @@ while getopts 'e' flag; do
 done
 
 nfs_server_ip="$(bash "${devbox_dir}/scripts/get_config_value.sh" "guest_nfs_server_ip")"
-echo "NFS server IP: ${nfs_server_ip}"
+use_varnish="$(bash "${devbox_dir}/scripts/get_config_value.sh" "environment_use_varnish")"
 use_nfs="$(bash "${devbox_dir}/scripts/get_config_value.sh" "guest_use_nfs")"
+
+status "Deploying cluster, it may take several minutes"
+
 cd "${devbox_dir}/etc/helm" && helm install \
     --name magento2 \
     --values values.yaml \
@@ -36,6 +39,7 @@ cd "${devbox_dir}/etc/helm" && helm install \
     --set global.persistence.nfs.serverIp="${nfs_server_ip}" \
     --set global.monolith.volumeHostPath="${devbox_dir}" \
     --set global.persistence.nfs.enabled="$(if [[ ${use_nfs} == "1" ]]; then echo "true"; else echo "false"; fi)" \
+    --set global.caching.varnish.enabled="$(if [[ ${use_varnish} == "1" ]]; then echo "true"; else echo "false"; fi)" \
     --set global.checkout.enabled="${enable_checkout}" \
     --set global.checkout.volumeHostPath="${devbox_dir}" .
 

@@ -19,6 +19,7 @@ repository_url:
   # git@github.com:magento/magento2ee.git OR custom one
   ee: ""
   additional_repositories:
+    # [To apply changes: m-switch-to-ce -f OR m-switch-to-ee -f]
     # - "git@github.com:magento/magento2-sample-data.git"
     # - "git@github.com:magento/magento2-sample-data-ee.git"
     # - "git@github.com:magento/magento2b2b.git"

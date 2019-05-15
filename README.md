@@ -50,7 +50,7 @@ The environment for Magento EE development is also configured.
 The [project initialization script](init_project.sh) configures a complete development environment:
 
 <!-- 1. Adds some missing software on the host -->
- 1. Configures all software necessary for Magento 2: Nginx, PHP 7.x, MySQL 5.6, Git, Composer, XDebug<!--, Rabbit MQ, Varnish-->
+ 1. Configures all software necessary for Magento 2: Nginx, PHP 7.x, MySQL 5.6, Git, Composer, XDebug, Rabbit MQ, Varnish
  1. Installs Magento 2 from Git repositories or Composer packages (can be configured via `checkout_source_from` option in [etc/config.yaml](etc/config.yaml.dist))
 <!-- 1. Configures PHP Storm project (partially at the moment)-->
 <!-- 1. Installs NodeJS, NPM, Grunt and Gulp for front end development
@@ -344,13 +344,11 @@ PHP version will be applied after "devbox reload".
 
 ### Activating Varnish
 
-Not available yet.
-<!--Set `use_varnish: 1` to use varnish along with apache in [config.yaml](etc/config.yaml.dist). Changes will be applied on `m-reinstall`.
-It will use default file etc/magento2_default_varnish.vcl.dist generated from a Magento 2.1 instance. Magento 2.2+ supports additional Varnish features and you may need to provide custom version of VCL to enable them.
-Varnish Version: 4.1
+Use the following commands to enable/disable varnish <!--without reinstalling Magento-->: `m-varnish disable` or `m-varnish enable`.
 
-Use the following commands to enable/disable varnish without reinstalling Magento: `m-varnish disable` or `m-varnish enable`.
--->
+You can also set `use_varnish: 1` in [config.yaml](etc/config.yaml.dist) to use varnish. Changes will be applied on `init_project.sh -f`.
+
+The VCL content can be found in [configmap.yaml](etc/helm/templates/configmap.yaml).
 
 ### Activating ElasticSearch
 

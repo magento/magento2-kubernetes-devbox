@@ -33,6 +33,7 @@ install:
   - sudo apt-get update && sudo apt-get install -y socat
   # TODO Install sudo apt install nfs-kernel-server
 #  - sudo apt install -y nfs-kernel-server
+  - cat ./etc/helm/values.yaml
 
 before_script:
   - sudo bash ./scripts/host/configure_ubuntu_travis.sh
@@ -40,7 +41,6 @@ before_script:
   - cat ./scripts/host/k_rebuild_environment.sh
   - cat ./init_project.sh
   - cat ./etc/config.yaml.dist
-  - cat ./etc/helm/values.yaml
 #  - cat ./tests/_files/* # TODO: Cannot cat because of directory, move configs to a separate directory
   - cat ./scripts/host/get_path_to_php.sh
   - while sleep 540; do echo "=====[ $SECONDS seconds still running ]====="; done &

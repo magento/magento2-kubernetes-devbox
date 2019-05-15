@@ -119,8 +119,7 @@ if [[ $? != 0 ]]; then
     exit 1
 fi
 
-# TODO: Confibure varnish
-#bash "${devbox_dir}/scripts/guest/configure_varnish" -f
+bash "${devbox_dir}/scripts/guest/configure_varnish" -f
 
 # TODO: Remove
 #if [[ ${is_windows_host} == 1 ]] || [[ ${use_nfs} == 0 ]]; then

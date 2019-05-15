@@ -14,7 +14,10 @@ if [[ ${debug_devbox_project} -eq 1 ]]; then
     set -x
 fi
 
+arguments=$@
 cd "${devbox_dir}"
-devbox ssh -c "bash /devbox/scripts/guest/m-varnish ${@}" 2> >(logError)
+executeInMagento2Container "${devbox_dir}/scripts/guest/m-varnish" -- ${arguments} 2> >(logError)
+
+bash "${devbox_dir}/k-rebuild-environment" "$@" 2> >(logError)
 
 info "$(regular)See details in $(bold)${devbox_dir}/log/${current_script_name}.log$(regular). For debug output set $(bold)debug:devbox_project$(regular) to $(bold)1$(regular) in $(bold)etc/config.yaml$(regular)"

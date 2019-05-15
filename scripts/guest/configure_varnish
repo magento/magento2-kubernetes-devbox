@@ -15,28 +15,10 @@ while getopts 'f' flag; do
   esac
 done
 
-if [[ -z "$(grep "use_varnish:" "${devbox_dir}/etc/config.yaml")" ]]; then
-    sed -i '/environment:/a \ \ use_varnish: 0' "${devbox_dir}/etc/config.yaml"
-fi
-
 # Configure Varnish if enabled in config
 restart_services=0
 use_varnish="$(bash "${devbox_dir}/scripts/get_config_value.sh" "environment_use_varnish")"
 if [[ $use_varnish == 1 ]]; then
-    status "Configuring apache files to be ready for varnish"
-    if [[ -z "$(grep "VirtualHost\s\*:8080" /etc/apache2/sites-enabled/magento2.conf)" ]]; then
-        sudo sed -ie "s/<VirtualHost .*/<VirtualHost \*:8080>/" /etc/apache2/sites-enabled/magento2.conf
-        restart_services=1
-    fi
-    if [[ -z "$(grep "VirtualHost\s\*:8080" /etc/apache2/sites-available/magento2.conf)" ]]; then
-        sudo sed -ie "s/<VirtualHost .*/<VirtualHost \*:8080>/" /etc/apache2/sites-available/magento2.conf
-        restart_services=1
-    fi
-    if [[ -z "$(grep "Listen\s8080" /etc/apache2/ports.conf)" ]]; then
-        sudo sed -ie "s/Listen 80/Listen 8080/" /etc/apache2/ports.conf
-        restart_services=1
-    fi
-
     status "Updating Magento database to use varnish FPC"
     # TODO: Make credentials configurable
     mysql -u"root" -p"123123q" -h"magento2-mysql" -D magento -e "INSERT INTO core_config_data
@@ -45,42 +27,12 @@ if [[ $use_varnish == 1 ]]; then
          ON DUPLICATE KEY UPDATE value = 2
     ;"
 else
-    status "Configuring apache files to run without varnish"
-    if [[ -z "$(grep "VirtualHost\s\*:80\b" /etc/apache2/sites-enabled/magento2.conf)" ]]; then
-        sudo sed -ie "s/<VirtualHost .*/<VirtualHost \*:80>/" /etc/apache2/sites-enabled/magento2.conf
-        restart_services=1
-    fi
-    if [[ -z "$(grep "VirtualHost\s\*:80\b" /etc/apache2/sites-available/magento2.conf)" ]]; then
-        sudo sed -ie "s/<VirtualHost .*/<VirtualHost \*:80>/" /etc/apache2/sites-available/magento2.conf
-        restart_services=1
-    fi
-    if [[ -z "$(grep "Listen\s80\b" /etc/apache2/ports.conf)" ]]; then
-        sudo sed -ie "s/Listen 8080/Listen 80/" /etc/apache2/ports.conf
-        restart_services=1
-    fi
-
     status "Updating Magento database to not use varnish FPC"
     mysql -u"root" -p"123123q" -h"magento2-mysql" -D magento -e "INSERT INTO core_config_data
         ( scope, scope_id, path, value ) VALUES
         ( 'default', '0', 'system/full_page_cache/caching_application', '1' )
          ON DUPLICATE KEY UPDATE value = 1
     ;"
-fi
-
-# Check if need restart services
-if [[ $force_restart_services == 1 ]]; then
-    restart_services=1
-fi
-if [[ $restart_services == 1 ]]; then
-    status "Restarting Apache and Varnish"
-    if [[ "$(ps -ax | pgrep varnish)" ]]; then
-        sudo pkill varnishd
-    fi
-    sudo service apache2 restart 2> >(logError) > >(log)
-    if [[ $use_varnish == 1 ]]; then
-        sudo varnishd -f /etc/varnish/default.vcl
-    fi
-    bash "${DEVBOX_ROOT}/scripts/guest/m-clear-cache"
 fi
 
 decrementNestingLevel
