@@ -14,9 +14,7 @@ cd "${devbox_dir}/scripts" && eval $(minikube docker-env) && docker build -t mag
 
 # TODO: Delete does not work when no releases created yet
 cd "${devbox_dir}/etc/helm"
-set +e
-helm list -q | xargs helm delete --purge 2>/dev/null
-set -e
+bash "${devbox_dir}/scripts/host/helm_delete_wait.sh" magento2
 
 # TODO: Need to make sure all resources have been successfully deleted before the attempt of recreating them
 #sleep 20
