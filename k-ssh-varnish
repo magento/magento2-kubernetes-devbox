@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "${BASH_SOURCE[0]}")" && devbox_dir=$PWD
+
+source "${devbox_dir}/scripts/functions.sh"
+
+loginToPodContainer "$(getMagento2PodId)" "varnish"

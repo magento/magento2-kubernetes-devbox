@@ -77,10 +77,24 @@ spec:
                       - name: nginx-config-volume
                         mountPath: /etc/nginx/nginx.conf
                         subPath: nginx.conf
+                - name: varnish
+                  image: million12/varnish
+                  env:
+                    - name: VCL_CONFIG
+                      value: /etc/varnish/magento.vcl
+                    - name: VARNISHD_PARAMS
+                      value: "-a 0.0.0.0:{{ .Values.global.monolith.service.varnishPort }}"
+                  volumeMounts:
+                      - name: varnish-config-volume
+                        mountPath: /etc/varnish/magento.vcl
+                        subPath: varnish.vcl
             volumes:
                 - name: nginx-config-volume
                   configMap:
                       name: {{ template "magento.fullname" . }}-nginx-config
+                - name: varnish-config-volume
+                  configMap:
+                      name: {{ template "magento.fullname" . }}-varnish-config
                 - name: code
                 {{- if .Values.global.persistence.nfs.enabled }}
                   persistentVolumeClaim:
