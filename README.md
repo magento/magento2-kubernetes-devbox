@@ -431,3 +431,4 @@ bash ./<test-name>.sh
  1. Be careful if your OS is case-insensitive, NFS might break the symlinks if you cd into the wrong casing and you power the devbox up. Just be sure to cd in to the casing the directory was originally created as.
  1. Cannot run unit tests from PHPStorm on Magento 2.2, see possible solution [here](https://github.com/paliarush/magento2-vagrant-for-developers/issues/167)
  1. [Permission denied (publickey)](https://github.com/paliarush/magento2-vagrant-for-developers/issues/165)
+ 1. If you get [minikube time out error restarting cluster](https://github.com/kubernetes/minikube/issues/3843) while initializing project, run `minikube stop && minikube delete && ./init_project.sh`.
