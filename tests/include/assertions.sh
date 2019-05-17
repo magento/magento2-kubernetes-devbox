@@ -197,24 +197,8 @@ function assertVarnishEnablingWorks()
 
     cd "${devbox_dir}"
     bash m-varnish enable >>${current_log_file_path} 2>&1
-    assertVarnishEnabled
     assertMagentoFrontendAccessible
-}
-
-function assertVarnishEnabled()
-{
-    echo "${blue}## assertVarnishEnabled${regular}"
-    echo "## assertVarnishEnabled" >>${current_log_file_path}
-
-    listenerOnPort80="$(devbox ssh -c 'sudo netstat -tulnp | grep ':::80[^0-9]'')"
-    assertTrue 'Varnish is not listening on port 80' '[[ ${listenerOnPort80} =~ varnishd ]]'
-
-    listenerOnPort8080="$(devbox ssh -c 'sudo netstat -tulnp | grep ':::8080[^0-9]'')"
-    assertTrue 'Apache is not listening on port 8080' '[[ ${listenerOnPort8080} =~ apache2 ]]'
-
-    varnish_version="$(devbox ssh -c 'varnishd -V')"
-    version_pattern="4\.[0-9]+\.[0-9]+"
-    assertTrue 'Varnish version should be 4.x.x' '[[ ${varnish_version} =~ ${version_pattern} ]]'
+    assertMainPageServedByVarnish
 }
 
 function assertMainPageServedByVarnish()
@@ -223,8 +207,34 @@ function assertMainPageServedByVarnish()
     echo "## assertMainPageServedByVarnish" >>${current_log_file_path}
 
     curl "${current_magento_base_url}" > /dev/null 2>&1
-    is_varnish_hit="$(curl "${current_magento_base_url}" -v 2>&1 | grep "X-Magento-Cache-Debug: HIT")"
-    assertFalse 'Main page is not served by Varnish (or Magento is not in Developer mode)' '[[ ${is_varnish_hit} == '' ]]'
+    is_cache_hit="$(curl "${current_magento_base_url}" -v 2>&1 | grep "X-Magento-Cache-Debug: HIT")"
+    if [[ ${is_cache_hit} == '' ]]; then
+        fail 'Main page is not served from cache (or Magento is not in Developer mode)'
+    else
+        # "Age:" header is available when Varnish is on, however it is not available when built-cache is enabled
+        cache_tags_available="$(curl "${current_magento_base_url}" -v 2>&1 | grep "Age:")"
+        if [[ ${cache_tags_available} == '' ]]; then
+            fail 'Built-in cache seems to be enabled instead of Varnish'
+        fi
+    fi
+}
+
+function assertMainPageServedByBuiltInCache()
+{
+    echo "${blue}## assertMainPageServedByBuiltInCache${regular}"
+    echo "## assertMainPageServedByBuiltInCache" >>${current_log_file_path}
+
+    curl "${current_magento_base_url}" > /dev/null 2>&1
+    is_cache_hit="$(curl "${current_magento_base_url}" -v 2>&1 | grep "X-Magento-Cache-Debug: HIT")"
+    if [[ ${is_cache_hit} == '' ]]; then
+        fail 'Main page is not served from cache (or Magento is not in Developer mode)'
+    else
+        # "Age:" header is available when Varnish is on, however it is not available when built-cache is enabled
+        cache_tags_available="$(curl "${current_magento_base_url}" -v 2>&1 | grep "Age:")"
+        if [[ ${cache_tags_available} != '' ]]; then
+            fail 'Varnish cache seems to be enabled instead of built-in cache'
+        fi
+    fi
 }
 
 function assertVarnishDisablingWorks()
@@ -235,21 +245,8 @@ function assertVarnishDisablingWorks()
     cd "${devbox_dir}"
     bash m-varnish disable >>${current_log_file_path} 2>&1
 
-    assertVarnishDisabled
     assertMagentoFrontendAccessible
-}
-
-function assertVarnishDisabled()
-{
-    echo "${blue}## assertVarnishDisabled${regular}"
-    echo "## assertVarnishDisabled" >>${current_log_file_path}
-
-    cd "${devbox_dir}"
-    listenerOnPort80="$(devbox ssh -c 'sudo netstat -tulnp | grep ':::80[^0-9]'')"
-    assertTrue 'Apache is not listening on port 80' '[[ ${listenerOnPort80} =~ apache2 ]]'
-
-    listenerOnPort8080="$(devbox ssh -c 'sudo netstat -tulnp | grep ':::8080[^0-9]'')"
-    assertFalse 'Varnish shout not listen on port 8080' '[[ ${listenerOnPort8080} =~ varnishd ]]'
+    assertMainPageServedByBuiltInCache
 }
 
 function assertNoErrorsInLogs()

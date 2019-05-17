@@ -64,6 +64,8 @@ function testCeFromComposerNoNfs()
     assertRedisCacheIsEnabled
 
     executeExtendedCommonAssertions
+
+    assertMainPageServedByBuiltInCache
 }
 
 ## Call and Run all Tests

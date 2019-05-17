@@ -51,9 +51,9 @@ See logs in ${logs_dir}"
 
 ## Tests
 
-function testNoCustomConfigBasicTest()
+function testEeLinking()
 {
-    current_config_name="no_custom_config"
+    current_config_name="ce_shallow_clone_no_nfs"
     current_codebase="ee"
     installEnvironment
 #    assertVarnishDisabled
@@ -70,6 +70,11 @@ function testNoCustomConfigBasicTest()
     assertMagentoSwitchToCeWorks
     assertMagentoFrontendAccessible
     assertMagentoEditionIsCE
+
+    assertMainPageServedByVarnish
+
+    assertVarnishDisablingWorks
+    assertVarnishEnablingWorks
 }
 
 ## Call and Run all Tests
