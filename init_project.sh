@@ -34,6 +34,7 @@ repository_url_ee="$(bash "${devbox_dir}/scripts/get_config_value.sh" "repositor
 composer_project_name="$(bash "${devbox_dir}/scripts/get_config_value.sh" "composer_project_name")"
 composer_project_url="$(bash "${devbox_dir}/scripts/get_config_value.sh" "composer_project_url")"
 checkout_source_from="$(bash "${devbox_dir}/scripts/get_config_value.sh" "checkout_source_from")"
+use_git_shallow_clone="$(bash "${devbox_dir}/scripts/get_config_value.sh" "repository_url_shallow_clone")"
 
 function checkoutSourceCodeFromGit()
 {
@@ -119,13 +120,17 @@ function initGitRepository()
         fi
         directory="${magento_ce_dir}/${BASH_REMATCH[1]}"
     fi
-    git clone ${repo} "${directory}" 2> >(logError) > >(log)
 
-    if [[ -n ${branch} ]]; then
-        status "Checking out branch ${branch} of ${repository_name} repository"
-        cd "${directory}"
-        git fetch 2> >(logError) > >(log)
-        git checkout ${branch} 2> >(log) > >(log)
+    if [[ ${use_git_shallow_clone} -eq 1 ]] ; then
+        git clone --depth 1 ${repo} "${directory}" 2> >(logError) > >(log)
+    else
+        git clone ${repo} "${directory}" 2> >(logError) > >(log)
+        if [[ -n ${branch} ]]; then
+            status "Checking out branch ${branch} of ${repository_name} repository"
+            cd "${directory}"
+            git fetch 2> >(logError) > >(log)
+            git checkout ${branch} 2> >(log) > >(log)
+        fi
     fi
     cd "${devbox_dir}"
 }

@@ -23,12 +23,12 @@ repository_url:
     # - "git@github.com:magento/magento2-sample-data.git"
     # - "git@github.com:magento/magento2-sample-data-ee.git"
     # - "git@github.com:magento/magento2b2b.git"
-  # If set to 1, shallow clone will be used to speed up the project initialization. Custom branches will not be available if shallow clone used
-  shallow_clone: 0
+  # If set to 1, shallow clone will be used to speed up the project initialization
+  shallow_clone: 1
 
 guest:
   # [To apply changes: init_project.sh -f] NFS will be used for folder synchronization on *nix and OSX hosts by default.
-  use_nfs: 1
+  use_nfs: 0
   # [To apply changes: init_project.sh -f] The placeholder IP will be replaced with auto-detected value, unless modified manually before execution of "init_project.sh" script.
   nfs_server_ip: "0.0.0.0"
   # [To apply changes: devbox reload] Default is 2Gb, around 3Gb is necessary to run functional tests.

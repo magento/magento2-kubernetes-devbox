@@ -20,19 +20,10 @@ restart_services=0
 use_varnish="$(bash "${devbox_dir}/scripts/get_config_value.sh" "environment_use_varnish")"
 if [[ $use_varnish == 1 ]]; then
     status "Updating Magento database to use varnish FPC"
-    # TODO: Make credentials configurable
-    mysql -u"root" -p"123123q" -h"magento2-mysql" -D magento -e "INSERT INTO core_config_data
-        ( scope, scope_id, path, value ) VALUES
-        ( 'default', '0', 'system/full_page_cache/caching_application', '2' )
-         ON DUPLICATE KEY UPDATE value = 2
-    ;"
+    "${DEVBOX_ROOT}/scripts/guest/update_magento_config" 'system/full_page_cache/caching_application' '2'
 else
     status "Updating Magento database to not use varnish FPC"
-    mysql -u"root" -p"123123q" -h"magento2-mysql" -D magento -e "INSERT INTO core_config_data
-        ( scope, scope_id, path, value ) VALUES
-        ( 'default', '0', 'system/full_page_cache/caching_application', '1' )
-         ON DUPLICATE KEY UPDATE value = 1
-    ;"
+    "${DEVBOX_ROOT}/scripts/guest/update_magento_config" 'system/full_page_cache/caching_application' '1'
 fi
 
 decrementNestingLevel
