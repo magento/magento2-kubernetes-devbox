@@ -12,8 +12,7 @@ jobs:
     - stage: "Basic Tests"
       script:
         - cd tests && sudo bash ./NoCustomConfigBasicTest.sh
-    - stage: "Extended Tests"
-      script: cd tests && sudo bash ./Ce23WithSampleDataMysqlSearchNoNfsTest.sh
+    - script: cd tests && sudo bash ./Ce23WithSampleDataMysqlSearchNoNfsTest.sh
     - script: cd tests && sudo bash ./CeFromComposerNoNfsTest.sh
     - script: cd tests && sudo bash ./EeLinkingTest.sh
 
@@ -24,36 +23,42 @@ install:
   # Make root mounted as rshared to fix kube-dns issues.
   - sudo mount --make-rshared /
   # Download kubectl, which is a requirement for using minikube. Had to install kubeadm on local VM https://kubernetes.io/docs/setup/independent/install-kubeadm/
-  - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+  - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.14.2/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
   # Download Minikube.
-  - curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.0.1/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+  - curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.1.1/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
   # Download Helm
-  - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh && chmod +x get_helm.sh && sudo ./get_helm.sh
+  - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh && chmod +x get_helm.sh && sudo ${TRAVIS_BUILD_DIR}/get_helm.sh
   # Socat is required fo proper Helm operation
   - sudo apt-get update && sudo apt-get install -y socat
   # TODO Install sudo apt install nfs-kernel-server
 #  - sudo apt install -y nfs-kernel-server
-  - cat ./etc/helm/values.yaml
+  - cat ${TRAVIS_BUILD_DIR}/etc/helm/values.yaml
 
 before_script:
-  - sudo bash ./scripts/host/configure_ubuntu_travis.sh
-  - cat ./tests/include/configuration.sh
-  - cat ./scripts/host/k_rebuild_environment.sh
-  - cat ./init_project.sh
-  - cat ./etc/config.yaml.dist
-#  - cat ./tests/_files/* # TODO: Cannot cat because of directory, move configs to a separate directory
-  - cat ./scripts/host/get_path_to_php.sh
+  - sudo bash ${TRAVIS_BUILD_DIR}/scripts/host/configure_ubuntu_travis.sh
+  - cat ${TRAVIS_BUILD_DIR}/tests/include/configuration.sh
+  - cat ${TRAVIS_BUILD_DIR}/scripts/host/k_upgrade_environment.sh
+  - cat ${TRAVIS_BUILD_DIR}/scripts/host/k_install_environment.sh
+  - cat ${TRAVIS_BUILD_DIR}/init_project.sh
+  - cat ${TRAVIS_BUILD_DIR}/etc/instance/config.yaml.dist
+  - cat ${TRAVIS_BUILD_DIR}/etc/env/config.yaml.dist
+#  - cat ${TRAVIS_BUILD_DIR}/tests/_files/* # TODO: Cannot cat because of directory, move configs to a separate directory
+  - cat ${TRAVIS_BUILD_DIR}/scripts/host/get_path_to_php.sh
   - while sleep 540; do echo "=====[ $SECONDS seconds still running ]====="; done &
 
-after_script:
+after_failure:
   - sudo kubectl describe pods
   - sudo kubectl describe deployments
   - sudo kubectl get pv,pvc
   - sudo kubectl logs -l app=magento -c monolith-xdebug
   - sudo kubectl logs -l app=magento -c monolith
   - sudo kubectl logs -l app=magento -c nginx
-  - sudo cat ./logs/*
-  - sudo cat ./tests/tmp/test/current-test.log
-  - sudo cat ./tests/tmp/test/magento2-devbox/log/*
+  - sudo cat ${TRAVIS_BUILD_DIR}/tests/logs/*
+  - sudo cat ${TRAVIS_BUILD_DIR}/tests/tmp/test/current-test.log
   - sudo cat /etc/exports
+  - sudo cat /etc/hosts
+  # TODO: Travis is cutting long logs due to race condition (bug in travis)
+  #- sudo cat ${TRAVIS_BUILD_DIR}/tests/tmp/test/magento2-devbox/log/*
+
+after_script:
   - kill %1

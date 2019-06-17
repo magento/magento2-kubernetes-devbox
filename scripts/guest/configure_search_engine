@@ -5,14 +5,14 @@ devbox_dir="${DEVBOX_ROOT}"
 
 source "${devbox_dir}/scripts/functions.sh"
 
-status "Configuring search engine according to config.yaml"
+status "Configuring search engine according to $(getContext).yaml"
 incrementNestingLevel
 
-if [[ -z "$(grep "search_engine:" ${devbox_dir}/etc/config.yaml)" ]]; then
-    sed -i '/environment:/a \ \ search_engine: "mysql"' ${devbox_dir}/etc/config.yaml
+if [[ -z "$(grep "search_engine:" ${devbox_dir}/etc/env/config.yaml)" ]]; then
+    sed -i '/environment:/a \ \ search_engine: "mysql"' ${devbox_dir}/etc/env/config.yaml
 fi
 
-search_engine="$(bash "${devbox_dir}/scripts/get_config_value.sh" "environment_search_engine")"
+search_engine="$(bash "${devbox_dir}/scripts/get_env_config_value.sh" "environment_search_engine")"
 if [[ ${search_engine} == "elasticsearch" ]]; then
     status "Configuring ElasticSearch search engine"
     "${DEVBOX_ROOT}/scripts/guest/update_magento_config" 'catalog/search/engine' 'elasticsearch6'
@@ -29,6 +29,6 @@ fi
 bash "${DEVBOX_ROOT}/scripts/guest/m-clear-cache"
 
 status "Rebuilding catalog search index"
-php "${MAGENTO_ROOT}/bin/magento" indexer:reindex catalogsearch_fulltext 2> >(logError) > >(log)
+php "${DEVBOX_ROOT}/$(getContext)/bin/magento" indexer:reindex catalogsearch_fulltext 2> >(logError) > >(log)
 
 decrementNestingLevel

@@ -81,9 +81,9 @@ function configureDevboxProject()
 {
     echo "${grey}## configureDevboxProject${regular}"
     echo "## configureDevboxProject" >>${current_log_file_path}
-    current_config_path="${test_config_dir}/${current_config_name}_config.yaml"
-    if [ -f ${current_config_path} ]; then
-        cp ${current_config_path} "${devbox_dir}/etc/config.yaml"
+    current_config_path="${test_config_dir}/etc/${current_config_name}"
+    if [ -d "${current_config_path}" ]; then
+        cp -a "${current_config_path}/." "${devbox_dir}/etc/"
     fi
     if [ -f ${tests_dir}/include/auth.json ]; then
         cp ${tests_dir}/include/auth.json "${devbox_dir}/etc/composer/auth.json"
@@ -108,13 +108,13 @@ function deployDevboxProject()
 
 function stashMagentoCodebase()
 {
-    if [[ ${skip_codebase_stash} == 0 ]] && [[ -d "${devbox_dir}/magento" ]]; then
+    if [[ ${skip_codebase_stash} == 0 ]] && [[ -d "${devbox_dir}/default" ]]; then
         echo "${grey}## stashMagentoCodebase${regular}"
         echo "## stashMagentoCodebase" >>${current_log_file_path}
         magento_stash_dir="${magento_codebase_stash_dir}/${current_codebase}"
         rm -rf "${magento_stash_dir}"
         mkdir -p "${magento_stash_dir}"
-        mv "${devbox_dir}/magento" "${magento_stash_dir}/magento"
+        mv "${devbox_dir}/default" "${magento_stash_dir}/magento"
         rm -rf "${magento_stash_dir}/magento/var/*"
         rm -rf "${magento_stash_dir}/magento/vendor/*"
         rm -rf "${magento_stash_dir}/magento/pub/static/*"
@@ -135,7 +135,7 @@ function unstashMagentoCodebase()
     if [[ ${skip_codebase_stash} == 0 ]] && [[ -d "${magento_stash_dir}" ]]; then
         echo "${grey}## unstashMagentoCodebase${regular}"
         echo "## unstashMagentoCodebase" >>${current_log_file_path}
-        mv "${magento_stash_dir}" "${devbox_dir}/magento"
+        mv "${magento_stash_dir}" "${devbox_dir}/default"
     fi
 }
 
@@ -213,9 +213,9 @@ function emulateEeRepoCloning()
     echo "${grey}## emulateEeDownloading${regular}"
     echo "## emulateEeDownloading" >>${current_log_file_path}
 
-    cp -r "${tests_dir}/_files/magento2ee" "${devbox_dir}/magento/"
-    cp "${devbox_dir}/magento/composer.lock" "${devbox_dir}/magento/magento2ee/composer.lock"
-    sed -i.back 's|Composer installer for Magento modules|Composer installer for Magento modules EE MARK FOR TESTS|g' "${devbox_dir}/magento/magento2ee/composer.lock" >>${current_log_file_path} 2>&1
+    cp -r "${tests_dir}/_files/magento2ee" "${devbox_dir}/default/"
+    cp "${devbox_dir}/default/composer.lock" "${devbox_dir}/default/magento2ee/composer.lock"
+    sed -i.back 's|Composer installer for Magento modules|Composer installer for Magento modules EE MARK FOR TESTS|g' "${devbox_dir}/default/magento2ee/composer.lock" >>${current_log_file_path} 2>&1
 }
 
 function logAndEcho() {

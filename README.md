@@ -39,19 +39,21 @@
 
 ## What You get
 
-It's expected that the Magento 2 project source code will be located and managed on the host to allow quick indexing of project files by IDE. All other infrastructure is deployed on the guest machine.
+:warning: This project is under development and may become official Magento DevBox in the future. There is also a [DevBox for Magento Cloud](https://github.com/magento/magento-cloud-docker).
 
-Current DevBox aims to support multi-service deployment in one click. It is optimized for development scenarios using local environment.
+It's expected that the Magento 2 project source code will be located and managed on the host to allow quick indexing of project files by IDE. All other infrastructure is deployed in kubernetes cluster on Minikube.
 
-The environment for Magento EE development is also configured.
+Current DevBox aims to support multi-service multi-instance deployment in one click. Multiple Magento projects should be installed in a single Kubernetes cluster and share resoruces. Each of the Magento projects may be deployed as a monolith or a set of services. The DevBox is optimized for development scenarios using local environment.
+
+The environment also suitable for for Magento Commerce and Magento B2B development.
 
 <!--It is easy to [install multiple Magento instances](#multiple-magento-instances) based on different codebases simultaneously.-->
 
 The [project initialization script](init_project.sh) configures a complete development environment:
 
 <!-- 1. Adds some missing software on the host -->
- 1. Configures all software necessary for Magento 2: Nginx, PHP 7.x, MySQL 5.6, Git, Composer, XDebug, Rabbit MQ, Varnish
- 1. Installs Magento 2 from Git repositories or Composer packages (can be configured via `checkout_source_from` option in [etc/config.yaml](etc/config.yaml.dist))
+ 1. Configures all software necessary for Magento 2: Nginx, PHP 7.x, MySQL 5.6, Git, Composer, XDebug, Redis, Rabbit MQ, Varnish
+ 1. Installs Magento 2 from Git repositories or Composer packages (can be configured via `checkout_source_from` option in [etc/instance/config.yaml](etc/instance/config.yaml.dist))
 <!-- 1. Configures PHP Storm project (partially at the moment)-->
 <!-- 1. Installs NodeJS, NPM, Grunt and Gulp for front end development
 
@@ -102,7 +104,8 @@ The software listed below should be available in [PATH](https://en.wikipedia.org
      1. Copy [etc/composer/auth.json.dist](etc/composer/auth.json.dist) to `etc/composer/auth.json`.
      1. Specify your GitHub token by adding `"github.com": "your-github-token"` to the `github-oauth` section for GitHub authorization.
      1. Add the Magento Marketplace keys for Marketplace authorization to the `repo.magento.com` section.
-     1. Copy (optional) [etc/config.yaml.dist](etc/config.yaml.dist) as `etc/config.yaml` and make the necessary customizations.
+     1. Copy (optional) [etc/instance/config.yaml.dist](etc/instance/config.yaml.dist) as `etc/instance/<instance_name>.yaml` and make the necessary customizations. Instance name is Magento instance identifier that can only include letters and numbers.
+     1. Copy (optional) [etc/env/config.yaml.dist](etc/env/config.yaml.dist) as `etc/env/config.yaml` and make the necessary customizations.
 
  1. Initialize the project (this will configure the environment, install Magento<!--, and configure the PHPStorm project-->):
 
@@ -123,7 +126,7 @@ The software listed below should be available in [PATH](https://en.wikipedia.org
     ```
     -->
     
- 1. Use the `magento2-devbox` directory as the project root in PHP Storm (not `magento2-devbox/magento`). This is important, because in this case PHP Storm will be configured automatically by [init_project.sh](init_project.sh).<!-- If NFS files sync is disabled in [config](etc/config.yaml.dist) and ![](docs/images/windows-icon.png)on Windows hosts [verify the deployment configuration in PHP Storm](docs/phpstorm-configuration-windows-hosts.md).-->
+ 1. Use the `magento2-devbox` directory as the project root in PHP Storm (not `magento2-devbox/magento`). This is important, because in this case PHP Storm will be configured automatically by [init_project.sh](init_project.sh).<!-- If NFS files sync is disabled in [config](etc/instance/config.yaml.dist) and ![](docs/images/windows-icon.png)on Windows hosts [verify the deployment configuration in PHP Storm](docs/phpstorm-configuration-windows-hosts.md).-->
 
     <!--Use the URL for accessing your Magento storefront in the browser as your Web server root URL. Typically this is the localhost, which refers to your development machine. Depending on how you've set up your VM you may also need a port number, like `http://localhost:8080`.-->
 
@@ -131,36 +134,38 @@ The software listed below should be available in [PATH](https://en.wikipedia.org
 
 ### Default credentials and settings
 
-Some of default settings are available for override. These settings can be found in the file [etc/config.yaml.dist](etc/config.yaml.dist).
+Some of default settings are available for override. These settings can be found in the [etc/instance/config.yaml.dist](etc/instance/config.yaml.dist) and [etc/env/config.yaml.dist](etc/env/config.yaml.dist).
 
-To override settings create a copy of the file under the name 'config.yaml' and add your custom settings.
+To override settings create a copy of [etc/env/config.yaml.dist](etc/env/config.yaml.dist) under the name 'config.yaml' and add your custom settings.
+
+You can create multiple copies of [etc/instance/config.yaml.dist](etc/instance/config.yaml.dist), each of those copies will be responsible for a separate Magento instance deployed in the DevBox. Config file name must only include alpha-numeric characters and will be used to isolate instances (for instance domain name generation, DB name etc).
 
 <!--When using [init_project.sh](init_project.sh), if not specified manually, random IP address is generated and is used as suffix for host name to prevent collisions, in case when two or more instances are running at the same time.-->
 
 Upon a successful installation, you'll see the location and URL of the newly-installed Magento 2 application in console.
 
 **Web access**:
-- Access storefront at `http://<ip-from-config-yaml>`
-- Access admin panel at `http://<ip-from-config-yaml>/admin/`
+- Access storefront at `http://<instance_name>.magento` (can be found in `etc/instance/<instance_name>.yaml`)
+- Access admin panel at `http://<instance_name>.magento/admin/`
 - Magento admin user/password: `admin/123123q`
 - Rabbit MQ control panel: run `bash k-open-rabbitmq`, credentials `admin`/`123123q`
 
-:information_source: Your admin URL, storefront URL, and admin user and password are located in `etc/config.yaml`.
+:information_source: Your admin URL, storefront URL, and admin user and password are located in `etc/instance/<instance_name>.yaml`.
 
 **Codebase and DB access**:
-- Path to your Magento installation in the container:
-  - Can be retrieved from environment variable: `echo ${MAGENTO_ROOT}`
+- Path to your Magento installation in the container is the same as on the host
+  <!-- - Can be retrieved from environment variable: `echo ${DEVBOX_ROOT}/` -->
   <!--  - ![](docs/images/windows-icon.png) On Windows hosts: `/var/www/magento`-->
-  - ![](docs/images/linux-icon.png)![](docs/images/osx-icon.png) On Mac and \*nix hosts: the same as on host
+  <!-- - ![](docs/images/linux-icon.png)![](docs/images/osx-icon.png) On Mac and \*nix hosts: the same as on host -->
 - MySQL DB host: 
   - inside the container: `localhost`
-  - remotely: `<ip-from-config-yaml>`
-- MySQL DB name: `magento`, `magento_integration_tests`
+  - remotely: run `minikube ip` to get the IP and use port `30306`
+- MySQL DB name: `magento_<instance_name>`, `magento_<instance_name>_integration_tests`
 - MySQL DB user/password: `root:123123q`
 
 **Codebase on host**
-- CE codebase: `magento2-devbox/magento`
-- EE codebase will be available if path to EE repository is specified in `etc/config.yaml`: `magento2-devbox/magento/magento2ee`
+- CE codebase: `magento2-devbox/<instance_name>`
+- Magento Commerce codebase will be available if path to commerce repository is specified in `etc/instance/<instance_name>.yaml`: `magento2-devbox/<instance_name>/magento2ee`
 
 ### Getting updates and fixes
 
@@ -168,7 +173,7 @@ Current devbox project follows [semantic versioning](http://semver.org/spec/v2.0
 For example your current branch is `2.0`, then it will be safe to pull any changes from `origin/2.0`. However branch `3.0` will contain changes backward incompatible with `2.0`.
 Note, that semantic versioning is only used for `x.0` branches (not for `develop` or `master`).
 
-:information_source: To apply changes run `bash k-rebuild-environment`.
+:information_source: To apply changes run `bash k-upgrade-environment`.
 
 ## Day-to-day development scenarios
 
@@ -179,7 +184,7 @@ Use the following command to open current instance:
 ./m-open
 ```
 
-Hostname can also be found in `maghento/host_name` section of [config.yaml](etc/config.yaml.dist).
+Hostname can also be found in `maghento/host_name` section of [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist).
 
 ### Reinstall Magento
 
@@ -217,14 +222,14 @@ Force switch can be done using `-f` flag even if already switched to the target 
 
 Upgrade can be performed instead of re-installation using `-u` flag.
 
-<!--:information_source: On Windows hosts (or when NFS mode is disabled in [config.yaml](etc/config.yaml.dist) explicitly) you will be asked to wait until code is uploaded to guest machine by PhpStorm (PhpStorm must be launched). To continue the process press any key.-->
+<!--:information_source: On Windows hosts (or when NFS mode is disabled in [config.yaml](etc/instance/config.yaml.dist) explicitly) you will be asked to wait until code is uploaded to guest machine by PhpStorm (PhpStorm must be launched). To continue the process press any key.-->
 
 ### Sample data installation
 
-Make sure that `ce_sample_data` and `ee_sample_data` are defined in [config.yaml](etc/config.yaml.dist) and point CE and optionally EE sample data repositories.
+Make sure that `ce_sample_data` and `ee_sample_data` are defined in [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist) and point CE and optionally EE sample data repositories.
 During initial project setup or during `bash init_project.sh -fc` (with `-fc` project will be re-created from scratch), sample data repositories willl be checked out to `magento2-devbox/magento/magento2ce-sample-data` and `magento2-devbox/magento/magento2ee-sample-data`.
 
-To install Magento with sample data specify/uncomment sample data repository link at `repository_url_additional_repositories` in [config.yaml](etc/config.yaml.dist) and run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed. To disable sample data, comment out additional repositories and force-switch to necessary edition (using the same commands).
+To install Magento with sample data specify/uncomment sample data repository link at `repository_url_additional_repositories` in [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist) and run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed. To disable sample data, comment out additional repositories and force-switch to necessary edition (using the same commands).
 
 ### Basic data generation
 
@@ -234,7 +239,7 @@ Several entities are generated for testing purposes by default using REST API af
 - Couple simple products
 - Configurable product
 
-To disable this feature, set `magento/generate_basic_data` in [config.yaml](etc/config.yaml.dist) to `0` and run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed.
+To disable this feature, set `magento/generate_basic_data` in [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist) to `0` and run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed.
 
 ### Use Magento CLI (bin/magento)
 
@@ -266,7 +271,7 @@ XDebug is already configured to connect to the host machine automatically. So ju
 
 To debug Magento Setup script, go to [Magento installation script](scripts/guest/m-reinstall) and find `php ${install_cmd}`. Follow steps above for any CLI script
 
-:information_source: In addition to XDebug support, [config.yaml](etc/config.yaml.dist) has several options in `debug` section which allow storefront and admin UI debugging. Plus, desired Magento mode (developer/production/default) can be enabled using `magento_mode` option, default is developer mode.
+:information_source: In addition to XDebug support, [config.yaml](etc/instance/config.yaml.dist) has several options in `debug` section which allow storefront and admin UI debugging. Plus, desired Magento mode (developer/production/default) can be enabled using `magento_mode` option, default is developer mode.
 -->
 ### Connecting to MySQL DB
 
@@ -281,6 +286,8 @@ After successful login to the container run the following command and enter `123
 ```bash
 mysql -uroot -p
 ```
+
+To connect remotely run `minikube ip` to get the IP and use port `30306`
 
 ### View emails sent by Magento
 
@@ -338,7 +345,7 @@ Not available yet.
 ### Switch between PHP versions
 
 Not available yet.
-<!--Switch between PHP versions using "php_version: <version>" option in [config.yaml](etc/config.yaml.dist). Supported versions are 5.6, 7.0, 7.1 and 7.2.
+<!--Switch between PHP versions using "php_version: <version>" option in [config.yaml](etc/instance/config.yaml.dist). Supported versions are 5.6, 7.0, 7.1 and 7.2.
 PHP version will be applied after "devbox reload".
 -->
 
@@ -346,13 +353,13 @@ PHP version will be applied after "devbox reload".
 
 Use the following commands to enable/disable varnish <!--without reinstalling Magento-->: `m-varnish disable` or `m-varnish enable`.
 
-You can also set `use_varnish: 1` in [config.yaml](etc/config.yaml.dist) to use varnish. Changes will be applied on `init_project.sh -f`.
+You can also set `use_varnish: 1` in [etc/env/config.yaml](etc/env/config.yaml.dist) to use varnish. Changes will be applied on `init_project.sh -f`.
 
 The VCL content can be found in [configmap.yaml](etc/helm/templates/configmap.yaml).
 
 ### Activating ElasticSearch
 
-Set `search_engine: "elasticsearch"` in [config.yaml](etc/config.yaml.dist) to use ElasticSearch as current search engine or `search_engine: "mysql"` to use MySQL. Changes will be applied on `m-reinstall`.
+Set `search_engine: "elasticsearch"` in [etc/env/config.yaml](etc/env/config.yaml.dist) to use ElasticSearch as current search engine or `search_engine: "mysql"` to use MySQL. Changes will be applied on `m-reinstall`.
 
 Use the following commands to switch between search engines without reinstalling Magento: `m-search-engine elasticsearch` or `m-search-engine mysql`.
 
@@ -360,11 +367,11 @@ Use the following commands to switch between search engines without reinstalling
 
 <!--:information_source: Available in Magento v2.0.6 and higher.-->
 
-Redis is configured as cache backend by default. <!--It is still possible to switch back to filesystem cache by changing `environment_cache_backend` to `filesystem` in [config.yaml](etc/config.yaml.dist).-->
+Redis is configured as cache backend by default. <!--It is still possible to switch back to filesystem cache by changing `environment_cache_backend` to `filesystem` in [config.yaml](etc/instance/config.yaml.dist).-->
 
 ### Reset environment
 
-It is possible to reset project environment to default state, which you usually get just after project initialization. The following command will re-initialize Kubernetes cluster. Magento 2 code base (`magento` directory) and [etc/config.yaml](etc/config.yaml.dist) and PhpStorm settings will stay untouched<!--, but guest config files (located in [etc/guest](etc/guest)) will be cleared-->.
+It is possible to reset project environment to default state, which you usually get just after project initialization. The following command will re-initialize Kubernetes cluster. Magento 2 code base (`magento` directory) and [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist) and PhpStorm settings will stay untouched<!--, but guest config files (located in [etc/guest](etc/guest)) will be cleared-->.
 
 Go to 'magento2-devbox' created earlier and run in command line:
 
@@ -372,7 +379,7 @@ Go to 'magento2-devbox' created earlier and run in command line:
 ./init_project.sh -f
 ```
 
-It is possible to reset Magento 2 code base at the same time. Magento 2 code base will be deleted and then cloned from the repositories specified in [etc/config.yaml](etc/config.yaml.dist)
+It is possible to reset Magento 2 code base at the same time. Magento 2 code base will be deleted and then cloned from the repositories specified in [etc/config.yaml](etc/instance/config.yaml.dist)
 
 ```bash
 ./init_project.sh -fc
@@ -422,7 +429,7 @@ bash ./<test-name>.sh
 ```
 
 ### FAQ
- 1. To debug any CLI script in current Devbox project, set `debug:devbox_project` option in [config.yaml](etc/config.yaml.dist) to `1`
+ 1. To debug any CLI script in current Devbox project, set `debug:devbox_project` option in [etc/env/config.yaml](etc/env/config.yaml.dist) to `1`
  1. Make sure that you used `magento2-devbox` directory as project root in PHP Storm (not `magento2-devbox/magento`)
  1. If project opened in PhpStorm looks broken, close PhpStorm  and remove `magento2-devbox/.idea`. Run `./magento2-devbox/scripts/host/configure_php_storm.sh`. After opening project in PhpStorm again everything should look good
  1. Please make sure that currently installed software, specified in [requirements section](#requirements), meets minimum version requirement

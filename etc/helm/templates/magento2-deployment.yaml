@@ -20,6 +20,9 @@ spec:
                 app.kubernetes.io/name: {{ include "magento.name" . }}
                 app.kubernetes.io/instance: {{ .Release.Name }}
         spec:
+            hostAliases:
+                - ip: {{ .Values.global.dns.magentoHosts.ip }}
+                  hostnames: {{ .Values.global.dns.magentoHosts.hostnames }}
             containers:
                 - name: {{ .Chart.Name }}
                   image: magento2-monolith:dev
@@ -36,10 +39,6 @@ spec:
                         value: {{.Values.global.monolith.volumeHostPath}}
                       - name: COMPOSER_HOME
                         value: {{.Values.global.monolith.volumeHostPath}}/.composer
-                      - name: MAGENTO_ROOT
-                        value: {{.Values.global.monolith.volumeHostPath}}/magento
-                      - name: MAGENTO_ROOT_HOST
-                        value: {{.Values.global.monolith.volumeHostPath}}/magento
                       - name: DEVBOX_ROOT_HOST
                         value: {{.Values.global.monolith.volumeHostPath}}
                       - name: IS_WINDOWS_HOST
@@ -59,10 +58,6 @@ spec:
                         value: {{.Values.global.monolith.volumeHostPath}}
                       - name: COMPOSER_HOME
                         value: {{.Values.global.monolith.volumeHostPath}}/.composer
-                      - name: MAGENTO_ROOT
-                        value: {{.Values.global.monolith.volumeHostPath}}/magento
-                      - name: MAGENTO_ROOT_HOST
-                        value: {{.Values.global.monolith.volumeHostPath}}/magento
                       - name: DEVBOX_ROOT_HOST
                         value: {{.Values.global.monolith.volumeHostPath}}
                       - name: IS_WINDOWS_HOST

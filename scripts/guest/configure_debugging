@@ -6,7 +6,7 @@ source "${devbox_dir}/scripts/functions.sh"
 
 debug_magento_storefront="$(bash "${devbox_dir}/scripts/get_config_value.sh" "debug_magento_storefront")"
 if [[ ${debug_magento_storefront} == 1 ]]; then
-    status "Enabling Magento storefront debugging (as specified in etc/config.yaml)"
+    status "Enabling Magento storefront debugging (as specified in etc/instance/$(getContext).yaml)"
     incrementNestingLevel
     "${DEVBOX_ROOT}/scripts/guest/update_magento_config" 'dev/debug/template_hints_storefront' '1'
     "${DEVBOX_ROOT}/scripts/guest/update_magento_config" 'dev/debug/template_hints_blocks' '1'
@@ -18,7 +18,7 @@ fi
 
 debug_magento_admin="$(bash "${devbox_dir}/scripts/get_config_value.sh" "debug_magento_admin")"
 if [[ ${debug_magento_admin} == 1 ]]; then
-    status "Enabling Magento admin debugging (as specified in etc/config.yaml)"
+    status "Enabling Magento admin debugging (as specified in etc/instance/$(getContext).yaml)"
     incrementNestingLevel
     "${DEVBOX_ROOT}/scripts/guest/update_magento_config" 'dev/debug/template_hints_admin' '1'
     decrementNestingLevel
@@ -27,11 +27,11 @@ else
 fi
 
 # Switch to desired Magento mode
-env_php_content="$(cat "${MAGENTO_ROOT}/app/etc/env.php")"
+env_php_content="$(cat "${DEVBOX_ROOT}/$(getContext)/app/etc/env.php")"
 magento_mode="$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_mode")"
-status "Checking if Magento mode should be changed to '${magento_mode}' (as specified in etc/config.yaml)"
+status "Checking if Magento mode should be changed to '${magento_mode}' (as specified in etc/instance/$(getContext).yaml)"
 mage_mode_pattern="'MAGE_MODE' => '${magento_mode}"
 if [[ ! ${env_php_content} =~ ${mage_mode_pattern} ]]; then
     status "Enabling Magento '${magento_mode}' mode"
-    php "${MAGENTO_ROOT}/bin/magento" deploy:mode:set ${magento_mode} 2> >(logError) > >(log)
+    php "${DEVBOX_ROOT}/$(getContext)/bin/magento" deploy:mode:set ${magento_mode} 2> >(logError) > >(log)
 fi

@@ -15,12 +15,12 @@ status "Clearing directories containing temporary files"
 
 mage_mode=$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_mode")
 
-rm -f "${MAGENTO_ROOT}/app/etc/paths.php"
-if [[ -d "${MAGENTO_ROOT}/var" ]]; then
+rm -f "${DEVBOX_ROOT}/$(getContext)/app/etc/paths.php"
+if [[ -d "${DEVBOX_ROOT}/$(getContext)/var" ]]; then
     # clear var
-    cd "${MAGENTO_ROOT}"
+    cd "${DEVBOX_ROOT}/$(getContext)"
     mv var/.htaccess var_htaccess.back
-    if [[ -d "${MAGENTO_ROOT}/var/generation" ]] && [[ ${mage_mode} == "production" ]]; then
+    if [[ -d "${DEVBOX_ROOT}/$(getContext)/var/generation" ]] && [[ ${mage_mode} == "production" ]]; then
         # for Magento v2.0.x and v2.1.x
         mv var/generation var_generation.back
     fi
@@ -28,33 +28,33 @@ if [[ -d "${MAGENTO_ROOT}/var" ]]; then
     if [[ -f var_htaccess.back ]]; then
         mv var_htaccess.back var/.htaccess
     fi
-    if [[ -d "${MAGENTO_ROOT}/var_generation.back" ]] && [[ ${mage_mode} == "production" ]]; then
+    if [[ -d "${DEVBOX_ROOT}/$(getContext)/var_generation.back" ]] && [[ ${mage_mode} == "production" ]]; then
         mv var_generation.back var/generation
     fi
 fi
 
-if [[ -d "${MAGENTO_ROOT}/generated" ]] && [[ ${mage_mode} != "production" ]]; then
+if [[ -d "${DEVBOX_ROOT}/$(getContext)/generated" ]] && [[ ${mage_mode} != "production" ]]; then
     # for Magento v2.2.0 and greater
-    cd "${MAGENTO_ROOT}"
+    cd "${DEVBOX_ROOT}/$(getContext)"
     rm -rf generated/*
 fi
 
-if [[ -d "${MAGENTO_ROOT}/pub" ]] && [[ ${mage_mode} != "production" ]]; then
+if [[ -d "${DEVBOX_ROOT}/$(getContext)/pub" ]] && [[ ${mage_mode} != "production" ]]; then
     # clear pub/statics
-    cd "${MAGENTO_ROOT}/pub" && mv static/.htaccess static_htaccess.back && rm -rf static && mkdir static
+    cd "${DEVBOX_ROOT}/$(getContext)/pub" && mv static/.htaccess static_htaccess.back && rm -rf static && mkdir static
     if [[ -f static_htaccess.back ]]; then
         mv static_htaccess.back static/.htaccess
     fi
 fi
 
-if [[ -d "${MAGENTO_ROOT}/dev" ]]; then
+if [[ -d "${DEVBOX_ROOT}/$(getContext)/dev" ]]; then
     # clear integration tests tmp
-    cd "${MAGENTO_ROOT}/dev/tests/integration" && mv tmp/.gitignore tmp_gitignore.back && rm -rf tmp && mkdir tmp
+    cd "${DEVBOX_ROOT}/$(getContext)/dev/tests/integration" && mv tmp/.gitignore tmp_gitignore.back && rm -rf tmp && mkdir tmp
     if [[ -f tmp_gitignore.back ]]; then
         mv tmp_gitignore.back tmp/.gitignore
     fi
     # clear unit tests tmp
-    cd "${MAGENTO_ROOT}/dev/tests/unit" && mv tmp/.gitignore tmp_gitignore.back && rm -rf tmp && mkdir tmp
+    cd "${DEVBOX_ROOT}/$(getContext)/dev/tests/unit" && mv tmp/.gitignore tmp_gitignore.back && rm -rf tmp && mkdir tmp
     if [[ -f tmp_gitignore.back ]]; then
         mv tmp_gitignore.back tmp/.gitignore
     fi
@@ -63,12 +63,12 @@ fi
 status "Flushing redis storage"
 redis-cli -h magento2-redis-master flushall 2> >(logError) > >(log)
 
-if [[ -f "${MAGENTO_ROOT}/app/etc/env.php" ]]; then
+if [[ -f "${DEVBOX_ROOT}/$(getContext)/app/etc/env.php" ]]; then
 
     bash "${DEVBOX_ROOT}/scripts/guest/configure_debugging"
 
     status "Flushing cache using 'bin/magento cache:flush'"
-    php "${MAGENTO_ROOT}/bin/magento" cache:flush 2> >(logError) > >(log)
+    php "${DEVBOX_ROOT}/$(getContext)/bin/magento" cache:flush 2> >(logError) > >(log)
 fi
 
 decrementNestingLevel

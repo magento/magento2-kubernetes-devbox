@@ -7,24 +7,12 @@ metadata:
     kubernetes.io/ingress.allow-http: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/rewrite-target: /
     ingress.appscode.com/hsts: "false"
 spec:
   rules:
   - http:
       paths:
-# Monolith installation
       - path: /
         backend:
           serviceName: {{ include "magento.fullname" . }}
           servicePort: {{ .Values.global.monolith.service.port }}
-
-## Multi-service installation
-#      - path: /magento
-#        backend:
-#          serviceName: magento2
-#          servicePort: 80
-#      - path: /checkout
-#        backend:
-#          serviceName: magento2-checkout
-#          servicePort: 80

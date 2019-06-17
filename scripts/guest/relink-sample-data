@@ -4,11 +4,11 @@ cd "$(dirname "${BASH_SOURCE[0]}")/../.." && devbox_dir=$PWD
 
 source "${devbox_dir}/scripts/functions.sh"
 
-magento_ce_dir="${devbox_dir}/magento"
+magento_ce_dir="${devbox_dir}/$(getContext)"
 magento_ee_dir="${magento_ce_dir}/magento2ee"
 php_executable="$(bash "${devbox_dir}/scripts/host/get_path_to_php.sh")"
 
-status "Linking/unlinking additional sources according to config.yaml"
+status "Linking/unlinking additional sources according to $(getContext).yaml"
 incrementNestingLevel
 
 install_ee=0

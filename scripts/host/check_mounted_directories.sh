@@ -5,8 +5,8 @@ cd "$(dirname "${BASH_SOURCE[0]}")/../.." && devbox_dir=$PWD
 source "${devbox_dir}/scripts/functions.sh"
 
 cd "${devbox_dir}"
-#if [[ ! -f "${devbox_dir}/magento/composer.json" ]]; then
-#    error "Directory '${devbox_dir}/magento' was not mounted as expected by Devbox.
+#if [[ ! -f "${devbox_dir}/$(getContext)/composer.json" ]]; then
+#    error "Directory '${devbox_dir}/$(getContext)' was not mounted as expected by Devbox.
 #        Please make sure that 'paliarush/magento2.ubuntu' Devbox box was downloaded successfully (if not, this may help http://stackoverflow.com/questions/35519389${devbox_dir}-cannot-find-box)
 #        And that Devbox is able to mount VirtualBox shared folders on your environment (see https://www.devboxup.com/docs/synced-folders/basic_usage.html ).
 #        Also remove any stale declarations from /etc/exports on the host."

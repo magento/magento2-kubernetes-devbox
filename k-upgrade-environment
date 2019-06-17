@@ -9,11 +9,11 @@ resetNestingLevel
 current_script_name=`basename "$0"`
 initLogFile ${current_script_name}
 
-debug_devbox_project="$(bash "${devbox_dir}/scripts/get_config_value.sh" "debug_devbox_project")"
+debug_devbox_project="$(bash "${devbox_dir}/scripts/get_env_config_value.sh" "debug_devbox_project")"
 if [[ ${debug_devbox_project} -eq 1 ]]; then
     set -x
 fi
 
-bash "${devbox_dir}/scripts/host/k_rebuild_environment.sh" "$@" 2> >(logError)
+bash "${devbox_dir}/scripts/host/k_upgrade_environment.sh" "$@" 2> >(logError)
 
 info "$(regular)See details in $(bold)${devbox_dir}/log/${current_script_name}.log$(regular). For debug output set $(bold)debug:devbox_project$(regular) to $(bold)1$(regular) in $(bold)etc/config.yaml$(regular)"

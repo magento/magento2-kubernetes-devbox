@@ -1,0 +1,8 @@
+{{- define "common.nginx.servers.config" -}}
+server {
+  listen "{{ .Values.global.monolith.service.nginxPort }}";
+  server_name magento.default;
+  set $MAGE_ROOT {{.Values.global.monolith.volumeHostPath}}/default;
+  {{- include "common.nginx.config" . | nindent 2 }}
+}
+{{- end -}}
