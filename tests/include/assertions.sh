@@ -49,7 +49,7 @@ function assertMagentoInstalledSuccessfully()
     echo "## assertMagentoInstalledSuccessfully" >>${current_log_file_path}
     cd ${tests_dir}
     output_log="$(cat ${current_log_file_path})"
-    pattern="Access storefront at .*(http\://[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/.*"
+    pattern="Access storefront at .*(http\://magento[^/]*)/.*"
     if [[ ! ${output_log} =~ ${pattern} ]]; then
         fail "Magento was not installed successfully (Frontend URL is not available in the init script output)"
     fi
@@ -120,7 +120,7 @@ function assertMagentoReinstallWorks()
     echo "## assertMagentoReinstallWorks" >>${current_log_file_path}
     cd "${devbox_dir}"
     bash m-reinstall >>${current_log_file_path} 2>&1
-    pattern="Access storefront at .*(http\://[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/.*"
+    pattern="Access storefront at .*(http\://magento[^/]*)/.*"
     if [[ ${debug_devbox_project} -eq 1 ]]; then
         tail_number=300
     else
@@ -137,7 +137,7 @@ function assertMagentoSwitchToEeWorks()
 
     cd "${devbox_dir}"
     bash m-switch-to-ee -f >>${current_log_file_path} 2>&1
-    pattern="Access storefront at .*(http\://[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/.*"
+    pattern="Access storefront at .*(http\://magento[^/]*)/.*"
     output_log="$(tail -n5 ${current_log_file_path})"
     assertTrue 'Magento switch to EE failed (Frontend URL is not available in the output)' '[[ ${output_log} =~ ${pattern} ]]'
 }
@@ -148,7 +148,7 @@ function assertMagentoSwitchToCeWorks()
     echo "## assertMagentoSwitchToCeWorks" >>${current_log_file_path}
     cd "${devbox_dir}"
     bash m-switch-to-ce -f >>${current_log_file_path} 2>&1
-    pattern="Access storefront at .*(http\://[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/.*"
+    pattern="Access storefront at .*(http\://magento[^/]*)/.*"
     output_log="$(tail -n5 ${current_log_file_path})"
     assertTrue 'Magento switch to CE failed (Frontend URL is not available in the output)' '[[ ${output_log} =~ ${pattern} ]]'
 }
@@ -413,47 +413,47 @@ function assertTestsConfigured()
     echo "## assertTestsConfigured" >>${current_log_file_path}
 
     # Unit tests
-    unit_tests_config_path="${devbox_dir}/magento/dev/tests/unit/phpunit.xml"
+    unit_tests_config_path="${devbox_dir}/default/dev/tests/unit/phpunit.xml"
     assertTrue "Unit tests are not configured ('${unit_tests_config_path}' is missing)" '[[ -f ${unit_tests_config_path} ]]'
     
     # Integration tests
-    integration_tests_config_path="${devbox_dir}/magento/dev/tests/integration/phpunit.xml"
+    integration_tests_config_path="${devbox_dir}/default/dev/tests/integration/phpunit.xml"
     assertTrue "Integration tests are not configured ('${integration_tests_config_path}' is missing)" '[[ -f ${integration_tests_config_path} ]]'
-    integration_tests_mysql_config_path="${devbox_dir}/magento/dev/tests/integration/etc/install-config-mysql.php"
+    integration_tests_mysql_config_path="${devbox_dir}/default/dev/tests/integration/etc/install-config-mysql.php"
     assertTrue "Integration tests MySQL config ('${integration_tests_mysql_config_path}') is missing" '[[ -f ${integration_tests_mysql_config_path} ]]'
     integration_tests_mysql_config_content="$(cat "${integration_tests_mysql_config_path}")"
     pattern="amqp-password"
     assertTrue "Contents of '${integration_tests_mysql_config_path}' seems to be invalid${functional_tests_config_content} =~ ${pattern}" '[[ ${integration_tests_mysql_config_content} =~ ${pattern} ]]'
     
     # REST Web API tests
-    rest_tests_config_path="${devbox_dir}/magento/dev/tests/api-functional/phpunit_rest.xml"
+    rest_tests_config_path="${devbox_dir}/default/dev/tests/api-functional/phpunit_rest.xml"
     assertTrue "REST tests are not configured ('${rest_tests_config_path}' is missing)" '[[ -f ${rest_tests_config_path} ]]'
     rest_tests_config_content="$(cat "${rest_tests_config_path}")"
     pattern="${current_magento_base_url}"
     assertTrue "Contents of '${rest_tests_config_path}' seems to be invalid ${rest_tests_config_content} =~ ${pattern}" '[[ ${rest_tests_config_content} =~ ${pattern} ]]'
     
     # SOAP Web API tests
-    soap_tests_config_path="${devbox_dir}/magento/dev/tests/api-functional/phpunit_soap.xml"
+    soap_tests_config_path="${devbox_dir}/default/dev/tests/api-functional/phpunit_soap.xml"
     assertTrue "SOAP tests are not configured ('${soap_tests_config_path}' is missing)" '[[ -f ${soap_tests_config_path} ]]'
     soap_tests_config_content="$(cat "${soap_tests_config_path}")"
     pattern="${current_magento_base_url}"
     assertTrue "Contents of '${soap_tests_config_path}' seems to be invalid ${soap_tests_config_content} =~ ${pattern}" '[[ ${soap_tests_config_content} =~ ${pattern} ]]'
        
     # GraphQL Web API tests
-    graphql_tests_config_path="${devbox_dir}/magento/dev/tests/api-functional/phpunit_graphql.xml"
+    graphql_tests_config_path="${devbox_dir}/default/dev/tests/api-functional/phpunit_graphql.xml"
     assertTrue "GraphQL tests are not configured ('${graphql_tests_config_path}' is missing)" '[[ -f ${graphql_tests_config_path} ]]'
     graphql_tests_config_content="$(cat "${graphql_tests_config_path}")"
     pattern="${current_magento_base_url}"
     assertTrue "Contents of '${graphql_tests_config_path}' seems to be invalid ${graphql_tests_config_content} =~ ${pattern}" '[[ ${graphql_tests_config_content} =~ ${pattern} ]]'
     
     # Functional tests
-    functional_tests_config_path="${devbox_dir}/magento/dev/tests/functional/phpunit.xml"
+    functional_tests_config_path="${devbox_dir}/default/dev/tests/functional/phpunit.xml"
     assertTrue "Functional tests are not configured ('${functional_tests_config_path}' is missing)" '[[ -f ${functional_tests_config_path} ]]'
     functional_tests_config_content="$(cat "${functional_tests_config_path}")"
     pattern="${current_magento_base_url}"
     assertTrue "Contents of '${functional_tests_config_path}' seems to be invalid ${functional_tests_config_content} =~ ${pattern}" '[[ ${functional_tests_config_content} =~ ${pattern} ]]'
 
-    functional_tests_config_path="${devbox_dir}/magento/dev/tests/functional/etc/config.xml"
+    functional_tests_config_path="${devbox_dir}/default/dev/tests/functional/etc/config.xml"
     assertTrue "Functional tests are not configured ('${functional_tests_config_path}' is missing)" '[[ -f ${functional_tests_config_path} ]]'
     functional_tests_config_content="$(cat "${functional_tests_config_path}")"
     pattern="${current_magento_base_url}"
@@ -466,8 +466,8 @@ function assertDebugConfigurationWork()
     echo "## assertDebugOptionsWork" >>${current_log_file_path}
 
     cd "${devbox_dir}"
-    sed -i.back 's|magento_storefront: 0|magento_storefront: 1|g' "${devbox_dir}/etc/config.yaml" >>${current_log_file_path} 2>&1
-    sed -i.back 's|magento_admin: 0|magento_admin: 1|g' "${devbox_dir}/etc/config.yaml" >>${current_log_file_path} 2>&1
+    sed -i.back 's|magento_storefront: 0|magento_storefront: 1|g' "${devbox_dir}/etc/instance/default.yaml" >>${current_log_file_path} 2>&1
+    sed -i.back 's|magento_admin: 0|magento_admin: 1|g' "${devbox_dir}/etc/instance/default.yaml" >>${current_log_file_path} 2>&1
     bash m-clear-cache >>${current_log_file_path} 2>&1
 
     magento_home_page_content="$(curl -sL ${current_magento_base_url})"
@@ -478,8 +478,8 @@ function assertDebugConfigurationWork()
     pattern='Magento\\Backend\\Block\\Page\\Copyright'
     assertTrue "Admin panel debugging is not enabled. URL: '${current_magento_base_url}/admin'" '[[ ${magento_backend_login_page_content} =~ ${pattern} ]]'
 
-    sed -i.back 's|magento_storefront: 1|magento_storefront: 0|g' "${devbox_dir}/etc/config.yaml" >>${current_log_file_path} 2>&1
-    sed -i.back 's|magento_admin: 1|magento_admin: 0|g' "${devbox_dir}/etc/config.yaml" >>${current_log_file_path} 2>&1
+    sed -i.back 's|magento_storefront: 1|magento_storefront: 0|g' "${devbox_dir}/etc/instance/default.yaml" >>${current_log_file_path} 2>&1
+    sed -i.back 's|magento_admin: 1|magento_admin: 0|g' "${devbox_dir}/etc/instance/default.yaml" >>${current_log_file_path} 2>&1
     bash m-clear-cache >>${current_log_file_path} 2>&1
 
     magento_home_page_content="$(curl -sL ${current_magento_base_url})"
@@ -510,7 +510,7 @@ function assertRedisCacheIsEnabled()
     echo "${blue}## assertRedisCacheIsEnabled${regular}"
     echo "## assertRedisCacheIsEnabled" >>${current_log_file_path}
 
-    cache_directory="${devbox_dir}/magento/var/cache"
+    cache_directory="${devbox_dir}/default/var/cache"
     assertFalse "Redis cache seems to be disabled since cache directory '${cache_directory}' was created." '[[ -d ${cache_directory} ]]'
 }
 
@@ -519,6 +519,6 @@ function assertRedisCacheIsDisabled()
     echo "${blue}## assertRedisCacheIsDisabled${regular}"
     echo "## assertRedisCacheIsDisabled" >>${current_log_file_path}
 
-    cache_directory="${devbox_dir}/magento/var/cache"
+    cache_directory="${devbox_dir}/default/var/cache"
     assertTrue "Redis cache seems to be enabled since cache directory '${cache_directory}' was not created." '[[ -d ${cache_directory} ]]'
 }

@@ -9,15 +9,15 @@ resetNestingLevel
 current_script_name=`basename "$0"`
 initLogFile ${current_script_name}
 
-debug_devbox_project="$(bash "${devbox_dir}/scripts/get_config_value.sh" "debug_devbox_project")"
+debug_devbox_project="$(bash "${devbox_dir}/scripts/get_env_config_value.sh" "debug_devbox_project")"
 if [[ ${debug_devbox_project} -eq 1 ]]; then
     set -x
 fi
 
 arguments=$@
 cd "${devbox_dir}"
-executeInMagento2Container php -- "${devbox_dir}/magento/bin/magento" ${arguments} 2> >(logError)
+executeInMagento2Container php -- "${devbox_dir}/$(getContext)/bin/magento" ${arguments} 2> >(logError)
 # To debug, comment out line above and uncomment line below
-# devbox ssh -c "php -d xdebug.remote_autostart=1 \$MAGENTO_ROOT/bin/magento $arguments" 2> >(logError)
+# devbox ssh -c "php -d xdebug.remote_autostart=1 \$DEVBOX_ROOT/$(getContext)/bin/magento $arguments" 2> >(logError)
 
 info "$(regular)See details in $(bold)${devbox_dir}/log/${current_script_name}.log$(regular). For debug output set $(bold)debug:devbox_project$(regular) to $(bold)1$(regular) in $(bold)etc/config.yaml$(regular)"

@@ -58,8 +58,8 @@ function testCe23WithSampleDataMysqlSearchNoNfs()
 
     installEnvironment
 
-    assertSourceCodeIsFromBranch "${devbox_dir}/magento" "2.3"
-    assertSourceCodeIsFromBranch "${devbox_dir}/magento/magento2-sample-data" "2.3"
+    assertSourceCodeIsFromBranch "${devbox_dir}/default" "2.3"
+    assertSourceCodeIsFromBranch "${devbox_dir}/default/magento2-sample-data" "2.3"
 
     executeBasicCommonAssertions
     assertCeSampleDataInstalled

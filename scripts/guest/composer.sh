@@ -19,8 +19,8 @@ if [[ -f ${composer_auth_json} ]]; then
     export COMPOSER_AUTH="$(cat "${composer_auth_json}")"
 fi
 
-if [[ -d "${DEVBOX_ROOT}/magento" ]]; then
-    cd "${DEVBOX_ROOT}/magento"
+if [[ -d "${DEVBOX_ROOT}/$(getContext)" ]]; then
+    cd "${DEVBOX_ROOT}/$(getContext)"
 fi
 
 status "composer --no-interaction "$@""

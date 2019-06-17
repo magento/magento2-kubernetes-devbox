@@ -4,7 +4,7 @@ devbox_dir="${DEVBOX_ROOT}"
 
 source "${devbox_dir}/scripts/functions.sh"
 
-status "Configuring Varnish FPC according to config.yaml"
+status "Configuring Varnish FPC according to etc/env/config.yaml"
 incrementNestingLevel
 
 # Get args
@@ -17,7 +17,7 @@ done
 
 # Configure Varnish if enabled in config
 restart_services=0
-use_varnish="$(bash "${devbox_dir}/scripts/get_config_value.sh" "environment_use_varnish")"
+use_varnish="$(bash "${devbox_dir}/scripts/get_env_config_value.sh" "environment_use_varnish")"
 if [[ $use_varnish == 1 ]]; then
     status "Updating Magento database to use varnish FPC"
     "${DEVBOX_ROOT}/scripts/guest/update_magento_config" 'system/full_page_cache/caching_application' '2'

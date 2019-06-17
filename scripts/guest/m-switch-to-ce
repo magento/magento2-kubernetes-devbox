@@ -9,7 +9,7 @@ source "${devbox_dir}/scripts/functions.sh"
 status "Switching to Magento CE"
 incrementNestingLevel
 
-magento_ce_dir="${devbox_dir}/magento"
+magento_ce_dir="${devbox_dir}/$(getContext)"
 magento_ee_dir="${magento_ce_dir}/magento2ee"
 checkout_source_from="$(bash "${devbox_dir}/scripts/get_config_value.sh" "checkout_source_from")"
 
@@ -54,9 +54,9 @@ fi
 bash "${devbox_dir}/scripts/guest/composer.sh" install 2> >(logError)
 
 if [[ ${upgrade_only} -eq 1 ]]; then
-    chmod a+x "${MAGENTO_ROOT}/bin/magento" 2> >(logError)
-    bash "${MAGENTO_ROOT}/bin/magento" "setup:upgrade" 2> >(logError)
-    bash "${MAGENTO_ROOT}/bin/magento" "indexer:reindex" 2> >(logError)
+    chmod a+x "${DEVBOX_ROOT}/$(getContext)/bin/magento" 2> >(logError)
+    bash "${DEVBOX_ROOT}/$(getContext)/bin/magento" "setup:upgrade" 2> >(logError)
+    bash "${DEVBOX_ROOT}/$(getContext)/bin/magento" "indexer:reindex" 2> >(logError)
     bash "${devbox_dir}/scripts/guest/m-clear-cache" 2> >(logError)
 else
     bash "${devbox_dir}/scripts/guest/m-reinstall" 2> >(logError)

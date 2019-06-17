@@ -7,7 +7,7 @@ source "${devbox_dir}/scripts/functions.sh"
 status "Creating configuration for Magento Tests"
 incrementNestingLevel
 
-magento_tests_root="${devbox_dir}/magento/dev/tests"
+magento_tests_root="${devbox_dir}/$(getContext)/dev/tests"
 magento_host_name="$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_host_name")"
 magento_admin_frontname="$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_admin_frontname")"
 magento_admin_user="$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_admin_user")"

@@ -5,6 +5,7 @@
       <paths name="<host_name>">
         <serverdata>
           <mappings>
+            <!--TODO: Parameterize 'magento' to use $(getContext) here as well as in other PHP storm plugins-->
             <mapping deploy="<magento_guest_path>" local="$PROJECT_DIR$/magento" web="/" />
           </mappings>
           <excludedPaths>

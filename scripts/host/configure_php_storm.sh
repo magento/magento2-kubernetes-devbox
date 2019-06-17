@@ -8,7 +8,7 @@ status "Configuring PhpStorm"
 incrementNestingLevel
 
 cd "${devbox_dir}"
-ssh_port="$(bash "${devbox_dir}/scripts/get_config_value.sh" "guest_forwarded_ssh_port")"
+ssh_port="$(bash "${devbox_dir}/scripts/get_env_config_value.sh" "guest_forwarded_ssh_port")"
 magento_host_name="$(bash "${devbox_dir}/scripts/get_config_value.sh" "magento_host_name")"
 
 cp -R "${devbox_dir}/scripts/host/php-storm-configs/." "${devbox_dir}/.idea/"
@@ -16,12 +16,13 @@ cp -R "${devbox_dir}/scripts/host/php-storm-configs/." "${devbox_dir}/.idea/"
 enabled_virtual_host_config="/etc/apache2/sites-available/magento2.conf"
 
 host_os="$(bash "${devbox_dir}/scripts/host/get_host_os.sh")"
-#if [[ ${host_os} == "Windows" ]] || [[ $(bash "${devbox_dir}/scripts/get_config_value.sh" "guest_use_nfs") == 0 ]]; then
+#if [[ ${host_os} == "Windows" ]] || [[ $(bash "${devbox_dir}/scripts/get_env_config_value.sh" "guest_use_nfs") == 0 ]]; then
 #    sed -i.back "s|<magento_guest_path>|/var/www/magento|g" "${devbox_dir}/.idea/deployment.xml"
 #    sed -i.back 's|<auto_upload_attributes>| autoUpload="Always" autoUploadExternalChanges="true"|g' "${devbox_dir}/.idea/deployment.xml"
 #    sed -i.back 's|<auto_upload_option>|<option name="myAutoUpload" value="ALWAYS" />|g' "${devbox_dir}/.idea/deployment.xml"
 #else
-    sed -i.back "s|<magento_guest_path>|\$PROJECT_DIR\$/magento|g" "${devbox_dir}/.idea/deployment.xml"
+    # TODO: Add support multi-instance installation
+#    sed -i.back "s|<magento_guest_path>|\$PROJECT_DIR\$/$(getContext)|g" "${devbox_dir}/.idea/deployment.xml"
     sed -i.back 's|<auto_upload_attributes>||g' "${devbox_dir}/.idea/deployment.xml"
     sed -i.back 's|<auto_upload_option>||g' "${devbox_dir}/.idea/deployment.xml"
 #fi

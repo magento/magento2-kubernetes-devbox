@@ -9,14 +9,14 @@ resetNestingLevel
 current_script_name=`basename "$0"`
 initLogFile ${current_script_name}
 
-debug_devbox_project="$(bash "${devbox_dir}/scripts/get_config_value.sh" "debug_devbox_project")"
+debug_devbox_project="$(bash "${devbox_dir}/scripts/get_env_config_value.sh" "debug_devbox_project")"
 if [[ ${debug_devbox_project} -eq 1 ]]; then
     set -x
 fi
 
-nfs_enabled="$(bash "${devbox_dir}/scripts/get_config_value.sh" "guest_use_nfs")"
+nfs_enabled="$(bash "${devbox_dir}/scripts/get_env_config_value.sh" "guest_use_nfs")"
 if [[ ${nfs_enabled} -eq 0 ]]; then
-    status "Skipping NFS configuration per config.yaml"
+    status "Skipping NFS configuration per etc/env/config.yaml"
     exit 0
 fi
 

@@ -7,6 +7,7 @@ source "${devbox_dir}/scripts/colors.sh"
 default_log="${devbox_dir}/log/debug.log"
 log_file_path="${devbox_dir}/scripts/.current_log_path"
 nesting_level_file="${devbox_dir}/scripts/.current_nesting_level"
+context_file="${devbox_dir}/etc/context.txt"
 
 function info() {
     echo "[$(formattedDate)]$(getIndentationByNesting "$@")$(getStyleByNesting "$@")${1}$(regular)$(sourceFile)$(regular)"
@@ -229,24 +230,24 @@ function executeInMagento2CheckoutContainer()
 
 function isMinikubeRunning() {
     minikube_status="$(minikube status | grep minikube: 2> >(log))"
-    if [[ ${minikube_status} == "minikube: Running" ]]; then
+    if [[ ${minikube_status} == "Running" ]]; then
         echo 1
     fi
 }
 
 function isMinikubeStopped() {
     minikube_status="$(minikube status | grep minikube: 2> >(log))"
-    if [[ ${minikube_status} == "minikube: Stopped" ]]; then
+    if [[ ${minikube_status} == "Stopped" ]]; then
         echo 1
     fi
-    if [[ ${minikube_status} == "minikube: Saved" ]]; then
+    if [[ ${minikube_status} == "Saved" ]]; then
         echo 1
     fi
 }
 
 function isMinikubeSaved() {
     minikube_status="$(minikube status | grep minikube: 2> >(log))"
-    if [[ ${minikube_status} == "minikube: Saved" ]]; then
+    if [[ ${minikube_status} == "Saved" ]]; then
         echo 1
     fi
 }
@@ -254,7 +255,7 @@ function isMinikubeSaved() {
 # TODO: Add suspended
 
 function isMinikubeInitialized() {
-    if [[ $(isMinikubeRunning) -eq 1 || $(isMinikubeStopped) -eq 1 || $(isMinikubeSaved) -eq 1 ]]; then
+    if [[ $(isMinikubeRunning) -eq 1 ]] || [[ $(isMinikubeStopped) -eq 1 ]] || [[ $(isMinikubeSaved) -eq 1 ]]; then
         echo 1
     fi
 }
@@ -295,4 +296,79 @@ function loginToPodContainer()
     container_name="${2}"
     echo "Logging in to '${container_name}' container in '${pod_name}' pod"
     kubectl exec -it "${pod_name}" --container "${container_name}" -- /bin/bash
+}
+
+function getContext()
+{
+    # TODO: Add safety checks
+    cat "${context_file}"
+}
+
+function setContext()
+{
+    if [[ -z "${1}" ]]; then
+        error "Context name must be specified"
+    fi
+    # TODO: Add safety checks
+    echo "${1}" > "${context_file}"
+    status "Context updated, current context is '$(getContext)'"
+}
+
+# Return a list of instances in the format:
+#  instanceA
+#  instanceB
+#  instanceC
+function getInstanceList()
+{
+    instances_list=""
+    for file in ${devbox_dir}/etc/instance/*; do
+        pattern=".*\/(.*)\.yaml$"
+        if [[ ${file} =~ ${pattern} ]]; then
+            instance_name=${BASH_REMATCH[1]}
+            instances_list="${instances_list}\n${instance_name}"
+        fi
+    done
+#    if [[ -z "${instances_list}" ]]; then
+#        error "There must be at least one instance configuration file created in '${devbox_dir}/etc'"
+#        exit 1
+#    fi
+    # Using sed to remove empty lines if any
+    echo -e "${instances_list}" | sed '/^$/d'
+}
+
+# Generate instance domain name
+# {1} - instance name
+function getInstanceDomainName()
+{
+    if [[ -z "${1}" ]]; then
+        error "Instance name must be specified"
+    fi
+    instance_name="${1}"
+    echo "magento.${instance_name}"
+}
+
+function parse_yaml {
+   local prefix=$2
+   local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
+   sed -ne "s|,$s\]$s\$|]|" \
+        -e ":1;s|^\($s\)\($w\)$s:$s\[$s\(.*\)$s,$s\(.*\)$s\]|\1\2: [\3]\n\1  - \4|;t1" \
+        -e "s|^\($s\)\($w\)$s:$s\[$s\(.*\)$s\]|\1\2:\n\1  - \3|;p" $1 | \
+   sed -ne "s|,$s}$s\$|}|" \
+        -e ":1;s|^\($s\)-$s{$s\(.*\)$s,$s\($w\)$s:$s\(.*\)$s}|\1- {\2}\n\1  \3: \4|;t1" \
+        -e    "s|^\($s\)-$s{$s\(.*\)$s}|\1-\n\1  \2|;p" | \
+   sed -ne "s|^\($s\):|\1|" \
+        -e "s|^\($s\)-$s[\"']\(.*\)[\"']$s\$|\1$fs$fs\2|p" \
+        -e "s|^\($s\)-$s\(.*\)$s\$|\1$fs$fs\2|p" \
+        -e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$|\1$fs\2$fs\3|p" \
+        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" | \
+   awk -F$fs '{
+      indent = length($1)/2;
+      vname[indent] = $2;
+      for (i in vname) {if (i > indent) {delete vname[i]; idx[i]=0}}
+      if(length($2)== 0){  vname[indent]= ++idx[indent] };
+      if (length($3) > 0) {
+         vn=""; for (i=0; i<indent; i++) { vn=(vn)(vname[i])("_")}
+         printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, vname[indent], $3);
+      }
+   }'
 }
