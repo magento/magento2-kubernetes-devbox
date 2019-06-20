@@ -300,7 +300,6 @@ function loginToPodContainer()
 
 function getContext()
 {
-    # TODO: Add safety checks
     cat "${context_file}"
 }
 

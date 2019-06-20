@@ -15,6 +15,8 @@ nfs_server_ip="$(bash "${devbox_dir}/scripts/get_env_config_value.sh" "guest_nfs
 use_varnish="$(bash "${devbox_dir}/scripts/get_env_config_value.sh" "environment_use_varnish")"
 use_nfs="$(bash "${devbox_dir}/scripts/get_env_config_value.sh" "guest_use_nfs")"
 
+bash "${devbox_dir}/scripts/host/configure_nginx_servers.sh"
+
 status "Deploying cluster, it may take several minutes"
 
 cd "${devbox_dir}/etc/helm"

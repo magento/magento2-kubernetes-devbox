@@ -1,0 +1,48 @@
+# [To apply changes: init_project.sh -fc] Possible values: git, composer
+checkout_source_from: "git"
+
+composer_project:
+  # Current section used only if 'checkout_source_from' is set to 'composer'
+
+  # [To apply changes: init_project.sh -fc]
+  # Custom version can be provided by using '={version}' appended to repo name. E.g. name: "magento/project-community-edition=2.2.0". Otherwise, default version is used
+  name: "magento/project-community-edition"
+  # Make sure to specify valid keys for this repository in etc/composer/auth.json
+  url: "https://repo.magento.com"
+
+repository_url:
+  # Current section used only if 'checkout_source_from' is set to 'git'
+
+  # [To apply changes: init_project.sh -fc]
+  # git@github.com:magento/magento2ce.git OR custom one. Use '::' to specify a specific branch, e.g: git@github.com:magento/magento2.git::2.1
+  ce: "git@github.com:magento/magento2.git"
+  # git@github.com:magento/magento2ee.git OR custom one
+  ee: ""
+  additional_repositories:
+    # [To apply changes: m-switch-to-ce -f OR m-switch-to-ee -f]
+    # - "git@github.com:magento/magento2-sample-data.git"
+    # - "git@github.com:magento/magento2-sample-data-ee.git"
+    # - "git@github.com:magento/magento2b2b.git"
+  # If set to 1, shallow clone will be used to speed up the project initialization
+  shallow_clone: 1
+
+magento:
+  # [To apply changes: m-switch-to-ce -f OR m-switch-to-ee -f] Generate customer (customer@example.com:123123qQ), category, simple product, configurable product after successful Magento installation
+  generate_basic_data: 1
+  # [To apply changes: init_project.sh -f]
+  host_name: "magento2.devbox2"
+  # [To apply changes: m-reinstall]
+  admin_frontname: "admin"
+  language: "en_US"
+  timezone: "America/Chicago"
+  currency: "USD"
+  admin_user: "admin"
+  admin_password: "123123q"
+  # [Changes applied on m-clear-cache] Available options: developer, production, default
+  mode: "developer"
+
+debug:
+  # [Changes applied on m-clear-cache] Enable template path and block name hints on storefront
+  magento_storefront: 0
+  # [Changes applied on m-clear-cache] Enable template path hints in the admin panel
+  magento_admin: 0
