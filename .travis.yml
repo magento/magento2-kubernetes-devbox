@@ -13,7 +13,7 @@ jobs:
       script:
         - cd tests && sudo bash ./NoCustomConfigBasicTest.sh
     - script: cd tests && sudo bash ./Ce23WithSampleDataMysqlSearchNoNfsTest.sh
-    - script: cd tests && sudo bash ./CeFromComposerNoNfsTest.sh
+    - script: cd tests && sudo bash ./MultiInstanceWithCeFromComposerNoNfsTest.sh
     - script: cd tests && sudo bash ./EeLinkingTest.sh
 
 env:

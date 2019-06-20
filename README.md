@@ -145,8 +145,8 @@ You can create multiple copies of [etc/instance/config.yaml.dist](etc/instance/c
 Upon a successful installation, you'll see the location and URL of the newly-installed Magento 2 application in console.
 
 **Web access**:
-- Access storefront at `http://<instance_name>.magento` (can be found in `etc/instance/<instance_name>.yaml`)
-- Access admin panel at `http://<instance_name>.magento/admin/`
+- Access storefront at `http://magento.<instance_name>` (can be found in `etc/instance/<instance_name>.yaml`)
+- Access admin panel at `http://magento.<instance_name>/admin/`
 - Magento admin user/password: `admin/123123q`
 - Rabbit MQ control panel: run `bash k-open-rabbitmq`, credentials `admin`/`123123q`
 

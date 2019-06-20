@@ -74,10 +74,6 @@ if [[ ${force_project_cleaning} -eq 1 ]]; then
         }
     fi
 
-    mv "${devbox_dir}/etc/guest/.gitignore" "${devbox_dir}/etc/.gitignore.back"
-    rm -rf "${devbox_dir}/.devbox" "${devbox_dir}/etc/guest"
-    mkdir "${devbox_dir}/etc/guest"
-    mv "${devbox_dir}/etc/.gitignore.back" "${devbox_dir}/etc/guest/.gitignore"
     cd "${devbox_dir}/log" && mv email/.gitignore email_gitignore.back && rm -rf email && mkdir email && mv email_gitignore.back email/.gitignore
 fi
 

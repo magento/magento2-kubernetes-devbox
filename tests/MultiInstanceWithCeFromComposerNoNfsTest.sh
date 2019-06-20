@@ -26,7 +26,7 @@ function oneTimeSetUp
 function setUp()
 {
     debug_devbox_project=0
-    skip_codebase_stash=0
+#    skip_codebase_stash=0
 }
 
 function tearDown()
@@ -35,7 +35,7 @@ function tearDown()
 
     if [[ ${delete_test_project_on_tear_down} -eq 1 ]]; then
         stashLogs
-        stashMagentoCodebase
+#        stashMagentoCodebase
         clearTestTmp
     fi
 
@@ -51,14 +51,28 @@ See logs in ${logs_dir}"
 
 ## Tests
 
-function testCeFromComposerNoNfs()
+function testMultiInstanceWithCeFromComposerNoNfs()
 {
-    current_config_name="ce_from_composer_no_nfs"
-    skip_codebase_stash=1
+    current_config_name="multi_instance_with_ce_from_composer_no_nfs"
+#    skip_codebase_stash=1
 
     installEnvironment
 
+    # Second instance is the last installed
+    assertDevBoxContext "second"
+
     executeBasicCommonAssertions
+    assertMagentoEditionIsCE
+    assertCeSampleDataNotInstalled
+    assertRedisCacheIsEnabled
+
+    # Default instance assertions
+    setDevBoxContext "default"
+    assertDevBoxContext "default"
+    current_magento_base_url="http://magento.default"
+
+    assertMagentoFrontendAccessible
+    assertMagentoCliWorks
     assertMagentoEditionIsCE
 
     assertRedisCacheIsEnabled

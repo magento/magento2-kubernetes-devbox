@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "${BASH_SOURCE[0]}")" && devbox_dir=$PWD
+
+source "${devbox_dir}/scripts/functions.sh"
+resetNestingLevel
+current_script_name=`basename "$0"`
+initLogFile ${current_script_name}
+
+debug_devbox_project="$(bash "${devbox_dir}/scripts/get_env_config_value.sh" "debug_devbox_project")"
+if [[ ${debug_devbox_project} -eq 1 ]]; then
+    set -x
+fi
+
+context=$(getContext)
+
+if [[ -z ${context} ]]; then
+    echo "Context is not set. Use 'k-set-context <context-name>' to set it."
+    exit 1
+fi
+
+echo ${context}

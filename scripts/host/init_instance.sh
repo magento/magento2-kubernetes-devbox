@@ -184,9 +184,6 @@ fi
 cd "${devbox_dir}"
 
 status "Configuring kubernetes cluster on the minikube"
-# TODO: Optimize. Helm tiller must be initialized and started before environment configuration can begin
-helm init --wait
-#waitForKubernetesPodToRun 'tiller-deploy'
 
 # TODO: Check if environment upgrade can be safely removed
 bash "${devbox_dir}/scripts/host/k_upgrade_environment.sh"
