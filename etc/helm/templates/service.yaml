@@ -33,3 +33,20 @@ spec:
     app: redis
     role: master
     tier: backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ include "magento.fullname" . }}-ssh"
+  labels:
+    app.kubernetes.io/name: "php-fpm-ssh-service"
+    app.kubernetes.io/instance: "{{ include "magento.fullname" . }}-php-fpm-ssh-service"
+spec:
+  type: NodePort
+  ports:
+    - port: 2022
+      targetPort: 22
+      nodePort: 30022
+      protocol: TCP
+  selector:
+    ssh.access: php

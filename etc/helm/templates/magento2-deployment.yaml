@@ -19,6 +19,7 @@ spec:
             labels:
                 app.kubernetes.io/name: {{ include "magento.name" . }}
                 app.kubernetes.io/instance: {{ .Release.Name }}
+                ssh.access: php
         spec:
             hostAliases:
                 - ip: {{ .Values.global.dns.magentoHosts.ip }}
@@ -47,9 +48,10 @@ spec:
                   image: magento2-monolith:dev-xdebug
                   imagePullPolicy: Never
                   securityContext:
-                        privileged: true
+                      privileged: true
                   ports:
                       - containerPort: {{ .Values.xdebugService.port }}
+                      - containerPort: 22
                   volumeMounts:
                       - name: code
                         mountPath: {{.Values.global.monolith.volumeHostPath}}
@@ -75,10 +77,10 @@ spec:
                 - name: varnish
                   image: million12/varnish
                   env:
-                    - name: VCL_CONFIG
-                      value: /etc/varnish/magento.vcl
-                    - name: VARNISHD_PARAMS
-                      value: "-a 0.0.0.0:{{ .Values.global.monolith.service.varnishPort }}"
+                      - name: VCL_CONFIG
+                        value: /etc/varnish/magento.vcl
+                      - name: VARNISHD_PARAMS
+                        value: "-a 0.0.0.0:{{ .Values.global.monolith.service.varnishPort }}"
                   volumeMounts:
                       - name: varnish-config-volume
                         mountPath: /etc/varnish/magento.vcl
@@ -91,10 +93,10 @@ spec:
                   configMap:
                       name: {{ template "magento.fullname" . }}-varnish-config
                 - name: code
-                {{- if .Values.global.persistence.nfs.enabled }}
+                  {{- if .Values.global.persistence.nfs.enabled }}
                   persistentVolumeClaim:
                       claimName: {{ include "magento.fullname" . }}-claim
-                {{- else }}
+                  {{- else }}
                   hostPath:
                       path: {{.Values.global.monolith.volumeHostPath}}
-                {{- end }}
+                  {{- end }}
