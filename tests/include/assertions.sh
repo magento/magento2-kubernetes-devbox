@@ -532,3 +532,13 @@ function assertDevBoxContext()
 
     assertTrue "Context switching does not work. Actual context: '$(getDevBoxContext)'; Expected context: '${context}'" '[[ $(getDevBoxContext) == ${context} ]]'
 }
+
+function assertRemotePhpWorks()
+{
+    echo "${blue}## assertRemotePhpWorks${regular}"
+    echo "## assertRemotePhpWorks" >>${current_log_file_path}
+
+    remote_php_ini_contents="$(expect "${tests_dir}/_files/run_php_over_ssh_in_cluster.sh")"
+
+    assertTrue "Remote PHP is not accessible ('php -i' failed to execute over ssh)." '[[ ${remote_php_ini_contents} =~ "PHP License" ]]'
+}

@@ -2,7 +2,7 @@
 
 It is possible to run Magento tests using remote PHP interpreter from the kubernetes cluster.
 
-1. Configure remote PHP interpreter in PhpStorm with credentials `root:123123q`. Use the IP which you get by running `minikube ip`
+1. Configure remote PHP interpreter in PhpStorm with credentials `root:123123q`. Use the IP which you get by running `minikube ip` and port `30022`
 ![](configure-remote-php.png)
 1. Select configured remote PHP interpreter
 ![](select-remote-php.png)
