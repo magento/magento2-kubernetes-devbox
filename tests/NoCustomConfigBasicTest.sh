@@ -58,6 +58,7 @@ function testNoCustomConfigBasic()
     assertMagentoEditionIsCE
     assertCeSampleDataNotInstalled
     assertRedisCacheIsEnabled
+    assertRemotePhpWorks
 }
 
 ## Call and Run all Tests

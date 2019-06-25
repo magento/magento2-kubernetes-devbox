@@ -29,7 +29,7 @@ install:
   # Download Helm
   - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh && chmod +x get_helm.sh && sudo ${TRAVIS_BUILD_DIR}/get_helm.sh
   # Socat is required fo proper Helm operation
-  - sudo apt-get update && sudo apt-get install -y socat
+  - sudo apt-get update && sudo apt-get install -y socat expect
   # TODO Install sudo apt install nfs-kernel-server
 #  - sudo apt install -y nfs-kernel-server
   - cat ${TRAVIS_BUILD_DIR}/etc/helm/values.yaml
