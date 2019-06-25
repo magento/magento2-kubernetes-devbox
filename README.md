@@ -336,8 +336,7 @@ Go to 'magento2-devbox' created earlier and run in command line:
 
 ### Running Magento tests
 
-Not available yet.
-<!--See [draft](https://github.com/paliarush/magento2-vagrant-for-developers/issues/120)-->
+See [how to run Magento tests from PhpStorm using remote PHP in Kubernetes cluster](docs/running-tests/running-tests.md)
 
 
 ## Environment configuration
@@ -437,3 +436,7 @@ bash ./<test-name>.sh
  1. Cannot run unit tests from PHPStorm on Magento 2.2, see possible solution [here](https://github.com/paliarush/magento2-vagrant-for-developers/issues/167)
  1. [Permission denied (publickey)](https://github.com/paliarush/magento2-vagrant-for-developers/issues/165)
  1. If you get [minikube time out error restarting cluster](https://github.com/kubernetes/minikube/issues/3843) while initializing project, run `minikube stop && minikube delete && ./init_project.sh`.
+ 1. To modify the docker image used for php-fpm container:
+    * Make changes in `etc/docker/monolith/Dockerfile`
+    * Run `./k-upgrade-environment`
+    * Run `./k-status` to open kubernetes dashboard and delete Replica Set named `magento2-monolith-*`. The container should be restarted and its Age should reset
