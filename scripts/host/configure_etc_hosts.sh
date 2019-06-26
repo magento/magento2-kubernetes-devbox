@@ -20,7 +20,7 @@ IFS=$'\n'
 for etc_hosts_record in $(bash "${devbox_dir}/scripts/host/get_etc_hosts_records.sh"); do
     if [[ -z "$(grep "${etc_hosts_record}" /etc/hosts)" ]]; then
         status "Adding '${etc_hosts_record}' to '/etc/hosts'"
-        echo "${etc_hosts_record}" | sudo tee -a "/etc/hosts" 2> >(logError) > >(log)
+        echo -e "${etc_hosts_record}\n$(cat /etc/hosts)" | sudo tee "/etc/hosts" 2> >(logError) > >(log)
     else
         warning "'${etc_hosts_record}' has already been added to '/etc/hosts' previously"
     fi
