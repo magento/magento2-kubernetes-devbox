@@ -31,7 +31,7 @@ spec:
                   securityContext:
                       privileged: true
                   ports:
-                      - containerPort: {{ .Values.global.monolith.service.port }}
+                      - containerPort: {{ .Values.global.monolith.service.phpFpmPort }}
                   volumeMounts:
                       - name: code
                         mountPath: {{.Values.global.monolith.volumeHostPath}}
@@ -42,15 +42,30 @@ spec:
                         value: {{.Values.global.monolith.volumeHostPath}}/.composer
                       - name: DEVBOX_ROOT_HOST
                         value: {{.Values.global.monolith.volumeHostPath}}
-                      - name: IS_WINDOWS_HOST
-                        value: "0"
                 - name: {{ .Chart.Name }}-xdebug
                   image: magento2-monolith:dev-xdebug
                   imagePullPolicy: Never
                   securityContext:
                       privileged: true
                   ports:
-                      - containerPort: {{ .Values.xdebugService.port }}
+                      - containerPort: {{ .Values.global.monolith.service.phpFpmXdebugPort }}
+                      {{/*- containerPort: 22*/}}
+                  volumeMounts:
+                      - name: code
+                        mountPath: {{.Values.global.monolith.volumeHostPath}}
+                  env:
+                      - name: DEVBOX_ROOT
+                        value: {{.Values.global.monolith.volumeHostPath}}
+                      - name: COMPOSER_HOME
+                        value: {{.Values.global.monolith.volumeHostPath}}/.composer
+                      - name: DEVBOX_ROOT_HOST
+                        value: {{.Values.global.monolith.volumeHostPath}}
+                - name: {{ .Chart.Name }}-xdebug-cli-over-ssh
+                  image: magento2-monolith:dev-xdebug-and-ssh
+                  imagePullPolicy: Never
+                  securityContext:
+                      privileged: true
+                  ports:
                       - containerPort: 22
                   volumeMounts:
                       - name: code
@@ -62,8 +77,6 @@ spec:
                         value: {{.Values.global.monolith.volumeHostPath}}/.composer
                       - name: DEVBOX_ROOT_HOST
                         value: {{.Values.global.monolith.volumeHostPath}}
-                      - name: IS_WINDOWS_HOST
-                        value: "0"
                 - name: nginx
                   image: nginx:1.9
                   securityContext:
