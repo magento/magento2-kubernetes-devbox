@@ -80,6 +80,9 @@ function testMultiInstanceWithCeFromComposerNoNfs()
     executeExtendedCommonAssertions
 
     assertMainPageServedByBuiltInCache
+
+    assertMagentoUnitTestsWork
+    assertMagentoIntegrationTestsWork
 }
 
 ## Call and Run all Tests
