@@ -7,7 +7,6 @@ source "${devbox_dir}/scripts/functions.sh"
 get_config_value="${devbox_dir}/scripts/get_config_value.sh"
 magento_host_name="$(bash ${get_config_value} "magento_host_name")"
 use_nfs="$(bash "${devbox_dir}/scripts/get_env_config_value.sh" "guest_use_nfs")"
-is_windows_host=${IS_WINDOWS_HOST}
 generate_basic_data="$(bash ${get_config_value} "magento_generate_basic_data")"
 
 
@@ -40,10 +39,6 @@ setupOptions[amqp_user]='admin'
 setupOptions[amqp_password]='123123q'
 setupOptions[amqp_virtualhost]='/'
 
-#if [[ ${is_windows_host} == 1 ]] || [[ ${use_nfs} == 0 ]]; then
-#    sudo chown -R devbox:devbox ${DEVBOX_ROOT}/$(getContext)
-#fi
-#
 #status "Killing MQ processes"
 #pkill -f queue
 
@@ -120,12 +115,6 @@ if [[ $? != 0 ]]; then
 fi
 
 bash "${devbox_dir}/scripts/guest/configure_varnish" -f
-
-# TODO: Remove
-#if [[ ${is_windows_host} == 1 ]] || [[ ${use_nfs} == 0 ]]; then
-#    status "Changing ownership of "${DEVBOX_ROOT}/$(getContext)" to devbox:devbox"
-#    sudo chown -R devbox:devbox ${DEVBOX_ROOT}/$(getContext)
-#fi
 
 bash "${DEVBOX_ROOT}/scripts/guest/configure_search_engine"
 bash "${DEVBOX_ROOT}/scripts/guest/change_magento_config_for_functional_tests"

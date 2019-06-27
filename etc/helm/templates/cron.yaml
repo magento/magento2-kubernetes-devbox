@@ -27,8 +27,6 @@
                   {{/*value: {{.Values.global.monolith.volumeHostPath}}/.composer*/}}
                 {{/*- name: DEVBOX_ROOT_HOST*/}}
                   {{/*value: {{.Values.global.monolith.volumeHostPath}}*/}}
-                {{/*- name: IS_WINDOWS_HOST*/}}
-                  {{/*value: "0"*/}}
           {{/*volumes:*/}}
             {{/*- name: code*/}}
             {{/*{{- if .Values.global.persistence.nfs.enabled }}*/}}
@@ -68,8 +66,6 @@
                   {{/*value: {{.Values.global.monolith.volumeHostPath}}/.composer*/}}
                 {{/*- name: DEVBOX_ROOT_HOST*/}}
                   {{/*value: {{.Values.global.monolith.volumeHostPath}}*/}}
-                {{/*- name: IS_WINDOWS_HOST*/}}
-                  {{/*value: "0"*/}}
           {{/*volumes:*/}}
             {{/*- name: code*/}}
             {{/*{{- if .Values.global.persistence.nfs.enabled }}*/}}
@@ -110,8 +106,6 @@
                   {{/*value: {{.Values.global.monolith.volumeHostPath}}/.composer*/}}
                 {{/*- name: DEVBOX_ROOT_HOST*/}}
                   {{/*value: {{.Values.global.monolith.volumeHostPath}}*/}}
-                {{/*- name: IS_WINDOWS_HOST*/}}
-                  {{/*value: "0"*/}}
           {{/*volumes:*/}}
             {{/*- name: code*/}}
             {{/*{{- if .Values.global.persistence.nfs.enabled }}*/}}

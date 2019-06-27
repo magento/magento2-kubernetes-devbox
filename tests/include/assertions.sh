@@ -39,6 +39,8 @@ function executeExtendedCommonAssertions()
     assertElasticSearchEnabled
     assertElasticSearchDisablingWorks
     assertElasticSearchEnablingWorks
+
+    assertXdebugContainerWorks
 }
 
 ## Assertions
@@ -541,4 +543,16 @@ function assertRemotePhpWorks()
     remote_php_ini_contents="$(expect "${tests_dir}/_files/run_php_over_ssh_in_cluster.sh")"
 
     assertTrue "Remote PHP is not accessible ('php -i' failed to execute over ssh)." '[[ ${remote_php_ini_contents} =~ "PHP License" ]]'
+}
+
+function assertXdebugContainerWorks()
+{
+    echo "${blue}## assertXdebugContainerWorks${regular}"
+    echo "## assertXdebugContainerWorks" >>${current_log_file_path}
+
+    cd ${tests_dir}
+    magento_page_content="$(curl -sL --cookie "XDEBUG_SESSION=PHPSTORM" "${current_magento_base_url}/customer/account/create/")"
+    pattern="Magento.* All rights reserved."
+    assertTrue "Account creation page is not accessible when queried with XDEBUG_SESSION cookie. URL: '${current_magento_base_url}/customer/account/create/'" '[[ ${magento_page_content} =~ ${pattern} ]]'
+
 }
