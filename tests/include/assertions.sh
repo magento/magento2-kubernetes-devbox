@@ -540,9 +540,9 @@ function assertRemotePhpWorks()
     echo "${blue}## assertRemotePhpWorks${regular}"
     echo "## assertRemotePhpWorks" >>${current_log_file_path}
 
-    remote_php_ini_contents="$(expect "${tests_dir}/_files/run_php_over_ssh_in_cluster.sh")"
+    remote_php_version_contents="$(expect "${tests_dir}/_files/run_command_over_ssh_in_cluster.sh" "php -v")"
 
-    assertTrue "Remote PHP is not accessible ('php -i' failed to execute over ssh)." '[[ ${remote_php_ini_contents} =~ "PHP License" ]]'
+    assertTrue "Remote PHP is not accessible ('php -v' failed to execute over ssh)." '[[ ${remote_php_version_contents} =~ "with Xdebug" ]]'
 }
 
 function assertXdebugContainerWorks()
@@ -554,5 +554,24 @@ function assertXdebugContainerWorks()
     magento_page_content="$(curl -sL --cookie "XDEBUG_SESSION=PHPSTORM" "${current_magento_base_url}/customer/account/create/")"
     pattern="Magento.* All rights reserved."
     assertTrue "Account creation page is not accessible when queried with XDEBUG_SESSION cookie. URL: '${current_magento_base_url}/customer/account/create/'" '[[ ${magento_page_content} =~ ${pattern} ]]'
+}
 
+function assertMagentoUnitTestsWork()
+{
+    echo "${blue}## assertMagentoUnitTestsWork${regular}"
+    echo "## assertMagentoUnitTestsWork" >>${current_log_file_path}
+
+    remote_unit_test_execution_status="$(expect "${tests_dir}/_files/run_command_over_ssh_in_cluster.sh" "php '${devbox_dir}/$(getDevBoxContext)/vendor/phpunit/phpunit/phpunit' --configuration '${devbox_dir}/$(getDevBoxContext)/dev/tests/unit/phpunit.xml' --filter testGetAttributes '${devbox_dir}/$(getDevBoxContext)/vendor/magento/module-catalog/Test/Unit/Model/ProductTest.php'")"
+
+    assertTrue "Unit tests are not configured properly (failed to run them over ssh)." '[[ ${remote_unit_test_execution_status} =~ "OK (1 test, 2 assertions)" ]]'
+}
+
+function assertMagentoIntegrationTestsWork()
+{
+    echo "${blue}## assertMagentoIntegrationTestsWork${regular}"
+    echo "## assertMagentoIntegrationTestsWork" >>${current_log_file_path}
+
+    remote_integration_test_execution_status="$(expect  "${tests_dir}/_files/run_command_over_ssh_in_cluster.sh" "php '${devbox_dir}/$(getDevBoxContext)/vendor/phpunit/phpunit/phpunit' --configuration '${devbox_dir}/$(getDevBoxContext)/dev/tests/integration/phpunit.xml' --filter testGetAddressById '${devbox_dir}/$(getDevBoxContext)/dev/tests/integration/testsuite/Magento/Customer/Api/AddressRepositoryTest.php'")"
+
+    assertTrue "Integration tests are not configured properly (failed to run them over ssh)." '[[ ${remote_integration_test_execution_status} =~ "OK (2 tests, 3 assertions)" ]]'
 }

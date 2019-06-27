@@ -28,13 +28,11 @@ if [[ ! -f "${magento_tests_root}/integration/phpunit.xml" ]] && [[ -f "${magent
 
     if [[ ! -f "${magento_tests_root}/integration/etc/install-config-mysql.php" ]] && [[ -f "${magento_tests_root}/integration/etc/install-config-mysql.php.dist" ]]; then
         cp "${magento_tests_root}/integration/etc/install-config-mysql.php.dist" "${magento_tests_root}/integration/etc/install-config-mysql.php"
-        sed -i.back "s|'db-password' => '123123q'|'db-password' => ''|g" "${magento_tests_root}/integration/etc/install-config-mysql.php"
-        sed -i.back "s|\];|\\
-    'amqp-host' => 'localhost',\\
-    'amqp-port' => '5672',\\
-    'amqp-user' => 'guest',\\
-    'amqp-password' => 'guest'\\
-];|g" "${magento_tests_root}/integration/etc/install-config-mysql.php"
+        sed -i.back "s|'db-host' => 'localhost'|'db-host' => 'magento2-mysql'|g" "${magento_tests_root}/integration/etc/install-config-mysql.php"
+        sed -i.back "s|'db-name' => 'magento_integration_tests'|'db-name' => 'magento_$(getContext)_integration_tests'|g" "${magento_tests_root}/integration/etc/install-config-mysql.php"
+        sed -i.back "s|'amqp-host' => 'localhost'|'amqp-host' => 'magento2-rabbitmq'|g" "${magento_tests_root}/integration/etc/install-config-mysql.php"
+        sed -i.back "s|'amqp-user' => 'guest'|'amqp-user' => 'admin'|g" "${magento_tests_root}/integration/etc/install-config-mysql.php"
+        sed -i.back "s|'amqp-password' => 'guest'|'amqp-password' => '123123q'|g" "${magento_tests_root}/integration/etc/install-config-mysql.php"
         rm -f "${magento_tests_root}/integration/etc/install-config-mysql.php.back"
     fi
 fi
