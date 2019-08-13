@@ -226,10 +226,19 @@ Upgrade can be performed instead of re-installation using `-u` flag.
 
 ### Sample data installation
 
-Make sure that `ce_sample_data` and `ee_sample_data` are defined in [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist) and point CE and optionally EE sample data repositories.
-During initial project setup or during `bash init_project.sh -fc` (with `-fc` project will be re-created from scratch), sample data repositories willl be checked out to `magento2-devbox/magento/magento2ce-sample-data` and `magento2-devbox/magento/magento2ee-sample-data`.
+Make sure that `ce_sample_data` and `ee_sample_data` are defined in [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist) and point CE and optionally EE sample data repositories. During initial project setup or during `bash init_project.sh -fc` (with `-fc` project will be re-created from scratch), sample data repositories willl be checked out to `magento2-devbox/magento/magento2ce-sample-data` and `magento2-devbox/magento/magento2ee-sample-data`.
 
-To install Magento with sample data specify/uncomment sample data repository link at `repository_url_additional_repositories` in [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist) and run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed. To disable sample data, comment out additional repositories and force-switch to necessary edition (using the same commands).
+To install Magento with sample data:
+
+1. Uncomment the sample data repository link at `additional_repositories` in [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist). To ensure the yaml file can be correctly parsed, only remove the `#` and the space afterwards.
+2. Run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed. To disable sample data, comment out additional repositories and force-switch to necessary edition (using the same commands).
+
+If sample data is not showing, try the following:
+
+1. Navigate to the `magento2-devbox/<instance_name>` directory such as `magento2-devbox/default`.
+2. Run `git clone git@github.com:magento/magento2-sample-data.git` or `git@github.com:magento/magento2-sample-data-ee.git` depending on the edition to be installed.
+3. Navigate back up to the `magento2-devbox` directory.
+4. Run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed.
 
 ### Basic data generation
 
