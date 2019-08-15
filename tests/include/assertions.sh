@@ -561,9 +561,9 @@ function assertMagentoUnitTestsWork()
     echo "${blue}## assertMagentoUnitTestsWork${regular}"
     echo "## assertMagentoUnitTestsWork" >>${current_log_file_path}
 
-    remote_unit_test_execution_status="$(expect "${tests_dir}/_files/run_command_over_ssh_in_cluster.sh" "php '${devbox_dir}/$(getDevBoxContext)/vendor/phpunit/phpunit/phpunit' --configuration '${devbox_dir}/$(getDevBoxContext)/dev/tests/unit/phpunit.xml' --filter testGetAttributes '${devbox_dir}/$(getDevBoxContext)/vendor/magento/module-catalog/Test/Unit/Model/ProductTest.php'")"
+    remote_test_execution_status="$(expect "${tests_dir}/_files/run_command_over_ssh_in_cluster.sh" "php '${devbox_dir}/$(getDevBoxContext)/vendor/phpunit/phpunit/phpunit' --configuration '${devbox_dir}/$(getDevBoxContext)/dev/tests/unit/phpunit.xml' --filter testGetAttributes '${devbox_dir}/$(getDevBoxContext)/vendor/magento/module-catalog/Test/Unit/Model/ProductTest.php'")"
 
-    assertTrue "Unit tests are not configured properly (failed to run them over ssh)." '[[ ${remote_unit_test_execution_status} =~ "OK (1 test, 2 assertions)" ]]'
+    assertTrue "Unit tests are not configured properly (failed to run them over ssh)." '[[ ${remote_test_execution_status} =~ "OK (1 test, 2 assertions)" ]]'
 }
 
 function assertMagentoIntegrationTestsWork()
@@ -571,7 +571,37 @@ function assertMagentoIntegrationTestsWork()
     echo "${blue}## assertMagentoIntegrationTestsWork${regular}"
     echo "## assertMagentoIntegrationTestsWork" >>${current_log_file_path}
 
-    remote_integration_test_execution_status="$(expect  "${tests_dir}/_files/run_command_over_ssh_in_cluster.sh" "php '${devbox_dir}/$(getDevBoxContext)/vendor/phpunit/phpunit/phpunit' --configuration '${devbox_dir}/$(getDevBoxContext)/dev/tests/integration/phpunit.xml' --filter testGetAddressById '${devbox_dir}/$(getDevBoxContext)/dev/tests/integration/testsuite/Magento/Customer/Api/AddressRepositoryTest.php'")"
+    remote_test_execution_status="$(expect  "${tests_dir}/_files/run_command_over_ssh_in_cluster.sh" "php '${devbox_dir}/$(getDevBoxContext)/vendor/phpunit/phpunit/phpunit' --configuration '${devbox_dir}/$(getDevBoxContext)/dev/tests/integration/phpunit.xml' --filter testGetAddressById '${devbox_dir}/$(getDevBoxContext)/dev/tests/integration/testsuite/Magento/Customer/Api/AddressRepositoryTest.php'")"
 
-    assertTrue "Integration tests are not configured properly (failed to run them over ssh)." '[[ ${remote_integration_test_execution_status} =~ "OK (2 tests, 3 assertions)" ]]'
+    assertTrue "Integration tests are not configured properly (failed to run them over ssh)." '[[ ${remote_test_execution_status} =~ "OK (2 tests, 3 assertions)" ]]'
+}
+
+function assertMagentoGraphQlTestsWork()
+{
+    echo "${blue}## assertMagentoGraphQlTestsWork${regular}"
+    echo "## assertMagentoGraphQlTestsWork" >>${current_log_file_path}
+
+    remote_test_execution_status="$(expect  "${tests_dir}/_files/run_command_over_ssh_in_cluster.sh" "php '${devbox_dir}/$(getDevBoxContext)/vendor/phpunit/phpunit/phpunit' --configuration '${devbox_dir}/$(getDevBoxContext)/dev/tests/api-functional/phpunit_graphql.xml' --filter testUpdateCustomerIfInputDataIsEmpty '${devbox_dir}/$(getDevBoxContext)/dev/tests/api-functional/testsuite/Magento/GraphQl/Customer/UpdateCustomerTest.php'")"
+
+    assertTrue "GraphQL tests are not configured properly (failed to run them over ssh)." '[[ ${remote_test_execution_status} =~ "OK (1 test, 2 assertions)" ]]'
+}
+
+function assertMagentoRestTestsWork()
+{
+    echo "${blue}## assertMagentoRestTestsWork${regular}"
+    echo "## assertMagentoRestTestsWork" >>${current_log_file_path}
+
+    remote_test_execution_status="$(expect  "${tests_dir}/_files/run_command_over_ssh_in_cluster.sh" "php '${devbox_dir}/$(getDevBoxContext)/vendor/phpunit/phpunit/phpunit' --configuration '${devbox_dir}/$(getDevBoxContext)/dev/tests/api-functional/phpunit_rest.xml' --filter testGetForMyCart '${devbox_dir}/$(getDevBoxContext)/dev/tests/api-functional/testsuite/Magento/GiftMessage/Api/CartRepositoryTest.php'")"
+
+    assertTrue "REST tests are not configured properly (failed to run them over ssh)." '[[ ${remote_test_execution_status} =~ "OK (1 test, 2 assertions)" ]]'
+}
+
+function assertMagentoSoapTestsWork()
+{
+    echo "${blue}## assertMagentoSoapTestsWork${regular}"
+    echo "## assertMagentoSoapTestsWork" >>${current_log_file_path}
+
+    remote_test_execution_status="$(expect  "${tests_dir}/_files/run_command_over_ssh_in_cluster.sh" "php '${devbox_dir}/$(getDevBoxContext)/vendor/phpunit/phpunit/phpunit' --configuration '${devbox_dir}/$(getDevBoxContext)/dev/tests/api-functional/phpunit_soap.xml' --filter testCreateGroupWithIdSoap '${devbox_dir}/$(getDevBoxContext)/dev/tests/api-functional/testsuite/Magento/Customer/Api/GroupRepositoryTest.php'")"
+
+    assertTrue "SOAP tests are not configured properly (failed to run them over ssh)." '[[ ${remote_test_execution_status} =~ "OK (1 test, 1 assertion)" ]]'
 }

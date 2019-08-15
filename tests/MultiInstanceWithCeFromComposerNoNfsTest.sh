@@ -83,6 +83,9 @@ function testMultiInstanceWithCeFromComposerNoNfs()
 
     assertMagentoUnitTestsWork
     assertMagentoIntegrationTestsWork
+    assertMagentoGraphQlTestsWork
+    assertMagentoRestTestsWork
+    assertMagentoSoapTestsWork
 }
 
 ## Call and Run all Tests
