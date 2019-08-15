@@ -226,10 +226,21 @@ Upgrade can be performed instead of re-installation using `-u` flag.
 
 ### Sample data installation
 
-Make sure that `ce_sample_data` and `ee_sample_data` are defined in [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist) and point CE and optionally EE sample data repositories.
-During initial project setup or during `bash init_project.sh -fc` (with `-fc` project will be re-created from scratch), sample data repositories willl be checked out to `magento2-devbox/magento/magento2ce-sample-data` and `magento2-devbox/magento/magento2ee-sample-data`.
+To install Magento with sample data using Git:
 
-To install Magento with sample data specify/uncomment sample data repository link at `repository_url_additional_repositories` in [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist) and run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed. To disable sample data, comment out additional repositories and force-switch to necessary edition (using the same commands).
+1. Uncomment the sample data repository link at `additional_repositories` in [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist). To ensure the yaml file can be correctly parsed, only remove the `#` and the space afterwards.
+2. Run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed. To disable sample data, comment out additional repositories and force-switch to necessary edition (using the same commands).
+
+If sample data is not showing, try the following:
+
+1. Navigate to the `magento2-devbox/<instance_name>` directory such as `magento2-devbox/default`.
+2. Run `git clone git@github.com:magento/magento2-sample-data.git` or `git@github.com:magento/magento2-sample-data-ee.git` depending on the edition to be installed.
+3. Navigate back up to the `magento2-devbox` directory.
+4. Run `./m-switch-to-ce -f` or `./m-switch-to-ee -f`, depending on the edition to be installed.
+
+To install Magento with sample data using Composer:
+
+Follow the steps outlined [here](https://devdocs.magento.com/guides/v2.3/install-gde/install/sample-data-after-composer.html).
 
 ### Basic data generation
 
@@ -440,3 +451,4 @@ bash ./<test-name>.sh
     * Make changes in `etc/docker/monolith/Dockerfile`
     * Run `./k-upgrade-environment`
     * Run `./k-status` to open kubernetes dashboard and delete Replica Set named `magento2-monolith-*`. The container should be restarted and its Age should reset
+ 1. If you are unable to ping your local Magento install, open the `/etc/hosts` file and search for your Magento instance URL. If you find multiple references to the same URL, preserve the first one you find and delete the others. 
