@@ -451,3 +451,4 @@ bash ./<test-name>.sh
     * Make changes in `etc/docker/monolith/Dockerfile`
     * Run `./k-upgrade-environment`
     * Run `./k-status` to open kubernetes dashboard and delete Replica Set named `magento2-monolith-*`. The container should be restarted and its Age should reset
+ 1. If you are unable to ping your local Magento install, open the `/etc/hosts` file and search for your Magento instance URL. If you find multiple references to the same URL, preserve the first one you find and delete the others. 
