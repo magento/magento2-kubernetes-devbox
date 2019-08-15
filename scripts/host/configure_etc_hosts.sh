@@ -14,6 +14,12 @@ if [[ ${debug_devbox_project} -eq 1 ]]; then
     set -x
 fi
 
+# remove potentially stale configuration of the hosts configured by the dev box
+for instance_name in $(getInstanceList); do
+    domain_name="$(getInstanceDomainName ${instance_name})"
+    sudo sed -ie "/.*${domain_name}.*/d" /etc/hosts
+done
+
 etc_hosts_records="$(bash "${devbox_dir}/scripts/host/get_etc_hosts_records.sh")"
 # only split with new lines
 IFS=$'\n'
