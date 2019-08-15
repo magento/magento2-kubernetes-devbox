@@ -184,7 +184,7 @@ Use the following command to open current instance:
 ./m-open
 ```
 
-Hostname can also be found in `maghento/host_name` section of [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist).
+Hostname can also be found in `magento/host_name` section of [etc/instance/<instance_name>.yaml](etc/instance/config.yaml.dist).
 
 ### Reinstall Magento
 
