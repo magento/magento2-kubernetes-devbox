@@ -452,4 +452,4 @@ bash ./<test-name>.sh
     * Run `./k-upgrade-environment`
     * Run `./k-status` to open kubernetes dashboard and delete Replica Set named `magento2-monolith-*`. The container should be restarted and its Age should reset
  1. If you face `Input/output error command terminated with exit code 1` try to run the same command again, it will succeed after several trials.
- 1. The project was working initially, but the domain stopped resolving. In some cases minikube IP may be changed, run `./scripts/host/configure_etc_hosts.sh` 
+ 1. The project was working initially, but Magento instance domain name stopped resolving. In some cases minikube IP may be changed, run `./scripts/host/configure_etc_hosts.sh` 
