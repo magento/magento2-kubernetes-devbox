@@ -1,7 +1,7 @@
 dependencies:
 - name: mysql
   repository: https://kubernetes-charts.storage.googleapis.com
-  version: 0.15.0
+  version: 0.19.2
 - name: redis
   repository: https://kubernetes-charts.storage.googleapis.com
   version: 6.4.5
@@ -11,5 +11,5 @@ dependencies:
 - name: elasticsearch
   repository: https://helm.elastic.co
   version: 6.5.0
-digest: sha256:f5f413c09690010e1ed93c9fbc0f268ea869eca6e1d42e83729eeee70cdb1bfb
-generated: 2019-05-01T14:43:50.018673-05:00
+digest: sha256:d8cb388574e1db38759d9b1113cc4fc95ff550aeb024c5a449d711c2636cc66d
+generated: 2019-08-19T10:57:16.077076-05:00
