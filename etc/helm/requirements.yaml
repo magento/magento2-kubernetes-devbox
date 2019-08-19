@@ -15,7 +15,3 @@ dependencies:
   repository: "https://helm.elastic.co"
   appVersion: "6.7.1"
   version: "6.5.0"
-- name: checkout
-  repository: file://./charts/
-  version: 0.1.0
-  condition: global.checkout.enabled
