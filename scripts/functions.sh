@@ -195,12 +195,6 @@ function getMagento2PodId()
     echo "$(kubectl get pods | grep -ohE 'magento2-monolith-[a-z0-9\-]+')"
 }
 
-function getMagento2CheckoutPodId()
-{
-    # TODO: Calculate based on current helm release
-    echo "$(kubectl get pods | grep -ohE 'magento2-checkout-[a-z0-9\-]+')"
-}
-
 function getRedisMasterPodId()
 {
     echo "$(kubectl get pods | grep -ohE 'magento2-redis-master-[a-z0-9\-]+')"
@@ -220,12 +214,6 @@ function executeInMagento2Container()
 {
     magento2_pod_id="$(getMagento2PodId)"
     kubectl exec "${magento2_pod_id}" --container monolith "$@" 2> >(logError)
-}
-
-function executeInMagento2CheckoutContainer()
-{
-    magento2_pod_id="$(getMagento2CheckoutPodId)"
-    kubectl exec "${magento2_pod_id}" --container checkout "$@" 2> >(logError)
 }
 
 function isMinikubeRunning() {

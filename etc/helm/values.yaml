@@ -29,14 +29,6 @@ global:
   caching:
     varnish:
       enabled: true # This value is overridden via <devbox_project>/etc/instance/$(getContext).yaml
-  checkout:
-    enabled: false
-    db:
-      enabled: false
-    service:
-      type: NodePort
-      nodePort: 30102
-      port: 80
   monolith:
     service:
       port: 8050
