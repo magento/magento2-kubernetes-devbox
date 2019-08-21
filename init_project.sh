@@ -144,6 +144,9 @@ fi
 # Iterate over all requested instances and initialize them
 for instance_name in ${instance_names}; do
     setContext ${instance_name}
+
+    bash "${devbox_dir}/scripts/host/m_composer.sh" global require "hirak/prestissimo"
+
     flags=""
     if [[ ${force_instance_cleaning} -eq 1 ]]; then
         flags="${flags}i"
