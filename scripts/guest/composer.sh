@@ -11,9 +11,6 @@ incrementNestingLevel
 
 composer_auth_json="${devbox_dir}/etc/composer/auth.json"
 
-# commented out due to composer conflicts
-# ${php_executable} "${composer_phar}" global require "hirak/prestissimo:^0.3"
-
 if [[ -f ${composer_auth_json} ]]; then
     status "Exporting etc/auth.json to environment variable"
     export COMPOSER_AUTH="$(cat "${composer_auth_json}")"
