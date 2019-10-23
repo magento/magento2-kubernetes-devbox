@@ -5,9 +5,9 @@ cd "$(dirname "${BASH_SOURCE[0]}")/../.." && devbox_dir=$PWD
 source "${devbox_dir}/scripts/functions.sh"
 
 ## TODO: Add status messages
-cd "${devbox_dir}/scripts" && eval $(minikube docker-env) && docker build -t magento2-monolith:dev -f ../etc/docker/monolith/Dockerfile ../scripts
-cd "${devbox_dir}/scripts" && eval $(minikube docker-env) && docker build -t magento2-monolith:dev-xdebug -f ../etc/docker/monolith-with-xdebug/Dockerfile ../scripts
-cd "${devbox_dir}/scripts" && eval $(minikube docker-env) && docker build -t magento2-monolith:dev-xdebug-and-ssh -f ../etc/docker/monolith-with-xdebug-and-ssh/Dockerfile ../scripts
+cd "${devbox_dir}/scripts" && eval $(minikube docker-env --shell=bash) && docker build -t magento2-monolith:dev -f ../etc/docker/monolith/Dockerfile ../scripts
+cd "${devbox_dir}/scripts" && eval $(minikube docker-env --shell=bash) && docker build -t magento2-monolith:dev-xdebug -f ../etc/docker/monolith-with-xdebug/Dockerfile ../scripts
+cd "${devbox_dir}/scripts" && eval $(minikube docker-env --shell=bash) && docker build -t magento2-monolith:dev-xdebug-and-ssh -f ../etc/docker/monolith-with-xdebug-and-ssh/Dockerfile ../scripts
 
 # TODO: Repeat for other deployments, not just Magento 2
 # See https://github.com/kubernetes/kubernetes/issues/33664#issuecomment-386661882

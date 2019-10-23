@@ -10,8 +10,8 @@ sed -i "s|php_executable=\"php\"|php_executable=\"/home/travis/.phpenv/shims/php
 # TODO: Make configurable and enable for specific tests
 # sed -i "s|git clone|git clone --depth 1 |g" ./init_project.sh
 sed -i "s|minikube start -v=0 --cpus=2 --memory=4096|sudo minikube start -v=0 --cpus=2 --memory=4096  --vm-driver=none --bootstrapper=kubeadm --kubernetes-version=v1.13.0|g" ./init_project.sh
-sed -i "s|&& eval \$(minikube docker-env) ||g" ./scripts/host/k_install_environment.sh
-sed -i "s|&& eval \$(minikube docker-env) ||g" ./scripts/host/k_upgrade_environment.sh
+sed -i "s|&& eval \$(minikube docker-env --shell=bash) ||g" ./scripts/host/k_install_environment.sh
+sed -i "s|&& eval \$(minikube docker-env --shell=bash) ||g" ./scripts/host/k_upgrade_environment.sh
 sed -i "s/use_nfs:\ 1/use_nfs:\ 0/g" ./etc/env/config.yaml.dist
 sed -i "s/nfs_server_ip:\ \"0\.0\.0\.0\"/nfs_server_ip:\ \"$(ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')\"/g" ./etc/env/config.yaml.dist
 echo "${COMPOSER_AUTH}" > ./etc/composer/auth.json
