@@ -9,7 +9,7 @@ find ./tests/_files/ -type f | xargs sed -i "s|git@github.com:|https://github.co
 sed -i "s|php_executable=\"php\"|php_executable=\"/home/travis/.phpenv/shims/php\"|g" ./scripts/host/get_path_to_php.sh
 # TODO: Make configurable and enable for specific tests
 # sed -i "s|git clone|git clone --depth 1 |g" ./init_project.sh
-sed -i "s|minikube start -v=0 --cpus=2 --memory=4096|sudo minikube start -v=0 --cpus=2 --memory=4096  --vm-driver=none --bootstrapper=kubeadm --kubernetes-version=v1.13.0|g" ./init_project.sh
+sed -i "s|minikube start --kubernetes-version=v1.15.6 -v=0 --cpus=2 --memory=4096|sudo minikube start --kubernetes-version=v1.15.6 -v=0 --cpus=2 --memory=4096  --vm-driver=none --bootstrapper=kubeadm|g" ./init_project.sh
 sed -i "s|&& eval \$(minikube docker-env) ||g" ./scripts/host/k_install_environment.sh
 sed -i "s|&& eval \$(minikube docker-env) ||g" ./scripts/host/k_upgrade_environment.sh
 sed -i "s/use_nfs:\ 1/use_nfs:\ 0/g" ./etc/env/config.yaml.dist

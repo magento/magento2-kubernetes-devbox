@@ -8,8 +8,8 @@ source "${devbox_dir}/scripts/functions.sh"
 resetNestingLevel
 
 if [[ ! $(isMinikubeRunning) -eq 1 ]]; then
-    // TDOO: Eliminate duplication with k-restart
-    minikube start -v=0 --cpus=2 --memory=4096 2> >(logError)
+    # TDOO: Eliminate duplication with k-restart
+    minikube start --kubernetes-version=v1.15.6 -v=0 --cpus=2 --memory=4096 2> >(logError)
 fi
 
 

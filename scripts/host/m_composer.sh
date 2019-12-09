@@ -9,4 +9,4 @@ cd "${devbox_dir}"
 # TODO: parameterize container
 
 arguments=$@
-executeInMagento2Container -- "${devbox_dir}/scripts/guest/composer.sh" ${arguments} 2> >(logError)
+executeInMagento2Container -- "${devbox_dir}/scripts/guest/composer.sh" ${arguments}

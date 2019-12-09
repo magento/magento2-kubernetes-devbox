@@ -21,6 +21,6 @@ if [[ -d "${DEVBOX_ROOT}/$(getContext)" ]]; then
 fi
 
 status "composer --no-interaction "$@""
-composer --no-interaction "$@" 2> >(log) > >(log)
+composer --no-interaction "$@"
 
 decrementNestingLevel

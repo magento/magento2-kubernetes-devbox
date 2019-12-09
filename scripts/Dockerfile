@@ -1,4 +1,4 @@
-FROM php:7.1-fpm
+FROM php:7.2-fpm
 
 # Install dependencies
 RUN apt-get update \
@@ -27,18 +27,18 @@ RUN docker-php-ext-install \
   gd \
   intl \
   mbstring \
-  mcrypt \
   pdo_mysql \
   xsl \
   zip \
   bcmath \
   soap \
+  sockets \
   opcache
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN pecl install -o -f xdebug
 
-RUN apt-get update && apt-get install -y mysql-client && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y default-mysql-client && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
 
