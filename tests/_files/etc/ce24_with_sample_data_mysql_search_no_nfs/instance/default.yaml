@@ -15,11 +15,11 @@ repository_url:
 
   # [To apply changes: init_project.sh -fc]
   # git@github.com:magento/magento2ce.git OR custom one. Use '::' to specify a specific branch, e.g: git@github.com:magento/magento2.git::2.1
-  ce: "git@github.com:magento/magento2.git::2.3"
+  ce: "git@github.com:magento/magento2.git::2.4-develop"
   # git@github.com:magento/magento2ee.git OR custom one
   ee: ""
   additional_repositories:
-    - "git@github.com:magento/magento2-sample-data.git::2.3"
+    - "git@github.com:magento/magento2-sample-data.git::2.4-develop"
     # - "git@github.com:magento/magento2-sample-data-ee.git"
     # - "git@github.com:magento/magento2b2b.git"
   # If set to 1, shallow clone will be used to speed up the project initialization

@@ -91,11 +91,11 @@ cd "${devbox_dir}"
 # TODO: Verify that this condition works as expected
 if [[ ! $(isMinikubeRunning) -eq 1 ]]; then
     status "Starting minikube"
-    minikube start -v=0 --cpus=2 --memory=4096
+    minikube start --kubernetes-version=v1.15.6 -v=0 --cpus=2 --memory=4096
     minikube addons enable ingress
     minikube addons enable heapster
     # TODO: Remove if not needed
-#    minikube start -v=0 --cache-images --cpus=2 --memory=4096 2> >(logError) | {
+#    minikube start --kubernetes-version=v1.15.6 -v=0 --cache-images --cpus=2 --memory=4096 2> >(logError) | {
 #      while IFS= read -r line
 #      do
 #        filterDevboxOutput "${line}"
