@@ -82,7 +82,8 @@ redis:
     enabled: false
 
 rabbitmq:
-  serviceType: NodePort
+  service:
+    type: NodePort
   rabbitmq:
     username: admin
     password: 123123q
