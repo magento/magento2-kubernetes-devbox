@@ -71,6 +71,7 @@ mysql:
     nodePort: 30306
   persistence:
     size: 4Gi
+  imageTag: "5.7.22"
 
 redis:
   usePassword: false
