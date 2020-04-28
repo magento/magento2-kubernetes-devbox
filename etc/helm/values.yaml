@@ -90,12 +90,6 @@ rabbitmq:
     password: 123123q
 
 elasticsearch:
-  imageTag: "6.7.1"
-  esMajorVersion: 6
-
-  replicas: 1
-  minimumMasterNodes: 1
-
   # Permit co-located instances for solitary minikube virtual machines.
   antiAffinity: "soft"
 

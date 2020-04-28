@@ -105,9 +105,9 @@ php ${install_cmd} 2> >(logError) > >(log)
 # php -d xdebug.remote_autostart=1 ${install_cmd} 2> >(logError) > >(log)
 
 status "Configuring Redis for session and as cache backend"
-php "${DEVBOX_ROOT}/$(getContext)/bin/magento" setup:config:set --page-cache=redis --page-cache-redis-server=magento2-redis-master
-php "${DEVBOX_ROOT}/$(getContext)/bin/magento" setup:config:set --cache-backend=redis --cache-backend-redis-server=magento2-redis-master
-php "${DEVBOX_ROOT}/$(getContext)/bin/magento" setup:config:set --session-save=redis --session-save-redis-host=magento2-redis-master
+yes | php "${DEVBOX_ROOT}/$(getContext)/bin/magento" setup:config:set --page-cache=redis --page-cache-redis-server=magento2-redis-master
+yes | php "${DEVBOX_ROOT}/$(getContext)/bin/magento" setup:config:set --cache-backend=redis --cache-backend-redis-server=magento2-redis-master
+yes | php "${DEVBOX_ROOT}/$(getContext)/bin/magento" setup:config:set --session-save=redis --session-save-redis-host=magento2-redis-master
 
 if [[ $? != 0 ]]; then
     error "Magento installation failed."
