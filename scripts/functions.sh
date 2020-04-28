@@ -92,6 +92,7 @@ function outputErrorsOnly()
 {
     errors="$(echo "${1}" | grep -iv "Connection to 127.0.0.1 closed." \
         | grep -iv "Cloning into .*\.\.\."\
+        | grep -iv "Overwrite the existing configuration for session-save .*"\
         | grep -iv "Checking out .* done\."\
     )"
     if [[ -n "${errors}" ]]; then
@@ -104,6 +105,7 @@ function outputInfoOnly()
 {
     info="$(echo "${1}" | grep -iv "Connection to 127.0.0.1 closed." \
         | grep -i "Cloning into .*\.\.\."\
+        | grep -i "Overwrite the existing configuration for session-save .*"\
         | grep -i "Checking out .* done\."\
     )"
     if [[ -n "${info}" ]]; then
@@ -149,6 +151,7 @@ function initLogFile()
         log_file="debug"
     fi
     echo "log/${log_file}.log" > "${log_file_path}"
+    chmod a+w "${log_file_path}"
     rm -f "${devbox_dir}/log/${log_file}.log"
     touch "${devbox_dir}/log/${log_file}.log"
     chmod a+w "${devbox_dir}/log/${log_file}.log"
