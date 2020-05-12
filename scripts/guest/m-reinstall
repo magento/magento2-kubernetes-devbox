@@ -82,6 +82,9 @@ install_cmd="./bin/magento setup:install \
     --admin-email=${setupOptions[admin_email]} \
     --admin-user=${setupOptions[admin_user]} \
     --admin-password=${setupOptions[admin_password]} \
+    --elasticsearch-host=elasticsearch-master \
+    --elasticsearch-port=9200 \
+    --elasticsearch-index-prefix=magento2 \
     --cleanup-database \
     --use-rewrites=1"
 
