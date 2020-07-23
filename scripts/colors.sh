@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Copyright © Magento, Inc. All rights reserved.
+# See COPYING.txt for license details.
+
 # CLI color functions
 function red()
 {

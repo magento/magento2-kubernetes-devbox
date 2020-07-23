@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Copyright © Magento, Inc. All rights reserved.
+# See COPYING.txt for license details.
+
 set -e
 
 devbox_dir=$PWD
@@ -19,6 +22,9 @@ debug_devbox_project="$(bash "${devbox_dir}/scripts/get_env_config_value.sh" "de
 if [[ ${debug_devbox_project} -eq 1 ]]; then
     set -x
 fi
+
+# Copyright © Magento, Inc. All rights reserved.
+# See COPYING.txt for license details.
 
 # TODO: remove references to context
 host_os="$(bash "${devbox_dir}/scripts/host/get_host_os.sh")"
