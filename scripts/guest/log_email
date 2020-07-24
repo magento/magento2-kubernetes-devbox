@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Copyright © Magento, Inc. All rights reserved.
+# See COPYING.txt for license details.
+
 email_log_dir=$1
 if [[ ! -d ${email_log_dir} ]]; then
     mkdir -p "${email_log_dir}"

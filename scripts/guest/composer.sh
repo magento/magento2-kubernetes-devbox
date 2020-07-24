@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Copyright © Magento, Inc. All rights reserved.
+# See COPYING.txt for license details.
+
 # This script allows to use credentials specified in etc/composer/auth.json without declaring them globally
 
 cd "$(dirname "${BASH_SOURCE[0]}")/../.." && devbox_dir=$PWD

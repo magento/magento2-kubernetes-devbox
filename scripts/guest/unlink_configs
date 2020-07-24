@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+
+
 
 #function process_configs () {
 #    configs_path=$1
